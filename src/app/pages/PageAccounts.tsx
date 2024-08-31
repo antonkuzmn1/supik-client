@@ -37,25 +37,14 @@ const PageAccounts: React.FC = () => {
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
 
-    const [accountCreateUsername, setAccountCreateUsername] = useState<string>('');
-    const [accountCreatePassword, setAccountCreatePassword] = useState<string>('');
-    const [accountCreatePasswordRepeat, setAccountCreatePasswordRepeat] = useState<string>('');
-    const [accountCreateFullname, setAccountCreateFullname] = useState<string>('');
-    const [accountCreateTitle, setAccountCreateTitle] = useState<string>('');
-    const [accountCreateAdmin, setAccountCreateAdmin] = useState<boolean>(false);
-    const [accountCreateDisabled, setAccountCreateDisabled] = useState<boolean>(false);
-
-    const [accountUpdateId, setAccountUpdateId] = useState<number>(0);
-    const [accountUpdateUsername, setAccountUpdateUsername] = useState<string>('');
-    const [accountUpdatePassword, setAccountUpdatePassword] = useState<string>('');
-    const [accountUpdatePasswordRepeat, setAccountUpdatePasswordRepeat] = useState<string>('');
-    const [accountUpdateFullname, setAccountUpdateFullname] = useState<string>('');
-    const [accountUpdateTitle, setAccountUpdateTitle] = useState<string>('');
-    const [accountUpdateAdmin, setAccountUpdateAdmin] = useState<boolean>(false);
-    const [accountUpdateDisabled, setAccountUpdateDisabled] = useState<boolean>(false);
-
-    const [accountDeleteId, setAccountDeleteId] = useState<number>(0);
-    const [accountDeleteFullname, setAccountDeleteFullname] = useState<string>('');
+    const [id, setId] = useState<number>(0);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [passwordRepeat, setPasswordRepeat] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    const [admin, setAdmin] = useState<boolean>(false);
+    const [disabled, setDisabled] = useState<boolean>(false);
 
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
     const [groups, setGroups] = useState<any[]>([]);
@@ -74,18 +63,18 @@ const PageAccounts: React.FC = () => {
     }
 
     const createAccount = () => {
-        if (accountCreatePassword !== accountCreatePasswordRepeat) {
+        if (password !== passwordRepeat) {
             return;
         }
 
         dispatch(setAppLoading(true));
         axios.post(baseUrl + "/security/account", {
-            username: accountCreateUsername,
-            password: accountCreatePassword,
-            fullname: accountCreateFullname,
-            title: accountCreateTitle,
-            admin: accountCreateAdmin ? 1 : 0,
-            disabled: accountCreateDisabled ? 1 : 0,
+            username: username,
+            password: password,
+            fullname: fullname,
+            title: title,
+            admin: admin ? 1 : 0,
+            disabled: disabled ? 1 : 0,
         }).then((_response) => {
             setDialogCreateActive(false);
             getAccounts();
@@ -97,19 +86,19 @@ const PageAccounts: React.FC = () => {
     }
 
     const updateAccount = () => {
-        if (accountCreatePassword !== accountCreatePasswordRepeat) {
+        if (password !== passwordRepeat) {
             return;
         }
 
         dispatch(setAppLoading(true));
         axios.put(baseUrl + "/security/account", {
-            id: accountUpdateId,
-            username: accountUpdateUsername,
-            password: accountUpdatePassword,
-            fullname: accountUpdateFullname,
-            title: accountUpdateTitle,
-            admin: accountUpdateAdmin ? 1 : 0,
-            disabled: accountUpdateDisabled ? 1 : 0,
+            id: id,
+            username: username,
+            password: password,
+            fullname: fullname,
+            title: title,
+            admin: admin ? 1 : 0,
+            disabled: disabled ? 1 : 0,
         }).then((_response) => {
             setDialogUpdateActive(false);
             getAccounts();
@@ -123,7 +112,7 @@ const PageAccounts: React.FC = () => {
     const deleteAccount = () => {
         dispatch(setAppLoading(true));
         axios.delete(baseUrl + "/security/account", {
-            data: {id: accountDeleteId},
+            data: {id: id},
         }).then((_response) => {
             setDialogDeleteActive(false);
             getAccounts();
@@ -134,9 +123,8 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const createAccountGroup = (id: number) => {
-        const accountId = accountUpdateId;
-        const groupId = id;
+    const createAccountGroup = (groupId: number) => {
+        const accountId = id;
 
         dispatch(setAppLoading(true));
         axios.post(baseUrl + "/security/account-group", {
@@ -151,9 +139,8 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const deleteAccountGroup = (id: number) => {
-        const accountId = accountUpdateId;
-        const groupId = id;
+    const deleteAccountGroup = (groupId: number) => {
+        const accountId = id;
 
         dispatch(setAppLoading(true));
         axios.delete(baseUrl + "/security/account-group", {
@@ -173,7 +160,15 @@ const PageAccounts: React.FC = () => {
     /// OPEN DIALOG
 
     const openCreateDialog = () => {
-        setDialogCreateActive(true)
+        setId(0);
+        setUsername('');
+        setPassword('');
+        setPasswordRepeat('');
+        setFullname('');
+        setTitle('');
+        setAdmin(false);
+        setDisabled(false);
+        setDialogCreateActive(true);
     }
 
     const openEditDialog = (id: string) => {
@@ -181,14 +176,14 @@ const PageAccounts: React.FC = () => {
         axios.get(baseUrl + "/security/account", {
             params: {id: Number(id)}
         }).then((response) => {
-            setAccountUpdateId(response.data.id);
-            setAccountUpdateUsername(response.data.username);
-            setAccountUpdatePassword('');
-            setAccountUpdatePasswordRepeat('');
-            setAccountUpdateFullname(response.data.fullname);
-            setAccountUpdateTitle(response.data.title);
-            setAccountUpdateAdmin(!!response.data.admin);
-            setAccountUpdateDisabled(!!response.data.disabled);
+            setId(response.data.id);
+            setUsername(response.data.username);
+            setPassword('');
+            setPasswordRepeat('');
+            setFullname(response.data.fullname);
+            setTitle(response.data.title);
+            setAdmin(!!response.data.admin);
+            setDisabled(!!response.data.disabled);
             setDialogUpdateActive(true);
         }).catch((error) => {
             console.log(error);
@@ -202,8 +197,8 @@ const PageAccounts: React.FC = () => {
         axios.get(baseUrl + "/security/account", {
             params: {id: Number(id)}
         }).then((response) => {
-            setAccountDeleteId(response.data.id);
-            setAccountDeleteFullname(response.data.fullname);
+            setId(response.data.id);
+            setFullname(response.data.fullname);
             setDialogDeleteActive(true);
         }).catch((error) => {
             console.log(error);
@@ -341,46 +336,46 @@ const PageAccounts: React.FC = () => {
                     <FieldInputString
                         title={"Username"}
                         placeholder={"Enter text"}
-                        value={accountCreateUsername}
-                        onChange={(e) => setAccountCreateUsername(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <FieldInputString
                         title={"Password"}
                         password={true}
                         placeholder={"Enter text"}
-                        value={accountCreatePassword}
-                        onChange={(e) => setAccountCreatePassword(e.target.value)}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
                         title={"Password"}
                         password={true}
                         placeholder={"Enter text"}
-                        value={accountCreatePasswordRepeat}
-                        onChange={(e) => setAccountCreatePasswordRepeat(e.target.value)}
+                        value={passwordRepeat}
+                        onChange={(e) => setPasswordRepeat(e.target.value)}
                     />
                     <FieldInputString
                         title={"Full name"}
                         placeholder={"Enter text"}
-                        value={accountCreateFullname}
-                        onChange={(e) => setAccountCreateFullname(e.target.value)}
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
-                        value={accountCreateTitle}
-                        onChange={(e) => setAccountCreateTitle(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Admin"}
-                        value={accountCreateAdmin}
-                        setTrue={() => setAccountCreateAdmin(true)}
-                        setFalse={() => setAccountCreateAdmin(false)}
+                        value={admin}
+                        setTrue={() => setAdmin(true)}
+                        setFalse={() => setAdmin(false)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
-                        value={accountCreateDisabled}
-                        setTrue={() => setAccountCreateDisabled(true)}
-                        setFalse={() => setAccountCreateDisabled(false)}
+                        value={disabled}
+                        setTrue={() => setDisabled(true)}
+                        setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
@@ -394,56 +389,56 @@ const PageAccounts: React.FC = () => {
                 children={<>
                     <FieldValueString
                         title={"ID"}
-                        value={accountUpdateId.toString()}
+                        value={id.toString()}
                     />
                     <FieldInputString
                         title={"Username"}
                         placeholder={"Enter text"}
-                        value={accountUpdateUsername}
-                        onChange={(e) => setAccountUpdateUsername(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <FieldInputString
                         title={"Password"}
                         password={true}
                         placeholder={"Enter text"}
-                        value={accountUpdatePassword}
-                        onChange={(e) => setAccountUpdatePassword(e.target.value)}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
                         title={"Password"}
                         password={true}
                         placeholder={"Enter text"}
-                        value={accountUpdatePasswordRepeat}
-                        onChange={(e) => setAccountUpdatePasswordRepeat(e.target.value)}
+                        value={passwordRepeat}
+                        onChange={(e) => setPasswordRepeat(e.target.value)}
                     />
                     <FieldInputString
                         title={"Full name"}
                         placeholder={"Enter text"}
-                        value={accountUpdateFullname}
-                        onChange={(e) => setAccountUpdateFullname(e.target.value)}
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
-                        value={accountUpdateTitle}
-                        onChange={(e) => setAccountUpdateTitle(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Admin"}
-                        value={accountUpdateAdmin}
-                        setTrue={() => setAccountUpdateAdmin(true)}
-                        setFalse={() => setAccountUpdateAdmin(false)}
+                        value={admin}
+                        setTrue={() => setAdmin(true)}
+                        setFalse={() => setAdmin(false)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
-                        value={accountUpdateDisabled}
-                        setTrue={() => setAccountUpdateDisabled(true)}
-                        setFalse={() => setAccountUpdateDisabled(false)}
+                        value={disabled}
+                        setTrue={() => setDisabled(true)}
+                        setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openGroupsDialog(accountUpdateId), text: 'Groups'},
+                    {action: () => openGroupsDialog(id), text: 'Groups'},
                     {action: () => updateAccount(), text: 'Update'},
                 ]}
             />}
@@ -451,7 +446,7 @@ const PageAccounts: React.FC = () => {
                 title={'Delete Account'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{accountDeleteFullname}" (ID: {accountDeleteId})?</p>
+                    <p>Are u sure want to delete "{fullname}" (ID: {id})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
