@@ -70,6 +70,8 @@ $padding: 10px;
     grid-gap: $padding;
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+    overflow-y: auto;
+    max-height: calc(100vh - $height - $padding * 2);
 
     button {
       background: none;

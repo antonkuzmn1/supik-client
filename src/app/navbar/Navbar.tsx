@@ -19,6 +19,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
     const accountFullname = useSelector((state: RootState) => state.account.fullname);
 
     const [dropdownIsActive, setDropdownIsActive] = useState(false);
+    const [displayedTitle, setDisplayedTitle] = useState<string>('');
 
     const toggleDropdown = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -45,6 +46,10 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
         }
     }, [dropdownIsActive]);
 
+    useEffect(() => {
+        setDisplayedTitle(pageTitle === "" ? accountFullname : pageTitle);
+    }, [pageTitle]);
+
     return (
         <div
             className='Navbar'
@@ -57,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 />
             </div>
             <div className='title'>
-                <p>{pageTitle === "" ? accountFullname : pageTitle}</p>
+                <p>{displayedTitle}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
