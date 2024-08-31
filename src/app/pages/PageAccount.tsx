@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import axios from "axios";
-import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../../slices/accountSlice.ts";
+import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../slices/accountSlice.ts";
 import Cookies from "js-cookie";
-import {baseUrl} from "../../../utils/baseUrl.ts";
-import {setAppLoading} from "../../../slices/appSlice.ts";
+import {baseUrl} from "../../utils/baseUrl.ts";
+import {setAppLoading} from "../../slices/appSlice.ts";
+import FieldValueString from "../fields/FieldValueString.tsx";
 
 export interface AccountFields {
     id: string;
@@ -14,9 +15,10 @@ export interface AccountFields {
     title: string;
     username: string;
     admin: string;
+    disabled: string;
 }
 
-const defFields: {title: string, field: keyof AccountFields}[] = [
+const defFields: { title: string, field: keyof AccountFields }[] = [
     {title: 'ID', field: 'id'},
     {title: 'Created at', field: 'created'},
     {title: 'Updated at', field: 'updated'},
@@ -24,6 +26,7 @@ const defFields: {title: string, field: keyof AccountFields}[] = [
     {title: 'Title', field: 'title'},
     {title: 'Username', field: 'username'},
     {title: 'Admin', field: 'admin'},
+    {title: 'Disabled', field: 'disabled'},
 ]
 
 const PageAccount: React.FC = () => {
@@ -89,6 +92,7 @@ const PageAccount: React.FC = () => {
                 title: account.title,
                 username: account.username,
                 admin: account.admin ? 'True' : 'False',
+                disabled: account.disabled ? 'True' : 'False',
             });
         }
     }, [account]);
@@ -97,16 +101,13 @@ const PageAccount: React.FC = () => {
         <div className={'fields'}>
             {fields && (<>
                 {defFields.map((defField, index) => (
-                    <div className={'field'} key={index}>
-                        <div className={'field__title'}>
-                            <p>{defField.title}</p>
-                        </div>
-                        <div className={'field__value'}>
-                            <p children={fields[defField.field]}/>
-                        </div>
-                    </div>
+                    <FieldValueString
+                        key={index}
+                        title={defField.title}
+                        value={fields[defField.field]}
+                    />
                 ))}
-                <div className={'field'}>
+                <div className={'button'}>
                     <button onClick={logout}>logout</button>
                 </div>
             </>)}

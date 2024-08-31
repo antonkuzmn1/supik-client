@@ -44,47 +44,6 @@
         border: 1px solid var(--border);
         height: 40px;
 
-        .title {
-          flex-grow: 1;
-          border-right: 1px solid var(--border);
-          padding: 10px;
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          max-width: 100px;
-          min-width: 100px;
-
-          p {
-            margin: 0;
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 15px;
-            color: var(--text);
-          }
-        }
-
-        .field {
-          flex-grow: 1;
-          input {
-            width: calc(100% - 20px);
-            height: calc(100% - 20px);
-            padding: 10px;
-            margin: 0;
-            border: none;
-            outline: none;
-            background: none;
-
-            font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-            font-style: normal;
-            font-weight: 400;
-            font-size: 12px;
-            line-height: 15px;
-            color: var(--text);
-          }
-        }
-
         .submit {
           flex-grow: 1;
           outline: none;

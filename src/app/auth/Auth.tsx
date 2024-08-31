@@ -7,6 +7,7 @@ import {setAppLoading} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {baseUrl} from "../../utils/baseUrl.ts";
+import FieldInputString from "../fields/FieldInputString.tsx";
 
 const Auth: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -51,32 +52,19 @@ const Auth: React.FC = () => {
                     <div className='header'>
                         <h1>Authorization</h1>
                     </div>
-                    <div className='form'>
-                        <div className='title'>
-                            <p>Username</p>
-                        </div>
-                        <div className='field'>
-                            <input
-                                type='text'
-                                placeholder="Enter username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    <div className='form'>
-                        <div className='title'>
-                            <p>Password</p>
-                        </div>
-                        <div className='field'>
-                            <input
-                                type='password'
-                                placeholder="Enter password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-                    </div>
+                    <FieldInputString
+                        title={'Username'}
+                        placeholder={'Enter username'}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={'Password'}
+                        password={true}
+                        placeholder={'Enter password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                     <div className='form'>
                         <button
                             className='submit'

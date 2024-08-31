@@ -1,6 +1,6 @@
 import './App.scss';
 import React, {ReactNode} from "react";
-import Page from "./page/Page.tsx";
+import Page from "./pages/Page.tsx";
 import IconAccount from "./icons/IconAccount.tsx";
 import IconAccounts from "./icons/IconAccounts.tsx";
 import IconGroups from "./icons/IconGroups.tsx";
@@ -10,14 +10,14 @@ import IconUsers from "./icons/IconUsers.tsx";
 import IconMails from "./icons/IconMails.tsx";
 import IconItems from "./icons/IconItems.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
-import PageAccount from "./page/page-account/PageAccount.tsx";
-import PageAccounts from "./page/page-accounts/PageAccounts.tsx";
-import PageGroups from "./page/page-groups/PageGroups.tsx";
-import PageRouters from "./page/page-routers/PageRouters.tsx";
-import PageVpns from "./page/page-vpns/PageVpns.tsx";
-import PageUsers from "./page/page-users/PageUsers.tsx";
-import PageMails from "./page/page-mails/PageMails.tsx";
-import PageItems from "./page/page-items/PageItems.tsx";
+import PageAccount from "./pages/PageAccount.tsx";
+import PageAccounts from "./pages/PageAccounts.tsx";
+import PageGroups from "./pages/page-groups/PageGroups.tsx";
+import PageRouters from "./pages/page-routers/PageRouters.tsx";
+import PageVpns from "./pages/page-vpns/PageVpns.tsx";
+import PageUsers from "./pages/page-users/PageUsers.tsx";
+import PageMails from "./pages/page-mails/PageMails.tsx";
+import PageItems from "./pages/page-items/PageItems.tsx";
 import useDevice from "../hooks/useDevice.ts";
 import {useAccount} from "../hooks/useAccount.ts";
 import Loading from "./loading/Loading.tsx";
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
     return (
         <div className='App'>
-            {deviceSize === DeviceSize.Small
+            {deviceSize !== DeviceSize.Large
                 ? <NotSupported/>
                 : !authorized ? <Auth/> : <RouterProvider router={router}/>
             }
