@@ -1,18 +1,11 @@
-import './PageAccount.scss';
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../utils/store.ts";
+import React, {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import axios from "axios";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../../slices/accountSlice.ts";
 import Cookies from "js-cookie";
 
 const PageAccount: React.FC = () => {
     const dispatch = useDispatch();
-
-    const deviceSize = useSelector((state: RootState) => state.device.size);
-    const authorized = useSelector((state: RootState) => state.account.authorized);
-    const admin = useSelector((state: RootState) => state.account.admin);
-    const loading = useSelector((state: RootState) => state.app.loading);
 
     const logout = async (event: any) => {
         event.preventDefault();
@@ -23,19 +16,23 @@ const PageAccount: React.FC = () => {
         dispatch(setAccountFullname(""));
     }
 
+    useEffect(() => {
+
+    })
+
     return (
-        <div className='PageAccount'>
-            PageAccount
-            <br/>
-            {deviceSize.toString()}
-            <br/>
-            {authorized.toString()}
-            <br/>
-            {admin.toString()}
-            <br/>
-            {loading.toString()}
-            <br/>
-            <button onClick={logout}>logout</button>
+        <div className={'fields'}>
+            <div className={'field'}>
+                <div className={'field__title'}>
+                    <p>Admin</p>
+                </div>
+                <div className={'field__value'}>
+                    <input value={'Value'} readOnly={true}/>
+                </div>
+            </div>
+            <div className={'field'}>
+                <button onClick={logout}>logout</button>
+            </div>
         </div>
     )
 }
