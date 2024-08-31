@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 />
             </div>
             <div className='title'>
-                <p>Серебрянников Владимир Николаевич</p>
+                <p>Veryvery loooooooooooooooooooong teext</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>

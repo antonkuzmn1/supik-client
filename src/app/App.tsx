@@ -27,7 +27,7 @@ export interface RoutePageInterface {
 }
 
 export const routePages: RoutePageInterface[] = [
-    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "Серебрянников Владимир Николаевич"},
+    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "Veryvery loooooooooooooooooooong teext"},
     {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts"},
     {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups"},
     {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers"},
