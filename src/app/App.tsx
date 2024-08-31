@@ -18,6 +18,11 @@ import PageVpns from "./page/page-vpns/PageVpns.tsx";
 import PageUsers from "./page/page-users/PageUsers.tsx";
 import PageMails from "./page/page-mails/PageMails.tsx";
 import PageItems from "./page/page-items/PageItems.tsx";
+import useDevice from "../hooks/useDevice.ts";
+import {useAccount} from "../hooks/useAccount.ts";
+import Loading from "./loading/Loading.tsx";
+import {useSelector} from "react-redux";
+import {RootState} from "../utils/store.ts";
 
 export interface RoutePageInterface {
     path: string;
@@ -46,10 +51,15 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
+    useAccount();
+    useDevice();
+
+    const loading = useSelector((state: RootState) => state.app.loading);
 
     return (
         <div className='App'>
             <RouterProvider router={router}/>
+            {loading && <Loading/>}
         </div>
     )
 }
