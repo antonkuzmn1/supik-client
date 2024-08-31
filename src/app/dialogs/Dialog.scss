@@ -13,7 +13,7 @@
 
   .container {
     background-color: var(--bg);
-    max-width: 500px;
+    max-width: 800px;
     width: 100%;
     min-height: 200px;
     border: 1px solid var(--border);
@@ -70,6 +70,74 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+
+      .groups {
+        display: flex;
+        height: 300px;
+        gap: 10px;
+
+        .left {
+        }
+
+        .right {
+        }
+
+        .left,
+        .right {
+          width: 100%;
+          border: 1px solid var(--border);
+          overflow-y: auto;
+
+          .group {
+            display: flex;
+
+            .left {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-grow: 1;
+
+              p {
+                margin: 0;
+                font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 15px;
+                color: var(--text);
+              }
+            }
+
+            .right {
+              max-width: 50px;
+
+              button {
+                flex-grow: 1;
+                outline: none;
+                margin: 0;
+                padding: 10px;
+                height: 100%;
+                width: 100%;
+                background: none;
+                cursor: pointer;
+                color: var(--text);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+
+                &:hover {
+                  background-color: var(--border);
+                }
+
+                &:focus-visible {
+                  background-color: var(--border);
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     .action {

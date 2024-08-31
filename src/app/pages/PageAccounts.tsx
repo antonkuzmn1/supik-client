@@ -35,6 +35,7 @@ const PageAccounts: React.FC = () => {
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
+    const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
 
     const [accountCreateUsername, setAccountCreateUsername] = useState<string>('');
     const [accountCreatePassword, setAccountCreatePassword] = useState<string>('');
@@ -56,46 +57,15 @@ const PageAccounts: React.FC = () => {
     const [accountDeleteId, setAccountDeleteId] = useState<number>(0);
     const [accountDeleteFullname, setAccountDeleteFullname] = useState<string>('');
 
+    const [accountGroups, setAccountGroups] = useState<any[]>([]);
+    const [groups, setGroups] = useState<any[]>([]);
+
+    /// CRUD
+
     const getAccounts = () => {
         dispatch(setAppLoading(true));
         axios.get(baseUrl + "/security/account", {}).then((response) => {
             setAccounts(response.data)
-        }).catch((error) => {
-            console.log(error);
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        })
-    }
-
-    const openEditDialog = (id: string) => {
-        dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
-            params: {id: Number(id)}
-        }).then((response) => {
-            setAccountUpdateId(response.data.id);
-            setAccountUpdateUsername(response.data.username);
-            setAccountUpdatePassword('');
-            setAccountUpdatePasswordRepeat('');
-            setAccountUpdateFullname(response.data.fullname);
-            setAccountUpdateTitle(response.data.title);
-            setAccountUpdateAdmin(!!response.data.admin);
-            setAccountUpdateDisabled(!!response.data.disabled);
-            setDialogUpdateActive(true);
-        }).catch((error) => {
-            console.log(error);
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        })
-    }
-
-    const openDeleteDialog = (id: string) => {
-        dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
-            params: {id: Number(id)}
-        }).then((response) => {
-            setAccountDeleteId(response.data.id);
-            setAccountDeleteFullname(response.data.fullname);
-            setDialogDeleteActive(true);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -164,6 +134,107 @@ const PageAccounts: React.FC = () => {
         })
     }
 
+    const createAccountGroup = (id: number) => {
+        const accountId = accountUpdateId;
+        const groupId = id;
+
+        dispatch(setAppLoading(true));
+        axios.post(baseUrl + "/security/account-group", {
+            accountId,
+            groupId,
+        }).then((_response) => {
+            openGroupsDialog(accountId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const deleteAccountGroup = (id: number) => {
+        const accountId = accountUpdateId;
+        const groupId = id;
+
+        dispatch(setAppLoading(true));
+        axios.delete(baseUrl + "/security/account-group", {
+            data: {
+                accountId,
+                groupId,
+            }
+        }).then((_response) => {
+            openGroupsDialog(accountId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    /// OPEN DIALOG
+
+    const openCreateDialog = () => {
+        setDialogCreateActive(true)
+    }
+
+    const openEditDialog = (id: string) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/security/account", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setAccountUpdateId(response.data.id);
+            setAccountUpdateUsername(response.data.username);
+            setAccountUpdatePassword('');
+            setAccountUpdatePasswordRepeat('');
+            setAccountUpdateFullname(response.data.fullname);
+            setAccountUpdateTitle(response.data.title);
+            setAccountUpdateAdmin(!!response.data.admin);
+            setAccountUpdateDisabled(!!response.data.disabled);
+            setDialogUpdateActive(true);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const openDeleteDialog = (id: string) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/security/account", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setAccountDeleteId(response.data.id);
+            setAccountDeleteFullname(response.data.fullname);
+            setDialogDeleteActive(true);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const openGroupsDialog = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/security/account", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            console.log(response.data.accountGroups);
+            setAccountGroups(response.data.accountGroups);
+            axios.get(baseUrl + "/security/group", {}).then((response) => {
+                setGroups(response.data);
+                setDialogGroupsActive(true);
+            }).catch((error) => {
+                console.log(error);
+            }).finally(() => {
+                dispatch(setAppLoading(false));
+            })
+        }).catch((error) => {
+            console.log(error);
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    /// OTHER
+
     const sortTable = (column: keyof AccountFields, asc: boolean) => {
         const sortedAccounts = [...accounts];
         sortedAccounts.sort((a, b): number => {
@@ -174,6 +245,8 @@ const PageAccounts: React.FC = () => {
         });
         setAccounts(sortedAccounts);
     };
+
+    /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Accounts'));
@@ -192,7 +265,7 @@ const PageAccounts: React.FC = () => {
                                     children={<IconTableFilter/>}
                                 />
                                 <button
-                                    onClick={() => setDialogCreateActive(true)}
+                                    onClick={openCreateDialog}
                                     children={<IconTableCreate/>}
                                 />
                             </div>
@@ -371,6 +444,7 @@ const PageAccounts: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
+                    {action: () => openGroupsDialog(accountUpdateId), text: 'Groups'},
                     {action: () => updateAccount(), text: 'Update'},
                 ]}
             />}
@@ -383,6 +457,45 @@ const PageAccounts: React.FC = () => {
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
                     {action: () => deleteAccount(), text: 'Delete'},
+                ]}
+            />}
+            {dialogGroupsActive && <Dialog
+                title={'Account-Group'}
+                close={() => setDialogGroupsActive(false)}
+                children={<div className={'groups'}>
+                    <div className={'left'}>
+                        {accountGroups.map((accountGroup, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{accountGroup.group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => deleteAccountGroup(accountGroup.groupId)}
+                                    >Del
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={'right'}>
+                        {groups.map((group, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => createAccountGroup(group.id)}
+                                    >Add
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>}
+                buttons={[
+                    {action: () => setDialogGroupsActive(false), text: 'Close'},
                 ]}
             />}
         </>
