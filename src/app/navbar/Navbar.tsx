@@ -17,6 +17,11 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
         setDropdownIsActive(prevState => !prevState);
     }
 
+    const changePage = (path: string) => {
+        navigate(path);
+        setDropdownIsActive(false);
+    }
+
     useEffect(() => {
         const handleClickOutside = (_event: MouseEvent) => {
             if (dropdownIsActive) {
@@ -50,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                     {props.routePages.map((page, index) => (
                         <button
                             key={index}
-                            onClick={() => navigate(page.path)}
+                            onClick={() => changePage(page.path)}
                         >
                             <div className={'icon'}>{page.icon}</div>
                             <p className={'text'}>{page.title}</p>
