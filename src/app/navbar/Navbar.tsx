@@ -1,6 +1,6 @@
 import './Navbar.scss';
 import React, {useEffect, useState} from "react";
-import IconMenu from "../../assets/icons/IconMenu.tsx";
+import IconMenu from "../icons/IconMenu.tsx";
 import {RoutePageInterface} from "../App.tsx";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";

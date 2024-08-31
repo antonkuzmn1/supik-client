@@ -1,7 +1,7 @@
 import './Icon.scss';
 import React from "react";
 
-const Navbar: React.FC = () => {
+const IconMenu: React.FC = () => {
 
     return (
         <div className='Icon'>
@@ -14,4 +14,4 @@ const Navbar: React.FC = () => {
     )
 }
 
-export default Navbar
+export default IconMenu
