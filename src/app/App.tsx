@@ -12,7 +12,7 @@ import IconItems from "./icons/IconItems.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import PageAccount from "./pages/PageAccount.tsx";
 import PageAccounts from "./pages/PageAccounts.tsx";
-import PageGroups from "./pages/page-groups/PageGroups.tsx";
+import PageGroups from "./pages/PageGroups.tsx";
 import PageRouters from "./pages/page-routers/PageRouters.tsx";
 import PageVpns from "./pages/page-vpns/PageVpns.tsx";
 import PageUsers from "./pages/page-users/PageUsers.tsx";

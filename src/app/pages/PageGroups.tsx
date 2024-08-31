@@ -1,71 +1,67 @@
+import './Page.scss';
 import React, {useEffect, useState} from "react";
-import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import {useDispatch} from "react-redux";
 import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
-import {AccountFields} from "./PageAccount.tsx";
+import axios from "axios";
+import {baseUrl} from "../../utils/baseUrl.ts";
+import IconTableFilter from "../icons/IconTableFilter.tsx";
+import IconTableCreate from "../icons/IconTableCreate.tsx";
 import IconSortAsc from "../icons/IconSortAsc.tsx";
 import IconSortDesc from "../icons/IconSortDesc.tsx";
-import IconTableCreate from "../icons/IconTableCreate.tsx";
-import IconTableFilter from "../icons/IconTableFilter.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
-import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
+import FieldInputInteger from "../fields/FieldInputInteger.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
-const defTableHeaders: { text: string, field: keyof AccountFields, width: string, type: TypeField }[] = [
+export interface GroupFields {
+    id: string;
+    created: string;
+    updated: string;
+    name: string;
+    title: string;
+    accessRouters: 0 | 1 | 2,
+    accessUsers: 0 | 1 | 2,
+}
+
+const defTableHeaders: { text: string, field: keyof GroupFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Username', field: 'username', width: '150px', type: 'String'},
-    {text: 'Admin', field: 'admin', width: '100px', type: 'Boolean'},
-    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Full name', field: 'fullname', width: '300px', type: 'String'},
+    {text: 'Name', field: 'name', width: '200px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
+    {text: 'Routers', field: 'accessRouters', width: '100px', type: 'Integer'},
+    {text: 'Users', field: 'accessUsers', width: '100px', type: 'Integer'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
 
-const PageAccounts: React.FC = () => {
+const PageGroups: React.FC = () => {
     const dispatch = useDispatch();
 
-    const [accounts, setAccounts] = useState<AccountFields[]>([]);
+    const [groups, setGroups] = useState<GroupFields[]>([]);
+
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
 
-    const [accountCreateUsername, setAccountCreateUsername] = useState<string>('');
-    const [accountCreatePassword, setAccountCreatePassword] = useState<string>('');
-    const [accountCreatePasswordRepeat, setAccountCreatePasswordRepeat] = useState<string>('');
-    const [accountCreateFullname, setAccountCreateFullname] = useState<string>('');
-    const [accountCreateTitle, setAccountCreateTitle] = useState<string>('');
-    const [accountCreateAdmin, setAccountCreateAdmin] = useState<boolean>(false);
-    const [accountCreateDisabled, setAccountCreateDisabled] = useState<boolean>(false);
-
-    const [accountUpdateId, setAccountUpdateId] = useState<number>(0);
-    const [accountUpdateUsername, setAccountUpdateUsername] = useState<string>('');
-    const [accountUpdatePassword, setAccountUpdatePassword] = useState<string>('');
-    const [accountUpdatePasswordRepeat, setAccountUpdatePasswordRepeat] = useState<string>('');
-    const [accountUpdateFullname, setAccountUpdateFullname] = useState<string>('');
-    const [accountUpdateTitle, setAccountUpdateTitle] = useState<string>('');
-    const [accountUpdateAdmin, setAccountUpdateAdmin] = useState<boolean>(false);
-    const [accountUpdateDisabled, setAccountUpdateDisabled] = useState<boolean>(false);
-
-    const [accountDeleteId, setAccountDeleteId] = useState<number>(0);
-    const [accountDeleteFullname, setAccountDeleteFullname] = useState<string>('');
+    const [id, setId] = useState<number>(0);
+    const [name, setName] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    const [accessRouters, setAccessRouters] = useState<number>(0);
+    const [accessUsers, setAccessUsers] = useState<number>(0);
 
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
-    const [groups, setGroups] = useState<any[]>([]);
+    const [accounts, setAccounts] = useState<any[]>([]);
 
     /// CRUD
 
-    const getAccounts = () => {
+    const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {}).then((response) => {
-            setAccounts(response.data)
+        axios.get(baseUrl + "/security/group", {}).then((response) => {
+            setGroups(response.data)
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -73,22 +69,24 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const createAccount = () => {
-        if (accountCreatePassword !== accountCreatePasswordRepeat) {
+    const create = () => {
+        if (accessRouters > 2 ||
+            accessRouters < 0 ||
+            accessUsers > 2 ||
+            accessUsers < 0
+        ) {
             return;
         }
 
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/security/account", {
-            username: accountCreateUsername,
-            password: accountCreatePassword,
-            fullname: accountCreateFullname,
-            title: accountCreateTitle,
-            admin: accountCreateAdmin ? 1 : 0,
-            disabled: accountCreateDisabled ? 1 : 0,
+        axios.post(baseUrl + "/security/group", {
+            name: name,
+            title: title,
+            accessRouters: accessRouters,
+            accessUsers: accessUsers,
         }).then((_response) => {
             setDialogCreateActive(false);
-            getAccounts();
+            getAll();
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -96,23 +94,25 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const updateAccount = () => {
-        if (accountCreatePassword !== accountCreatePasswordRepeat) {
+    const update = () => {
+        if (accessRouters > 2 ||
+            accessRouters < 0 ||
+            accessUsers > 2 ||
+            accessUsers < 0
+        ) {
             return;
         }
 
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/security/account", {
-            id: accountUpdateId,
-            username: accountUpdateUsername,
-            password: accountUpdatePassword,
-            fullname: accountUpdateFullname,
-            title: accountUpdateTitle,
-            admin: accountUpdateAdmin ? 1 : 0,
-            disabled: accountUpdateDisabled ? 1 : 0,
+        axios.put(baseUrl + "/security/group", {
+            id: id,
+            name: name,
+            title: title,
+            accessRouters: accessRouters,
+            accessUsers: accessUsers,
         }).then((_response) => {
             setDialogUpdateActive(false);
-            getAccounts();
+            getAll();
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -120,13 +120,13 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const deleteAccount = () => {
+    const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/security/account", {
-            data: {id: accountDeleteId},
+        axios.delete(baseUrl + "/security/group", {
+            data: {id: id},
         }).then((_response) => {
             setDialogDeleteActive(false);
-            getAccounts();
+            getAll();
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -134,16 +134,14 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const createAccountGroup = (id: number) => {
-        const accountId = accountUpdateId;
+    const createAccountGroup = (accountId: number) => {
         const groupId = id;
-
         dispatch(setAppLoading(true));
         axios.post(baseUrl + "/security/account-group", {
             accountId,
             groupId,
         }).then((_response) => {
-            openGroupsDialog(accountId);
+            openGroupsDialog(groupId);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -151,8 +149,7 @@ const PageAccounts: React.FC = () => {
         })
     }
 
-    const deleteAccountGroup = (id: number) => {
-        const accountId = accountUpdateId;
+    const deleteAccountGroup = (accountId: number) => {
         const groupId = id;
 
         dispatch(setAppLoading(true));
@@ -162,7 +159,7 @@ const PageAccounts: React.FC = () => {
                 groupId,
             }
         }).then((_response) => {
-            openGroupsDialog(accountId);
+            openGroupsDialog(groupId);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -178,17 +175,14 @@ const PageAccounts: React.FC = () => {
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(baseUrl + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
-            setAccountUpdateId(response.data.id);
-            setAccountUpdateUsername(response.data.username);
-            setAccountUpdatePassword('');
-            setAccountUpdatePasswordRepeat('');
-            setAccountUpdateFullname(response.data.fullname);
-            setAccountUpdateTitle(response.data.title);
-            setAccountUpdateAdmin(!!response.data.admin);
-            setAccountUpdateDisabled(!!response.data.disabled);
+            setId(response.data.id);
+            setName(response.data.name);
+            setTitle(response.data.title);
+            setAccessRouters(response.data.accessRouters);
+            setAccessUsers(response.data.accessUsers);
             setDialogUpdateActive(true);
         }).catch((error) => {
             console.log(error);
@@ -199,11 +193,11 @@ const PageAccounts: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(baseUrl + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
-            setAccountDeleteId(response.data.id);
-            setAccountDeleteFullname(response.data.fullname);
+            setId(response.data.id);
+            setName(response.data.name);
             setDialogDeleteActive(true);
         }).catch((error) => {
             console.log(error);
@@ -214,12 +208,12 @@ const PageAccounts: React.FC = () => {
 
     const openGroupsDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(baseUrl + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
             setAccountGroups(response.data.accountGroups);
-            axios.get(baseUrl + "/security/group", {}).then((response) => {
-                setGroups(response.data);
+            axios.get(baseUrl + "/security/account", {}).then((response) => {
+                setAccounts(response.data);
                 setDialogGroupsActive(true);
             }).catch((error) => {
                 console.log(error);
@@ -234,22 +228,22 @@ const PageAccounts: React.FC = () => {
 
     /// OTHER
 
-    const sortTable = (column: keyof AccountFields, asc: boolean) => {
-        const sortedAccounts = [...accounts];
-        sortedAccounts.sort((a, b): number => {
+    const sortTable = (column: keyof GroupFields, asc: boolean) => {
+        const sorted = [...groups];
+        sorted.sort((a, b): number => {
             ``
             if (a[column] > b[column]) return asc ? 1 : -1;
             if (a[column] < b[column]) return asc ? -1 : 1;
             return 0;
         });
-        setAccounts(sortedAccounts);
+        setGroups(sorted);
     };
 
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Accounts'));
-        getAccounts();
+        dispatch(setAppTitle('Groups'));
+        getAll();
     }, []);
 
     return (
@@ -294,7 +288,7 @@ const PageAccounts: React.FC = () => {
                 </table>
                 <table className={'body'}>
                     <tbody>
-                    {accounts.map((account, index) => (
+                    {groups.map((account, index) => (
                         <tr key={index}>
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
@@ -335,127 +329,95 @@ const PageAccounts: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Account'}
+                title={'Create Group'}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Username"}
+                        title={"Name"}
                         placeholder={"Enter text"}
-                        value={accountCreateUsername}
-                        onChange={(e) => setAccountCreateUsername(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Password"}
-                        password={true}
-                        placeholder={"Enter text"}
-                        value={accountCreatePassword}
-                        onChange={(e) => setAccountCreatePassword(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Password"}
-                        password={true}
-                        placeholder={"Enter text"}
-                        value={accountCreatePasswordRepeat}
-                        onChange={(e) => setAccountCreatePasswordRepeat(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Full name"}
-                        placeholder={"Enter text"}
-                        value={accountCreateFullname}
-                        onChange={(e) => setAccountCreateFullname(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
-                        value={accountCreateTitle}
-                        onChange={(e) => setAccountCreateTitle(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputBoolean
-                        title={"Admin"}
-                        value={accountCreateAdmin}
-                        setTrue={() => setAccountCreateAdmin(true)}
-                        setFalse={() => setAccountCreateAdmin(false)}
+                    <FieldInputInteger
+                        title={"Access Routers"}
+                        value={accessRouters}
+                        onChange={(e) => setAccessRouters(e.target.value)}
+                        max={2}
+                        min={0}
+                        step={1}
                     />
-                    <FieldInputBoolean
-                        title={"Disabled"}
-                        value={accountCreateDisabled}
-                        setTrue={() => setAccountCreateDisabled(true)}
-                        setFalse={() => setAccountCreateDisabled(false)}
+                    <FieldInputInteger
+                        title={"Access Users"}
+                        value={accessUsers}
+                        onChange={(e) => setAccessUsers(e.target.value)}
+                        max={2}
+                        min={0}
+                        step={1}
                     />
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => createAccount(), text: 'Create'},
+                    {action: () => create(), text: 'Create'},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Account'}
+                title={'Update Group'}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
                         title={"ID"}
-                        value={accountUpdateId.toString()}
+                        value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Username"}
+                        title={"Name"}
                         placeholder={"Enter text"}
-                        value={accountUpdateUsername}
-                        onChange={(e) => setAccountUpdateUsername(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Password"}
-                        password={true}
-                        placeholder={"Enter text"}
-                        value={accountUpdatePassword}
-                        onChange={(e) => setAccountUpdatePassword(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Password"}
-                        password={true}
-                        placeholder={"Enter text"}
-                        value={accountUpdatePasswordRepeat}
-                        onChange={(e) => setAccountUpdatePasswordRepeat(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Full name"}
-                        placeholder={"Enter text"}
-                        value={accountUpdateFullname}
-                        onChange={(e) => setAccountUpdateFullname(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
-                        value={accountUpdateTitle}
-                        onChange={(e) => setAccountUpdateTitle(e.target.value)}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputBoolean
-                        title={"Admin"}
-                        value={accountUpdateAdmin}
-                        setTrue={() => setAccountUpdateAdmin(true)}
-                        setFalse={() => setAccountUpdateAdmin(false)}
+                    <FieldInputInteger
+                        title={"Access Routers"}
+                        value={accessRouters}
+                        onChange={(e) => setAccessRouters(e.target.value)}
+                        max={2}
+                        min={0}
+                        step={1}
                     />
-                    <FieldInputBoolean
-                        title={"Disabled"}
-                        value={accountUpdateDisabled}
-                        setTrue={() => setAccountUpdateDisabled(true)}
-                        setFalse={() => setAccountUpdateDisabled(false)}
+                    <FieldInputInteger
+                        title={"Access Users"}
+                        value={accessUsers}
+                        onChange={(e) => setAccessUsers(e.target.value)}
+                        max={2}
+                        min={0}
+                        step={1}
                     />
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openGroupsDialog(accountUpdateId), text: 'Groups'},
-                    {action: () => updateAccount(), text: 'Update'},
+                    {action: () => openGroupsDialog(id), text: 'Groups'},
+                    {action: () => update(), text: 'Update'},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Account'}
+                title={'Delete Group'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{accountDeleteFullname}" (ID: {accountDeleteId})?</p>
+                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => deleteAccount(), text: 'Delete'},
+                    {action: () => remove(), text: 'Delete'},
                 ]}
             />}
             {dialogGroupsActive && <Dialog
@@ -466,11 +428,11 @@ const PageAccounts: React.FC = () => {
                         {accountGroups.map((accountGroup, index) => (
                             <div className={'group'} key={index}>
                                 <div className={'left'}>
-                                    <p>{accountGroup.group.name}</p>
+                                    <p>{accountGroup.account.fullname}</p>
                                 </div>
                                 <div className={'right'}>
                                     <button
-                                        onClick={() => deleteAccountGroup(accountGroup.groupId)}
+                                        onClick={() => deleteAccountGroup(accountGroup.accountId)}
                                     >Del
                                     </button>
                                 </div>
@@ -478,14 +440,14 @@ const PageAccounts: React.FC = () => {
                         ))}
                     </div>
                     <div className={'right'}>
-                        {groups.map((group, index) => (
+                        {accounts.map((account, index) => (
                             <div className={'group'} key={index}>
                                 <div className={'left'}>
-                                    <p>{group.name}</p>
+                                    <p>{account.fullname}</p>
                                 </div>
                                 <div className={'right'}>
                                     <button
-                                        onClick={() => createAccountGroup(group.id)}
+                                        onClick={() => createAccountGroup(account.id)}
                                     >Add
                                     </button>
                                 </div>
@@ -501,4 +463,4 @@ const PageAccounts: React.FC = () => {
     )
 }
 
-export default PageAccounts
+export default PageGroups
