@@ -4,7 +4,7 @@ import {AppDispatch} from "../utils/store.ts";
 import {useDispatch} from "react-redux";
 import {useEffect} from "react";
 import {baseUrl} from "../utils/baseUrl.ts";
-import {setAccountAdmin, setAccountAuthorized} from "../slices/accountSlice.ts";
+import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../slices/accountSlice.ts";
 import {setAppLoading} from "../slices/appSlice.ts";
 
 export const useAccount = () => {
@@ -15,6 +15,7 @@ export const useAccount = () => {
         delete axios.defaults.headers.common['Authorization'];
         dispatch(setAccountAuthorized(false));
         dispatch(setAccountAdmin(false));
+        dispatch(setAccountFullname(""));
     }
 
     const check = () => {
@@ -31,6 +32,7 @@ export const useAccount = () => {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 dispatch(setAccountAuthorized(true));
                 dispatch(setAccountAdmin(!!response.data.admin));
+                dispatch(setAccountFullname(response.data.fullname));
             }).catch((_error) => {
                 console.error(_error);
                 clear();

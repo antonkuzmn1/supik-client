@@ -35,7 +35,7 @@ export interface RoutePageInterface {
 }
 
 export const routePages: RoutePageInterface[] = [
-    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "Your Account"},
+    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: ""},
     {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts"},
     {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups"},
     {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers"},
@@ -59,7 +59,7 @@ const App: React.FC = () => {
 
     const deviceSize = useSelector((state: RootState) => state.device.size);
     const loading = useSelector((state: RootState) => state.app.loading);
-    const authorized = useSelector((state: RootState) => state.user.authorized);
+    const authorized = useSelector((state: RootState) => state.account.authorized);
 
     return (
         <div className='App'>

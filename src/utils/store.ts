@@ -6,7 +6,7 @@ import appSlice from './../slices/appSlice';
 export const store = configureStore({
     reducer: {
         device: deviceReducer,
-        user: accountSlice,
+        account: accountSlice,
         app: appSlice,
     },
 });

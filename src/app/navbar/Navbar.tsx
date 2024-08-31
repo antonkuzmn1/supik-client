@@ -16,6 +16,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
     const navigate = useNavigate();
 
     const pageTitle = useSelector((state: RootState) => state.app.title);
+    const accountFullname = useSelector((state: RootState) => state.account.fullname);
 
     const [dropdownIsActive, setDropdownIsActive] = useState(false);
 
@@ -56,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 />
             </div>
             <div className='title'>
-                <p>{pageTitle}</p>
+                <p>{pageTitle === "" ? accountFullname : pageTitle}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
@@ -66,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                             onClick={() => changePage(page)}
                         >
                             <div className={'icon'}>{page.icon}</div>
-                            <p className={'text'}>{page.title}</p>
+                            <p className={'text'}>{page.title === "" ? accountFullname : page.title}</p>
                         </button>
                     ))}
                 </div>
