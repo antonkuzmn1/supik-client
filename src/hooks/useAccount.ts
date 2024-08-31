@@ -23,7 +23,6 @@ export const useAccount = () => {
         const token = Cookies.get('token');
 
         if (token) {
-            console.log('before request')
             axios.get(baseUrl + '/security', {
                 headers: {'Authorization': `Bearer ${token}`}
             }).then((response) => {
