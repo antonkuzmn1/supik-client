@@ -60,6 +60,7 @@ $padding: 10px;
   .dropdown {
     background-color: var(--bg);
     width: fit-content;
+    max-width: 300px;
     height: fit-content;
     position: absolute;
     top: $height;

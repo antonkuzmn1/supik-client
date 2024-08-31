@@ -3,13 +3,20 @@ import React, {useEffect, useState} from "react";
 import IconMenu from "../../assets/icons/IconMenu.tsx";
 import {RoutePageInterface} from "../App.tsx";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {setAppTitle} from "../../slices/appSlice.ts";
+import {RootState} from "../../utils/store.ts";
 
 export interface NavbarProps {
     routePages: RoutePageInterface[]
 }
 
 const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const pageTitle = useSelector((state: RootState) => state.app.title);
+
     const [dropdownIsActive, setDropdownIsActive] = useState(false);
 
     const toggleDropdown = (event: React.MouseEvent) => {
@@ -17,8 +24,9 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
         setDropdownIsActive(prevState => !prevState);
     }
 
-    const changePage = (path: string) => {
-        navigate(path);
+    const changePage = (page: RoutePageInterface) => {
+        navigate(page.path);
+        dispatch(setAppTitle(page.title));
         setDropdownIsActive(false);
     }
 
@@ -48,14 +56,14 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 />
             </div>
             <div className='title'>
-                <p>Veryvery loooooooooooooooooooong teext</p>
+                <p>{pageTitle}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
                     {props.routePages.map((page, index) => (
                         <button
                             key={index}
-                            onClick={() => changePage(page.path)}
+                            onClick={() => changePage(page)}
                         >
                             <div className={'icon'}>{page.icon}</div>
                             <p className={'text'}>{page.title}</p>

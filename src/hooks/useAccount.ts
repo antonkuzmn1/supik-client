@@ -22,9 +22,11 @@ export const useAccount = () => {
         const token = Cookies.get('token');
 
         if (token) {
+            console.log('before request')
             axios.get(baseUrl + '/security', {
                 headers: {'Authorization': `Bearer ${token}`}
             }).then((response) => {
+                console.log(response);
                 Cookies.set('token', token, {expires: 1});
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 dispatch(setAccountAuthorized(true));

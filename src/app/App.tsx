@@ -23,6 +23,9 @@ import {useAccount} from "../hooks/useAccount.ts";
 import Loading from "./loading/Loading.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../utils/store.ts";
+import NotSupported from "./not-supported/NotSupported.tsx";
+import {DeviceSize} from "../slices/deviceSlice.ts";
+import Auth from "./auth/Auth.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -32,7 +35,7 @@ export interface RoutePageInterface {
 }
 
 export const routePages: RoutePageInterface[] = [
-    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "Veryvery loooooooooooooooooooong teext"},
+    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "Your Account"},
     {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts"},
     {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups"},
     {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers"},
@@ -54,11 +57,17 @@ const App: React.FC = () => {
     useAccount();
     useDevice();
 
+    const deviceSize = useSelector((state: RootState) => state.device.size);
     const loading = useSelector((state: RootState) => state.app.loading);
+    const authorized = useSelector((state: RootState) => state.user.authorized);
 
     return (
         <div className='App'>
-            <RouterProvider router={router}/>
+            {deviceSize === DeviceSize.Small
+                ? <NotSupported/>
+                : <RouterProvider router={router}/>
+            }
+            {!authorized && <Auth/>}
             {loading && <Loading/>}
         </div>
     )
