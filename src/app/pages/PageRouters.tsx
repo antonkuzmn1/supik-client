@@ -51,8 +51,9 @@ const PageRouters: React.FC = () => {
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
-    // const [dialogViewersActive, setDialogViewersActive] = useState<boolean>(false);
-    // const [dialogEditorsActive, setDialogEditorsActive] = useState<boolean>(false);
+    const [dialogTestActive, setDialogTestActive] = useState<boolean>(false);
+    const [dialogViewersActive, setDialogViewersActive] = useState<boolean>(false);
+    const [dialogEditorsActive, setDialogEditorsActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [login, setLogin] = useState<string>('');
@@ -64,10 +65,11 @@ const PageRouters: React.FC = () => {
     const [disabled, setDisabled] = useState<boolean>(false);
     const [certificate, setCertificate] = useState<File | null>(null);
     const [l2tpKey, setL2tpKey] = useState<string>('');
+    const [connected, setConnected] = useState<boolean>(false);
 
-    // const [groups, setGroups] = useState<any[]>([]);
-    // const [viewers, setViewers] = useState<any[]>([]);
-    // const [editors, setEditors] = useState<any[]>([]);
+    const [groups, setGroups] = useState<any[]>([]);
+    const [viewers, setViewers] = useState<any[]>([]);
+    const [editors, setEditors] = useState<any[]>([]);
 
     /// CRUD
 
@@ -143,6 +145,72 @@ const PageRouters: React.FC = () => {
         })
     }
 
+    const createViewer = (groupId: number) => {
+        const routerId = id;
+        dispatch(setAppLoading(true));
+        axios.post(baseUrl + "/db/router-group-viewer", {
+            routerId,
+            groupId,
+        }).then((_response) => {
+            openViewersDialog(routerId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const createEditor = (groupId: number) => {
+        const routerId = id;
+        dispatch(setAppLoading(true));
+        axios.post(baseUrl + "/db/router-group-editor", {
+            routerId,
+            groupId,
+        }).then((_response) => {
+            openEditorsDialog(routerId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const deleteViewer = (groupId: number) => {
+        const routerId = id;
+
+        dispatch(setAppLoading(true));
+        axios.delete(baseUrl + "/db/router-group-viewer", {
+            data: {
+                routerId,
+                groupId,
+            }
+        }).then((_response) => {
+            openViewersDialog(routerId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const deleteEditor = (groupId: number) => {
+        const routerId = id;
+
+        dispatch(setAppLoading(true));
+        axios.delete(baseUrl + "/db/router-group-editor", {
+            data: {
+                routerId,
+                groupId,
+            }
+        }).then((_response) => {
+            openEditorsDialog(routerId);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// DIALOG
 
     const openCreateDialog = () => {
@@ -164,7 +232,6 @@ const PageRouters: React.FC = () => {
         axios.get(baseUrl + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
-            console.log(response);
             setId(response.data.id);
             setLogin(response.data.login);
             setPassword(response.data.password);
@@ -203,6 +270,61 @@ const PageRouters: React.FC = () => {
         })
     }
 
+    const openTestDialog = () => {
+        dispatch(setAppLoading(true));
+        axios.post(baseUrl + "/db/router/test", {
+            host: localAddress,
+            user: login,
+            password: password,
+        }).then((response) => {
+            setConnected(response.data === true);
+        }).catch((error) => {
+            setConnected(false);
+            console.log(error);
+        }).finally(() => {
+            setDialogTestActive(true);
+            dispatch(setAppLoading(false));
+        });
+    }
+
+    const openViewersDialog = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/db/router", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setViewers(response.data.routerGroupViewer);
+            axios.get(baseUrl + "/security/group", {}).then((response) => {
+                setGroups(response.data);
+                setDialogViewersActive(true);
+            }).catch((error) => {
+                console.log(error);
+            }).finally(() => {
+                dispatch(setAppLoading(false));
+            })
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const openEditorsDialog = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/db/router", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setEditors(response.data.routerGroupEditor);
+            axios.get(baseUrl + "/security/group", {}).then((response) => {
+                setGroups(response.data);
+                setDialogEditorsActive(true);
+            }).catch((error) => {
+                console.log(error);
+            }).finally(() => {
+                dispatch(setAppLoading(false));
+            })
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof RouterFields, asc: boolean) => {
@@ -234,8 +356,8 @@ const PageRouters: React.FC = () => {
 
     const convertToFile = (certificate: any, fileName: string) => {
         const buffer = new Uint8Array(certificate.data);
-        const blob = new Blob([buffer], { type: 'application/x-x509-ca-cert' });
-        return new File([blob], fileName, { type: blob.type });
+        const blob = new Blob([buffer], {type: 'application/x-x509-ca-cert'});
+        return new File([blob], fileName, {type: blob.type});
     };
 
     /// HOOKS
@@ -456,7 +578,9 @@ const PageRouters: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    // {action: () => openGroupsDialog(id), text: 'Groups'},
+                    {action: () => openTestDialog(), text: 'Test'},
+                    {action: () => openViewersDialog(id), text: 'Viewers'},
+                    {action: () => openEditorsDialog(id), text: 'Editors'},
                     {action: () => update(), text: 'Update'},
                 ]}
             />}
@@ -469,6 +593,97 @@ const PageRouters: React.FC = () => {
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
                     {action: () => remove(), text: 'Delete'},
+                ]}
+            />}
+            {dialogTestActive && <Dialog
+                title={'Test Connection'}
+                close={() => setDialogTestActive(false)}
+                children={<>
+                    {connected
+                        ? <p>Successfully success: "{name}" (ID: {id})</p>
+                        : <p>Connection failed: "{name}" (ID: {id})</p>
+                    }
+                </>}
+                buttons={[
+                    {action: () => setDialogTestActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogViewersActive && <Dialog
+                title={'Viewers'}
+                close={() => setDialogViewersActive(false)}
+                children={<div className={'groups'}>
+                    <div className={'left'}>
+                        {viewers.map((viewer, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{viewer.group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => deleteViewer(viewer.groupId)}
+                                    >Del
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={'right'}>
+                        {groups.map((group, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => createViewer(group.id)}
+                                    >Add
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>}
+                buttons={[
+                    {action: () => setDialogViewersActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogEditorsActive && <Dialog
+                title={'Editors'}
+                close={() => setDialogViewersActive(false)}
+                children={<div className={'groups'}>
+                    <div className={'left'}>
+                        {editors.map((editor, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{editor.group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => deleteEditor(editor.groupId)}
+                                    >Del
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={'right'}>
+                        {groups.map((group, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => createEditor(group.id)}
+                                    >Add
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>}
+                buttons={[
+                    {action: () => setDialogEditorsActive(false), text: 'Close'},
                 ]}
             />}
         </>
