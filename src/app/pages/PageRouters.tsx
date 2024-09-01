@@ -50,7 +50,7 @@ const PageRouters: React.FC = () => {
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
-    // const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
+    const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     // const [dialogViewersActive, setDialogViewersActive] = useState<boolean>(false);
     // const [dialogEditorsActive, setDialogEditorsActive] = useState<boolean>(false);
 
@@ -120,13 +120,27 @@ const PageRouters: React.FC = () => {
             l2tpKey: l2tpKey,
         }).then((response) => {
             console.log(response);
-            setDialogCreateActive(false);
+            setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
+    }
+
+    const remove = () => {
+        dispatch(setAppLoading(true));
+        axios.delete(baseUrl + "/db/router", {
+            data: {id: id},
+        }).then((_response) => {
+            setDialogDeleteActive(false);
+            getAll();
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
     }
 
     /// DIALOG
@@ -167,6 +181,21 @@ const PageRouters: React.FC = () => {
             }
             setL2tpKey(response.data.l2tpKey);
             setDialogUpdateActive(true);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
+    const openDeleteDialog = (id: string) => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/db/router", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setId(response.data.id);
+            setName(response.data.name);
+            setDialogDeleteActive(true);
         }).catch((error) => {
             console.log(error);
         }).finally(() => {
@@ -267,7 +296,7 @@ const PageRouters: React.FC = () => {
                                         children={<IconTableEdit/>}
                                     />
                                     <button
-                                        // onClick={() => openDeleteDialog(account.id)}
+                                        onClick={() => openDeleteDialog(router.id)}
                                         children={<IconTableDelete/>}
                                     />
                                 </div>
@@ -428,7 +457,18 @@ const PageRouters: React.FC = () => {
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
                     // {action: () => openGroupsDialog(id), text: 'Groups'},
-                    // {action: () => update(), text: 'Update'},
+                    {action: () => update(), text: 'Update'},
+                ]}
+            />}
+            {dialogDeleteActive && <Dialog
+                title={'Delete Group'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
+                </>}
+                buttons={[
+                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
+                    {action: () => remove(), text: 'Delete'},
                 ]}
             />}
         </>
