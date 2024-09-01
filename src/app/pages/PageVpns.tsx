@@ -7,7 +7,7 @@ import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
-import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
 import {RouterFields} from "./PageRouters.tsx";
@@ -75,8 +75,6 @@ const PageVpns: React.FC = () => {
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
 
-    const [error, setError] = useState<string>('')
-
     /// CRUD
 
     const getAll = () => {
@@ -112,7 +110,7 @@ const PageVpns: React.FC = () => {
             getAll();
         }).catch((error) => {
             console.log(error);
-            setError(error.response.data);
+            dispatch(setAppError(error.response.data));
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -136,7 +134,7 @@ const PageVpns: React.FC = () => {
             getAll();
         }).catch((error) => {
             console.log(error);
-            setError(error.response.data);
+            dispatch(setAppError(error.response.data));
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -172,7 +170,6 @@ const PageVpns: React.FC = () => {
         setRouterId(0)
         setUserId(0);
         setDisabled(false);
-        setError('')
         getRouters();
         getUsers();
         setDialogCreateActive(true);
@@ -196,7 +193,6 @@ const PageVpns: React.FC = () => {
             setRouterId(response.data.routerId);
             setUserId(response.data.userId ? response.data.userId : 0);
             setDisabled(response.data.disabled);
-            setError('')
             getRouters();
             getUsers();
             setDialogUpdateActive(true);
@@ -218,7 +214,6 @@ const PageVpns: React.FC = () => {
             setId(response.data.id);
             setName(response.data.name);
             setRouterId(response.data.routerId);
-            setError('')
             setDialogDeleteActive(true);
         }).catch((error) => {
             console.log(error);
@@ -418,7 +413,6 @@ const PageVpns: React.FC = () => {
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
-                    <p>{error}</p>
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
@@ -498,7 +492,6 @@ const PageVpns: React.FC = () => {
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
-                    <p>{error}</p>
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
