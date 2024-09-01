@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
 import {useDispatch} from "react-redux";
-import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import {AccountFields} from "./PageAccount.tsx";
 import IconSortAsc from "../icons/IconSortAsc.tsx";
 import IconSortDesc from "../icons/IconSortDesc.tsx";
@@ -56,7 +56,11 @@ const PageAccounts: React.FC = () => {
         axios.get(baseUrl + "/security/account", {}).then((response) => {
             setAccounts(response.data)
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -64,6 +68,7 @@ const PageAccounts: React.FC = () => {
 
     const createAccount = () => {
         if (password !== passwordRepeat) {
+            dispatch(setAppError('Passwords do not match'));
             return;
         }
 
@@ -79,7 +84,11 @@ const PageAccounts: React.FC = () => {
             setDialogCreateActive(false);
             getAccounts();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -87,6 +96,7 @@ const PageAccounts: React.FC = () => {
 
     const updateAccount = () => {
         if (password !== passwordRepeat) {
+            dispatch(setAppError('Passwords do not match'));
             return;
         }
 
@@ -103,7 +113,11 @@ const PageAccounts: React.FC = () => {
             setDialogUpdateActive(false);
             getAccounts();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -117,7 +131,11 @@ const PageAccounts: React.FC = () => {
             setDialogDeleteActive(false);
             getAccounts();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -133,7 +151,11 @@ const PageAccounts: React.FC = () => {
         }).then((_response) => {
             openGroupsDialog(accountId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -151,7 +173,11 @@ const PageAccounts: React.FC = () => {
         }).then((_response) => {
             openGroupsDialog(accountId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -186,7 +212,11 @@ const PageAccounts: React.FC = () => {
             setDisabled(!!response.data.disabled);
             setDialogUpdateActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -201,7 +231,11 @@ const PageAccounts: React.FC = () => {
             setFullname(response.data.fullname);
             setDialogDeleteActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -217,12 +251,20 @@ const PageAccounts: React.FC = () => {
                 setGroups(response.data);
                 setDialogGroupsActive(true);
             }).catch((error) => {
-                console.log(error);
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
             }).finally(() => {
                 dispatch(setAppLoading(false));
             })
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
             dispatch(setAppLoading(false));
         })
     }

@@ -1,7 +1,7 @@
 import './Page.scss';
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
-import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
 import IconTableFilter from "../icons/IconTableFilter.tsx";
@@ -12,7 +12,6 @@ import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
-import FieldInputInteger from "../fields/FieldInputInteger.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
 import FieldInputRadio from "../fields/FieldInputRadio.tsx";
 
@@ -64,7 +63,11 @@ const PageGroups: React.FC = () => {
         axios.get(baseUrl + "/security/group", {}).then((response) => {
             setGroups(response.data)
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -89,7 +92,11 @@ const PageGroups: React.FC = () => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -115,7 +122,11 @@ const PageGroups: React.FC = () => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -129,7 +140,11 @@ const PageGroups: React.FC = () => {
             setDialogDeleteActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -144,7 +159,11 @@ const PageGroups: React.FC = () => {
         }).then((_response) => {
             openGroupsDialog(groupId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -162,7 +181,11 @@ const PageGroups: React.FC = () => {
         }).then((_response) => {
             openGroupsDialog(groupId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -171,6 +194,11 @@ const PageGroups: React.FC = () => {
     /// OPEN DIALOG
 
     const openCreateDialog = () => {
+        setId(0);
+        setName('');
+        setTitle('');
+        setAccessRouters(0);
+        setAccessUsers(0);
         setDialogCreateActive(true)
     }
 
@@ -186,7 +214,11 @@ const PageGroups: React.FC = () => {
             setAccessUsers(response.data.accessUsers);
             setDialogUpdateActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -201,7 +233,11 @@ const PageGroups: React.FC = () => {
             setName(response.data.name);
             setDialogDeleteActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -217,12 +253,20 @@ const PageGroups: React.FC = () => {
                 setAccounts(response.data);
                 setDialogGroupsActive(true);
             }).catch((error) => {
-                console.log(error);
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
             }).finally(() => {
                 dispatch(setAppLoading(false));
             })
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
             dispatch(setAppLoading(false));
         })
     }
@@ -345,21 +389,25 @@ const PageGroups: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Access Routers"}
+                    <FieldInputRadio
+                        title={'Access Routers'}
                         value={accessRouters}
-                        onChange={(e) => setAccessRouters(e.target.value)}
-                        max={2}
-                        min={0}
-                        step={1}
+                        setValue={setAccessRouters}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
                     />
-                    <FieldInputInteger
-                        title={"Access Users"}
+                    <FieldInputRadio
+                        title={'Access Users'}
                         value={accessUsers}
-                        onChange={(e) => setAccessUsers(e.target.value)}
-                        max={2}
-                        min={0}
-                        step={1}
+                        setValue={setAccessUsers}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
                     />
                 </>}
                 buttons={[

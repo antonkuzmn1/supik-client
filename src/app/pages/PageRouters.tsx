@@ -6,7 +6,7 @@ import IconSortAsc from "../icons/IconSortAsc.tsx";
 import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
-import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
 import {useDispatch} from "react-redux";
@@ -78,7 +78,11 @@ const PageRouters: React.FC = () => {
         axios.get(baseUrl + "/db/router", {}).then((response) => {
             setRouters(response.data)
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -101,7 +105,11 @@ const PageRouters: React.FC = () => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -125,7 +133,11 @@ const PageRouters: React.FC = () => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -139,7 +151,11 @@ const PageRouters: React.FC = () => {
             setDialogDeleteActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -154,7 +170,11 @@ const PageRouters: React.FC = () => {
         }).then((_response) => {
             openViewersDialog(routerId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -169,7 +189,11 @@ const PageRouters: React.FC = () => {
         }).then((_response) => {
             openEditorsDialog(routerId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -187,7 +211,11 @@ const PageRouters: React.FC = () => {
         }).then((_response) => {
             openViewersDialog(routerId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -205,7 +233,11 @@ const PageRouters: React.FC = () => {
         }).then((_response) => {
             openEditorsDialog(routerId);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -249,7 +281,11 @@ const PageRouters: React.FC = () => {
             setL2tpKey(response.data.l2tpKey);
             setDialogUpdateActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -264,7 +300,11 @@ const PageRouters: React.FC = () => {
             setName(response.data.name);
             setDialogDeleteActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -280,7 +320,11 @@ const PageRouters: React.FC = () => {
             setConnected(response.data === true);
         }).catch((error) => {
             setConnected(false);
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             setDialogTestActive(true);
             dispatch(setAppLoading(false));
@@ -297,12 +341,20 @@ const PageRouters: React.FC = () => {
                 setGroups(response.data);
                 setDialogViewersActive(true);
             }).catch((error) => {
-                console.log(error);
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
             }).finally(() => {
                 dispatch(setAppLoading(false));
             })
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         });
     }
 
@@ -316,12 +368,20 @@ const PageRouters: React.FC = () => {
                 setGroups(response.data);
                 setDialogEditorsActive(true);
             }).catch((error) => {
-                console.log(error);
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
             }).finally(() => {
                 dispatch(setAppLoading(false));
             })
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         });
     }
 

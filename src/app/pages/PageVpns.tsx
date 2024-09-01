@@ -87,7 +87,11 @@ const PageVpns: React.FC = () => {
                 }
             }));
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -109,8 +113,11 @@ const PageVpns: React.FC = () => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
-            dispatch(setAppError(error.response.data));
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -133,8 +140,11 @@ const PageVpns: React.FC = () => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
-            dispatch(setAppError(error.response.data));
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -151,7 +161,11 @@ const PageVpns: React.FC = () => {
             setDialogDeleteActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -197,7 +211,11 @@ const PageVpns: React.FC = () => {
             getUsers();
             setDialogUpdateActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -216,7 +234,11 @@ const PageVpns: React.FC = () => {
             setRouterId(response.data.routerId);
             setDialogDeleteActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -239,7 +261,11 @@ const PageVpns: React.FC = () => {
         axios.get(baseUrl + "/db/router", {}).then((response) => {
             setRouters(response.data)
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
         })
     }
@@ -249,7 +275,11 @@ const PageVpns: React.FC = () => {
         axios.get(baseUrl + "/db/user", {}).then((response) => {
             setUsers(response.data);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })

@@ -7,7 +7,7 @@ import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
-import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
 import Dialog from "../dialogs/Dialog.tsx";
@@ -68,8 +68,6 @@ const PageUsers: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [disabled, setDisabled] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>('')
-
     /// CRUD
 
     const getAll = () => {
@@ -81,7 +79,11 @@ const PageUsers: React.FC = () => {
                 }
             }));
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -104,8 +106,11 @@ const PageUsers: React.FC = () => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
-            setError(error.response.data);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -129,8 +134,11 @@ const PageUsers: React.FC = () => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
-            setError(error.response.data);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         });
@@ -143,11 +151,14 @@ const PageUsers: React.FC = () => {
                 id: id,
             },
         }).then((_response) => {
-            console.log(_response);
             setDialogDeleteActive(false);
             getAll();
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -166,7 +177,6 @@ const PageUsers: React.FC = () => {
         setLogin('');
         setPassword('');
         setDisabled(false);
-        setError('')
         setDialogCreateActive(true);
     }
 
@@ -187,10 +197,13 @@ const PageUsers: React.FC = () => {
             setLogin(response.data.login);
             setPassword(response.data.password);
             setDisabled(response.data.disabled);
-            setError('');
             setDialogUpdateActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -206,10 +219,13 @@ const PageUsers: React.FC = () => {
             console.log(response.data)
             setId(response.data.id);
             setName(response.data.name);
-            setError('')
             setDialogDeleteActive(true);
         }).catch((error) => {
-            console.log(error);
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
         }).finally(() => {
             dispatch(setAppLoading(false));
         })
@@ -375,7 +391,6 @@ const PageUsers: React.FC = () => {
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
-                    <p>{error}</p>
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
@@ -444,7 +459,6 @@ const PageUsers: React.FC = () => {
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
-                    <p>{error}</p>
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
