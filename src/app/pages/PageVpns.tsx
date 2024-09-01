@@ -32,7 +32,7 @@ export interface VpnFields {
     remoteAddress: string,
     title: string,
     routerId: string;
-    router: RouterFields; // как указать router.id?
+    router: RouterFields;
     routerName: string;
     userId: string;
     user: any;

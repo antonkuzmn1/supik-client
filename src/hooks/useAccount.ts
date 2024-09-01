@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import {useEffect} from "react";
 import {baseUrl} from "../utils/baseUrl.ts";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../slices/accountSlice.ts";
-import {setAppLoading} from "../slices/appSlice.ts";
+import {setAppError, setAppLoading} from "../slices/appSlice.ts";
 
 export const useAccount = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -31,8 +31,12 @@ export const useAccount = () => {
                 dispatch(setAccountAuthorized(true));
                 dispatch(setAccountAdmin(!!response.data.admin));
                 dispatch(setAccountFullname(response.data.fullname));
-            }).catch((_error) => {
-                console.error(_error);
+            }).catch((error) => {
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
                 clear();
             }).finally(() => {
                 dispatch(setAppLoading(false));

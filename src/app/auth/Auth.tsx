@@ -23,20 +23,28 @@ const Auth: React.FC = () => {
         }
         dispatch(setAppLoading(true));
         try {
-            const response = await axios.post(baseUrl + '/security', {
+            axios.post(baseUrl + '/security', {
                 username, password
+            }).then((response) => {
+                const token = response.data.token;
+                const admin = response.data.account.admin;
+                const fullname = response.data.account.fullname;
+                Cookies.set('token', token, {expires: 0.5});
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                dispatch(setAccountAuthorized(true));
+                dispatch(setAccountAdmin(!!admin));
+                dispatch(setAccountFullname(fullname));
+            }).catch((error) => {
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
+            }).finally(() => {
+                dispatch(setAppLoading(false));
             });
-            const token = response.data.token;
-            const admin = response.data.account.admin;
-            const fullname = response.data.account.fullname;
-            Cookies.set('token', token, {expires: 0.5});
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            dispatch(setAccountAuthorized(true));
-            dispatch(setAccountAdmin(!!admin));
-            dispatch(setAccountFullname(fullname));
-            dispatch(setAppLoading(false));
         } catch (error: any) {
-            console.error(error);
+            console.error('error:', error);
             dispatch(setAppError(error.response.data))
             Cookies.remove('token');
             delete axios.defaults.headers.common['Authorization'];
