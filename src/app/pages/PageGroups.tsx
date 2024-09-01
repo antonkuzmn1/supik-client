@@ -14,6 +14,7 @@ import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputInteger from "../fields/FieldInputInteger.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
+import FieldInputRadio from "../fields/FieldInputRadio.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -386,21 +387,25 @@ const PageGroups: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Access Routers"}
+                    <FieldInputRadio
+                        title={'Access Routers'}
                         value={accessRouters}
-                        onChange={(e) => setAccessRouters(e.target.value)}
-                        max={2}
-                        min={0}
-                        step={1}
+                        setValue={setAccessRouters}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
                     />
-                    <FieldInputInteger
-                        title={"Access Users"}
+                    <FieldInputRadio
+                        title={'Access Users'}
                         value={accessUsers}
-                        onChange={(e) => setAccessUsers(e.target.value)}
-                        max={2}
-                        min={0}
-                        step={1}
+                        setValue={setAccessUsers}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
                     />
                 </>}
                 buttons={[
