@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {AppDispatch} from "../../utils/store.ts";
 import {useDispatch} from "react-redux";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../slices/accountSlice.ts";
-import {setAppLoading} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {baseUrl} from "../../utils/baseUrl.ts";
@@ -18,6 +18,7 @@ const Auth: React.FC = () => {
     const login = async (event: any) => {
         event.preventDefault();
         if (!username || !password) {
+            dispatch(setAppError('field "username" and "password" is required'))
             return;
         }
         dispatch(setAppLoading(true));

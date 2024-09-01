@@ -1,5 +1,5 @@
 import './App.scss';
-import React, {ReactNode} from "react";
+import React, {ReactNode, useEffect} from "react";
 import Page from "./pages/Page.tsx";
 import IconAccount from "./icons/IconAccount.tsx";
 import IconAccounts from "./icons/IconAccounts.tsx";
@@ -21,11 +21,13 @@ import PageItems from "./pages/page-items/PageItems.tsx";
 import useDevice from "../hooks/useDevice.ts";
 import {useAccount} from "../hooks/useAccount.ts";
 import Loading from "./loading/Loading.tsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../utils/store.ts";
 import NotSupported from "./not-supported/NotSupported.tsx";
 import {DeviceSize} from "../slices/deviceSlice.ts";
 import Auth from "./auth/Auth.tsx";
+import Dialog from "./dialogs/Dialog.tsx";
+import {setAppError} from "../slices/appSlice.ts";
 
 export interface RoutePageInterface {
     path: string;
@@ -57,9 +59,17 @@ const App: React.FC = () => {
     useAccount();
     useDevice();
 
+    const dispatch = useDispatch();
+
     const deviceSize = useSelector((state: RootState) => state.device.size);
-    const loading = useSelector((state: RootState) => state.app.loading);
     const authorized = useSelector((state: RootState) => state.account.authorized);
+    const loading = useSelector((state: RootState) => state.app.loading);
+    const error = useSelector((state: RootState) => state.app.error);
+
+    useEffect(() => {
+        console.log(error);
+        console.log(error.length)
+    }, [error]);
 
     return (
         <div className='App'>
@@ -68,6 +78,16 @@ const App: React.FC = () => {
                 : !authorized ? <Auth/> : <RouterProvider router={router}/>
             }
             {loading && <Loading/>}
+            {error.length > 0 && <Dialog
+                title={'Error'}
+                close={() => dispatch(setAppError(''))}
+                children={
+                    <p>{error}</p>
+                }
+                buttons={[
+                    {action: () => dispatch(setAppError('')), text: 'Close'}
+                ]}
+            />}
         </div>
     )
 }
