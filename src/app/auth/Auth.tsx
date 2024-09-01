@@ -35,8 +35,9 @@ const Auth: React.FC = () => {
             dispatch(setAccountAdmin(!!admin));
             dispatch(setAccountFullname(fullname));
             dispatch(setAppLoading(false));
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            dispatch(setAppError(error.response.data))
             Cookies.remove('token');
             delete axios.defaults.headers.common['Authorization'];
             dispatch(setAccountAuthorized(false));

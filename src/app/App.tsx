@@ -1,5 +1,5 @@
 import './App.scss';
-import React, {ReactNode, useEffect} from "react";
+import React, {ReactNode} from "react";
 import Page from "./pages/Page.tsx";
 import IconAccount from "./icons/IconAccount.tsx";
 import IconAccounts from "./icons/IconAccounts.tsx";
@@ -65,11 +65,6 @@ const App: React.FC = () => {
     const authorized = useSelector((state: RootState) => state.account.authorized);
     const loading = useSelector((state: RootState) => state.app.loading);
     const error = useSelector((state: RootState) => state.app.error);
-
-    useEffect(() => {
-        console.log(error);
-        console.log(error.length)
-    }, [error]);
 
     return (
         <div className='App'>
