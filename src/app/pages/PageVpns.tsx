@@ -107,8 +107,7 @@ const PageVpns: React.FC = () => {
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
-        }).then((response) => {
-            console.log(response);
+        }).then((_response) => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
@@ -132,8 +131,7 @@ const PageVpns: React.FC = () => {
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
-        }).then((response) => {
-            console.log(response);
+        }).then((_response) => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
