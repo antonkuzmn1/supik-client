@@ -10,65 +10,62 @@ import {useDispatch} from "react-redux";
 import {setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {baseUrl} from "../../utils/baseUrl.ts";
-import {RouterFields} from "./PageRouters.tsx";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
-import FieldInputInteger from "../fields/FieldInputInteger.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
-export interface VpnFields {
+export interface UserFields {
     id: string;
     created: string;
     updated: string;
 
     name: string,
-    password: string,
-    profile: string,
-    service: string,
-    remoteAddress: string,
+    surname: string,
+    patronymic: string,
+    fullname: string,
+    department: string,
     title: string,
-    routerId: string;
-    router: RouterFields; // как указать router.id?
-    routerName: string;
-    userId: string;
-    user: any;
+    login: string,
+    password: string,
 
     disabled: 0 | 1,
 }
 
-const defTableHeaders: { text: string, field: keyof VpnFields, width: string, type: TypeField }[] = [
+const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'Router', field: 'routerName', width: '150px', type: 'String'},
-    {text: 'Name', field: 'name', width: '200px', type: 'String'},
+    {text: 'Name', field: 'name', width: '100px', type: 'String'},
+    {text: 'Surname', field: 'surname', width: '100px', type: 'String'},
+    {text: 'Patronymic', field: 'patronymic', width: '100px', type: 'String'},
+    {text: 'Full Name', field: 'fullname', width: '300px', type: 'String'},
+    {text: 'Department', field: 'department', width: '150px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Password', field: 'password', width: '150px', type: 'String'},
-    {text: 'Remote Address', field: 'remoteAddress', width: '150px', type: 'String'},
-    {text: 'Service', field: 'service', width: '100px', type: 'String'},
+    {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
 
-const PageVpns: React.FC = () => {
+const PageUsers: React.FC = () => {
+
     const dispatch = useDispatch();
 
-    const [rows, setRows] = useState<VpnFields[]>([]);
+    const [rows, setRows] = useState<UserFields[]>([]);
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
 
-    const [id, setId] = useState<string>('');
+    const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [profile, setProfile] = useState<string>('');
-    const [service, setService] = useState<string>('');
-    const [remoteAddress, setRemoteAddress] = useState<string>('');
+    const [surname, setSurname] = useState<string>('');
+    const [patronymic, setPatronymic] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
+    const [department, setDepartment] = useState<string>('');
     const [title, setTitle] = useState<string>('');
-    const [routerId, setRouterId] = useState<number>(0);
-    const [userId, setUserId] = useState<number>(0);
+    const [login, setLogin] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [disabled, setDisabled] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('')
@@ -77,11 +74,10 @@ const PageVpns: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {}).then((response) => {
+        axios.get(baseUrl + "/db/user", {}).then((response) => {
             setRows(response.data.map((vpn: any) => {
                 return {
                     ...vpn,
-                    routerName: vpn.router.name,
                 }
             }));
         }).catch((error) => {
@@ -93,15 +89,15 @@ const PageVpns: React.FC = () => {
 
     const create = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/vpn", {
+        axios.post(baseUrl + "/db/user", {
             name: name,
-            password: password,
-            profile: profile,
-            service: service,
-            remoteAddress: remoteAddress,
+            surname: surname,
+            patronymic: patronymic,
+            fullname: fullname,
+            department: department,
             title: title,
-            routerId: routerId,
-            userId: userId,
+            login: login,
+            password: password,
             disabled: disabled ? 1 : 0,
         }).then((response) => {
             console.log(response);
@@ -117,16 +113,16 @@ const PageVpns: React.FC = () => {
 
     const update = () => {
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/db/vpn", {
+        axios.put(baseUrl + "/db/user", {
             id: id,
             name: name,
-            password: password,
-            profile: profile,
-            service: service,
-            remoteAddress: remoteAddress,
+            surname: surname,
+            patronymic: patronymic,
+            fullname: fullname,
+            department: department,
             title: title,
-            routerId: routerId,
-            userId: userId,
+            login: login,
+            password: password,
             disabled: disabled ? 1 : 0,
         }).then((response) => {
             console.log(response);
@@ -142,12 +138,12 @@ const PageVpns: React.FC = () => {
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/vpn", {
+        axios.delete(baseUrl + "/db/user", {
             data: {
                 id: id,
-                routerId: routerId,
             },
         }).then((_response) => {
+            console.log(_response);
             setDialogDeleteActive(false);
             getAll();
         }).catch((error) => {
@@ -160,39 +156,38 @@ const PageVpns: React.FC = () => {
     /// DIALOG
 
     const openCreateDialog = () => {
-        setId('');
+        setId(0);
         setName('');
-        setPassword('');
-        setProfile('default');
-        setService('any');
-        setRemoteAddress('');
+        setSurname('');
+        setPatronymic('');
+        setFullname('');
+        setDepartment('');
         setTitle('');
-        setRouterId(0)
-        setUserId(0);
+        setLogin('');
+        setPassword('');
         setDisabled(false);
         setError('')
         setDialogCreateActive(true);
     }
 
-    const openEditDialog = (id: string, routerId: string) => {
+    const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {
+        axios.get(baseUrl + "/db/user", {
             params: {
                 id: id,
-                routerId: Number(routerId),
             },
         }).then((response) => {
             setId(response.data.id);
             setName(response.data.name);
-            setPassword(response.data.password);
-            setProfile(response.data.profile);
-            setService(response.data.service);
-            setRemoteAddress(response.data.remoteAddress);
+            setSurname(response.data.surname);
+            setPatronymic(response.data.patronymic);
+            setFullname(response.data.fullname);
+            setDepartment(response.data.department);
             setTitle(response.data.title);
-            setRouterId(response.data.routerId);
-            setUserId(response.data.userId ? response.data.userId : 0);
+            setLogin(response.data.login);
+            setPassword(response.data.password);
             setDisabled(response.data.disabled);
-            setError('')
+            setError('');
             setDialogUpdateActive(true);
         }).catch((error) => {
             console.log(error);
@@ -201,17 +196,16 @@ const PageVpns: React.FC = () => {
         })
     }
 
-    const openDeleteDialog = (id: string, routerId: string) => {
+    const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {
+        axios.get(baseUrl + "/db/user", {
             params: {
                 id: id,
-                routerId: Number(routerId),
             },
         }).then((response) => {
+            console.log(response.data)
             setId(response.data.id);
             setName(response.data.name);
-            setRouterId(response.data.routerId);
             setError('')
             setDialogDeleteActive(true);
         }).catch((error) => {
@@ -223,7 +217,7 @@ const PageVpns: React.FC = () => {
 
     /// OTHER
 
-    const sortTable = (column: keyof VpnFields, asc: boolean) => {
+    const sortTable = (column: keyof UserFields, asc: boolean) => {
         const sorted = [...rows];
         sorted.sort((a, b): number => {
             ``
@@ -237,7 +231,7 @@ const PageVpns: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('VPNs'));
+        dispatch(setAppTitle('Users'));
         getAll();
     }, []);
 
@@ -288,11 +282,11 @@ const PageVpns: React.FC = () => {
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
                                     <button
-                                        onClick={() => openEditDialog(row.id, row.routerId)}
+                                        onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
                                     />
                                     <button
-                                        onClick={() => openDeleteDialog(row.id, row.routerId)}
+                                        onClick={() => openDeleteDialog(row.id)}
                                         children={<IconTableDelete/>}
                                     />
                                 </div>
@@ -324,7 +318,7 @@ const PageVpns: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Router'}
+                title={'Create User'}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
@@ -334,28 +328,28 @@ const PageVpns: React.FC = () => {
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={"Surname"}
                         placeholder={"Enter text"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={surname}
+                        onChange={(e) => setSurname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Profile"}
+                        title={"Patronymic"}
                         placeholder={"Enter text"}
-                        value={profile}
-                        onChange={(e) => setProfile(e.target.value)}
+                        value={patronymic}
+                        onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Service"}
+                        title={"Full Name"}
                         placeholder={"Enter text"}
-                        value={service}
-                        onChange={(e) => setService(e.target.value)}
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Remote Addr"}
+                        title={"Department"}
                         placeholder={"Enter text"}
-                        value={remoteAddress}
-                        onChange={(e) => setRemoteAddress(e.target.value)}
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
@@ -363,21 +357,17 @@ const PageVpns: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Router"}
-                        value={routerId}
-                        onChange={(e) => setRouterId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                    <FieldInputString
+                        title={"Login"}
+                        placeholder={"Enter text"}
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"User"}
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                    <FieldInputString
+                        title={"Password"}
+                        placeholder={"Enter text"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -393,7 +383,7 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Router'}
+                title={'Update User'}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
@@ -407,28 +397,28 @@ const PageVpns: React.FC = () => {
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={"Surname"}
                         placeholder={"Enter text"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={surname}
+                        onChange={(e) => setSurname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Profile"}
+                        title={"Patronymic"}
                         placeholder={"Enter text"}
-                        value={profile}
-                        onChange={(e) => setProfile(e.target.value)}
+                        value={patronymic}
+                        onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Service"}
+                        title={"Full Name"}
                         placeholder={"Enter text"}
-                        value={service}
-                        onChange={(e) => setService(e.target.value)}
+                        value={fullname}
+                        onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Remote Addr"}
+                        title={"Department"}
                         placeholder={"Enter text"}
-                        value={remoteAddress}
-                        onChange={(e) => setRemoteAddress(e.target.value)}
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
                     />
                     <FieldInputString
                         title={"Title"}
@@ -436,21 +426,17 @@ const PageVpns: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Router"}
-                        value={routerId}
-                        onChange={(e) => setRouterId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                    <FieldInputString
+                        title={"Login"}
+                        placeholder={"Enter text"}
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"User"}
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                    <FieldInputString
+                        title={"Password"}
+                        placeholder={"Enter text"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -466,10 +452,10 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Router'}
+                title={'Delete User'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id}; RouterID: {routerId})?</p>
+                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
@@ -480,4 +466,4 @@ const PageVpns: React.FC = () => {
     )
 }
 
-export default PageVpns
+export default PageUsers
