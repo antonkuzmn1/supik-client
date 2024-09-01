@@ -15,7 +15,8 @@ import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
-import FieldInputInteger from "../fields/FieldInputInteger.tsx";
+import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
+import {UserFields} from "./PageUsers.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -70,6 +71,9 @@ const PageVpns: React.FC = () => {
     const [routerId, setRouterId] = useState<number>(0);
     const [userId, setUserId] = useState<number>(0);
     const [disabled, setDisabled] = useState<boolean>(false);
+
+    const [routers, setRouters] = useState<RouterFields[]>([]);
+    const [users, setUsers] = useState<UserFields[]>([]);
 
     const [error, setError] = useState<string>('')
 
@@ -171,6 +175,8 @@ const PageVpns: React.FC = () => {
         setUserId(0);
         setDisabled(false);
         setError('')
+        getRouters();
+        getUsers();
         setDialogCreateActive(true);
     }
 
@@ -193,6 +199,8 @@ const PageVpns: React.FC = () => {
             setUserId(response.data.userId ? response.data.userId : 0);
             setDisabled(response.data.disabled);
             setError('')
+            getRouters();
+            getUsers();
             setDialogUpdateActive(true);
         }).catch((error) => {
             console.log(error);
@@ -233,6 +241,26 @@ const PageVpns: React.FC = () => {
         });
         setRows(sorted);
     };
+
+    const getRouters = () => {
+        axios.get(baseUrl + "/db/router", {}).then((response) => {
+            setRouters(response.data)
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+        })
+    }
+
+    const getUsers = () => {
+        dispatch(setAppLoading(true));
+        axios.get(baseUrl + "/db/user", {}).then((response) => {
+            setUsers(response.data);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
 
     /// HOOKS
 
@@ -324,7 +352,7 @@ const PageVpns: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Router'}
+                title={'Create VPN'}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
@@ -363,21 +391,28 @@ const PageVpns: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Router"}
+                    <FieldInputSelectOne
+                        title={'Router'}
                         value={routerId}
-                        onChange={(e) => setRouterId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                        setValue={setRouterId}
+                        variants={routers.map((router) => {
+                            return {
+                                value: Number(router.id),
+                                text: router.name
+                            }
+                        })}
                     />
-                    <FieldInputInteger
-                        title={"User"}
+                    <FieldInputSelectOne
+                        title={'User'}
                         value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                        setValue={setUserId}
+                        nullable={true}
+                        variants={users.map((user) => {
+                            return {
+                                value: Number(user.id),
+                                text: user.fullname
+                            }
+                        })}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -393,7 +428,7 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Router'}
+                title={'Update VPN'}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
@@ -436,21 +471,28 @@ const PageVpns: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputInteger
-                        title={"Router"}
+                    <FieldInputSelectOne
+                        title={'Router'}
                         value={routerId}
-                        onChange={(e) => setRouterId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                        setValue={setRouterId}
+                        variants={routers.map((router) => {
+                            return {
+                                value: Number(router.id),
+                                text: router.name
+                            }
+                        })}
                     />
-                    <FieldInputInteger
-                        title={"User"}
+                    <FieldInputSelectOne
+                        title={'User'}
                         value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        max={999999}
-                        min={0}
-                        step={1}
+                        setValue={setUserId}
+                        nullable={true}
+                        variants={users.map((user) => {
+                            return {
+                                value: Number(user.id),
+                                text: user.fullname
+                            }
+                        })}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -466,7 +508,7 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Router'}
+                title={'Delete VPN'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <p>Are u sure want to delete "{name}" (ID: {id}; RouterID: {routerId})?</p>
