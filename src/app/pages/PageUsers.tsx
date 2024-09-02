@@ -36,13 +36,14 @@ export interface UserFields {
 
 const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
+    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Name', field: 'name', width: '100px', type: 'String'},
     {text: 'Surname', field: 'surname', width: '100px', type: 'String'},
     {text: 'Patronymic', field: 'patronymic', width: '100px', type: 'String'},
-    {text: 'Full Name', field: 'fullname', width: '300px', type: 'String'},
+    {text: 'Login', field: 'login', width: '150px', type: 'String'},
+    {text: 'Password', field: 'password', width: '150px', type: 'String'},
     {text: 'Department', field: 'department', width: '150px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -101,8 +102,7 @@ const PageUsers: React.FC = () => {
             login: login,
             password: password,
             disabled: disabled ? 1 : 0,
-        }).then((response) => {
-            console.log(response);
+        }).then((_response) => {
             setDialogCreateActive(false);
             getAll();
         }).catch((error) => {
@@ -129,8 +129,7 @@ const PageUsers: React.FC = () => {
             login: login,
             password: password,
             disabled: disabled ? 1 : 0,
-        }).then((response) => {
-            console.log(response);
+        }).then((_response) => {
             setDialogUpdateActive(false);
             getAll();
         }).catch((error) => {
