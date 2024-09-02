@@ -37,8 +37,8 @@ export interface UserFields {
 const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Name', field: 'name', width: '100px', type: 'String'},
     {text: 'Surname', field: 'surname', width: '100px', type: 'String'},
+    {text: 'Name', field: 'name', width: '100px', type: 'String'},
     {text: 'Patronymic', field: 'patronymic', width: '100px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
@@ -337,16 +337,16 @@ const PageUsers: React.FC = () => {
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Name"}
-                        placeholder={"Enter text"}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <FieldInputString
                         title={"Surname"}
                         placeholder={"Enter text"}
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Name"}
+                        placeholder={"Enter text"}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
                         title={"Patronymic"}
@@ -405,16 +405,16 @@ const PageUsers: React.FC = () => {
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Name"}
-                        placeholder={"Enter text"}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <FieldInputString
                         title={"Surname"}
                         placeholder={"Enter text"}
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Name"}
+                        placeholder={"Enter text"}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
                         title={"Patronymic"}
