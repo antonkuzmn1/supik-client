@@ -21,7 +21,7 @@ import {UserFields} from "./PageUsers.tsx";
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
 export interface VpnFields {
-    id: string;
+    id: number;
     created: string;
     updated: string;
 
@@ -31,6 +31,7 @@ export interface VpnFields {
     service: string,
     remoteAddress: string,
     title: string,
+    vpnId: string,
     routerId: string;
     router: RouterFields;
     routerName: string;
@@ -41,7 +42,7 @@ export interface VpnFields {
 }
 
 const defTableHeaders: { text: string, field: keyof VpnFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'String'},
+    {text: 'ID', field: 'vpnId', width: '50px', type: 'String'},
     {text: 'Router', field: 'routerName', width: '150px', type: 'String'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
@@ -61,13 +62,14 @@ const PageVpns: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
 
-    const [id, setId] = useState<string>('');
+    const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [profile, setProfile] = useState<string>('');
     const [service, setService] = useState<string>('');
     const [remoteAddress, setRemoteAddress] = useState<string>('');
     const [title, setTitle] = useState<string>('');
+    const [vpnId, setVpnId] = useState<string>('');
     const [routerId, setRouterId] = useState<number>(0);
     const [userId, setUserId] = useState<number>(0);
     const [disabled, setDisabled] = useState<boolean>(false);
@@ -133,6 +135,7 @@ const PageVpns: React.FC = () => {
             service: service,
             remoteAddress: remoteAddress,
             title: title,
+            vpnId: vpnId,
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
@@ -155,6 +158,7 @@ const PageVpns: React.FC = () => {
         axios.delete(baseUrl + "/db/vpn", {
             data: {
                 id: id,
+                vpnId: vpnId,
                 routerId: routerId,
             },
         }).then((_response) => {
@@ -174,14 +178,15 @@ const PageVpns: React.FC = () => {
     /// DIALOG
 
     const openCreateDialog = () => {
-        setId('');
+        setId(0);
         setName('');
         setPassword('');
         setProfile('default');
         setService('any');
         setRemoteAddress('');
         setTitle('');
-        setRouterId(0)
+        setVpnId('');
+        setRouterId(0);
         setUserId(0);
         setDisabled(false);
         getRouters();
@@ -189,12 +194,11 @@ const PageVpns: React.FC = () => {
         setDialogCreateActive(true);
     }
 
-    const openEditDialog = (id: string, routerId: string) => {
+    const openEditDialog = (id: number) => {
         dispatch(setAppLoading(true));
         axios.get(baseUrl + "/db/vpn", {
             params: {
                 id: id,
-                routerId: Number(routerId),
             },
         }).then((response) => {
             setId(response.data.id);
@@ -204,6 +208,7 @@ const PageVpns: React.FC = () => {
             setService(response.data.service);
             setRemoteAddress(response.data.remoteAddress);
             setTitle(response.data.title);
+            setVpnId(response.data.vpnId);
             setRouterId(response.data.routerId);
             setUserId(response.data.userId ? response.data.userId : 0);
             setDisabled(response.data.disabled);
@@ -221,16 +226,16 @@ const PageVpns: React.FC = () => {
         })
     }
 
-    const openDeleteDialog = (id: string, routerId: string) => {
+    const openDeleteDialog = (id: number) => {
         dispatch(setAppLoading(true));
         axios.get(baseUrl + "/db/vpn", {
             params: {
                 id: id,
-                routerId: Number(routerId),
             },
         }).then((response) => {
             setId(response.data.id);
             setName(response.data.name);
+            setVpnId(response.data.vpnId);
             setRouterId(response.data.routerId);
             setDialogDeleteActive(true);
         }).catch((error) => {
@@ -339,11 +344,11 @@ const PageVpns: React.FC = () => {
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
                                     <button
-                                        onClick={() => openEditDialog(row.id, row.routerId)}
+                                        onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
                                     />
                                     <button
-                                        onClick={() => openDeleteDialog(row.id, row.routerId)}
+                                        onClick={() => openDeleteDialog(row.id)}
                                         children={<IconTableDelete/>}
                                     />
                                 </div>
@@ -458,6 +463,10 @@ const PageVpns: React.FC = () => {
                         title={"ID"}
                         value={id.toString()}
                     />
+                    <FieldValueString
+                        title={"VPN ID"}
+                        value={vpnId.toString()}
+                    />
                     <FieldInputString
                         title={"Name"}
                         placeholder={"Enter text"}
@@ -533,7 +542,7 @@ const PageVpns: React.FC = () => {
                 title={'Delete VPN'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id}; RouterID: {routerId})?</p>
+                    <p>Are u sure want to delete "{name}" (ID: {id}; VPN ID: {vpnId}; RouterID: {routerId})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
