@@ -52,6 +52,7 @@ const PageRouters: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogTestActive, setDialogTestActive] = useState<boolean>(false);
+    const [dialogSyncActive, setDialogSyncActive] = useState<boolean>(false);
     const [dialogViewersActive, setDialogViewersActive] = useState<boolean>(false);
     const [dialogEditorsActive, setDialogEditorsActive] = useState<boolean>(false);
 
@@ -243,6 +244,24 @@ const PageRouters: React.FC = () => {
         })
     }
 
+    const syncVpns = () => {
+        dispatch(setAppLoading(true));
+        axios.post(baseUrl + "/db/router/sync/", {
+            routerId: id,
+        }).then((response) => {
+            console.log(response)
+            setDialogSyncActive(false);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        });
+    }
+
     /// DIALOG
 
     const openCreateDialog = () => {
@@ -312,7 +331,7 @@ const PageRouters: React.FC = () => {
 
     const openTestDialog = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router/test", {
+        axios.post(baseUrl + "/db/router/test/", {
             host: localAddress,
             user: login,
             password: password,
@@ -329,6 +348,10 @@ const PageRouters: React.FC = () => {
             setDialogTestActive(true);
             dispatch(setAppLoading(false));
         });
+    }
+
+    const openSyncDialog = () => {
+        setDialogSyncActive(true);
     }
 
     const openViewersDialog = (id: number) => {
@@ -574,7 +597,7 @@ const PageRouters: React.FC = () => {
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Group'}
+                title={'Update Router'}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
@@ -639,13 +662,14 @@ const PageRouters: React.FC = () => {
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
                     {action: () => openTestDialog(), text: 'Test'},
+                    {action: () => openSyncDialog(), text: 'Sync'},
                     {action: () => openViewersDialog(id), text: 'Viewers'},
                     {action: () => openEditorsDialog(id), text: 'Editors'},
                     {action: () => update(), text: 'Update'},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Group'}
+                title={'Delete Router'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <p>Are u sure want to delete "{name}" (ID: {id})?</p>
@@ -666,6 +690,17 @@ const PageRouters: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogTestActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogSyncActive && <Dialog
+                title={'Synchronize VPN accounts'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <p>Are u sure want to sync VPN accounts by "{name}" (ID: {id})?</p>
+                </>}
+                buttons={[
+                    {action: () => setDialogSyncActive(false), text: 'Cancel'},
+                    {action: () => syncVpns(), text: 'Yes'},
                 ]}
             />}
             {dialogViewersActive && <Dialog
