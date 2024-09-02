@@ -42,8 +42,10 @@ export interface VpnFields {
 }
 
 const defTableHeaders: { text: string, field: keyof VpnFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'vpnId', width: '50px', type: 'String'},
+    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
+    {text: 'VID', field: 'vpnId', width: '50px', type: 'String'},
     {text: 'Router', field: 'routerName', width: '150px', type: 'String'},
+    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
