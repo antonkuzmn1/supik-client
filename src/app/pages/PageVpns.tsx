@@ -417,6 +417,7 @@ const PageVpns: React.FC = () => {
                     <FieldInputSelectOne
                         title={'Router'}
                         value={routerId}
+                        nullable={true}
                         setValue={setRouterId}
                         variants={routers.map((router) => {
                             return {
