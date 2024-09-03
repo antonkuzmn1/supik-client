@@ -49,7 +49,6 @@ interface TableHeaders {
     type: TypeField,
 }
 
-
 const defTableHeaders: TableHeaders[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'VID', field: 'vpnId', width: '50px', type: 'String'},
@@ -67,12 +66,23 @@ const defTableHeaders: TableHeaders[] = [
 export interface VpnFilter {
     name: string;
     title: string;
+    remoteAddress: string;
+    service: string;
 }
 
 const VpnFilterDefault: VpnFilter = {
     name: '',
     title: '',
+    remoteAddress: '',
+    service: '',
 }
+
+const filterFields: { key: keyof VpnFilter, title: string, placeholder: string }[] = [
+    {key: 'name', title: 'Name', placeholder: 'Enter text'},
+    {key: 'title', title: 'Title', placeholder: 'Enter text'},
+    {key: 'remoteAddress', title: 'Remote Address', placeholder: 'Enter text'},
+    {key: 'service', title: 'Service', placeholder: 'Enter text'},
+];
 
 const PageVpns: React.FC = () => {
     const dispatch = useDispatch();
@@ -325,31 +335,26 @@ const PageVpns: React.FC = () => {
     const setQuery = () => {
         const queryParams = new URLSearchParams(location.search);
 
-        console.log(filter)
-        queryParams.set('name', filter.name);
-        queryParams.set('title', filter.title);
-        console.log(queryParams.toString())
+        Object.keys(filter).forEach(key => {
+            if (filter[key as keyof VpnFilter]) {
+                queryParams.set(key, filter[key as keyof VpnFilter]);
+            } else {
+                queryParams.delete(key);
+            }
+        });
 
         navigate({
             pathname: location.pathname,
             search: queryParams.toString(),
         }, {replace: true});
-    }
-
-    const setFilterFromQuery = () => {
-        const queryParams = new URLSearchParams(location.search);
-
-        const name = queryParams.get('name') || '';
-        const title = queryParams.get('title') || '';
-        console.log('name:', name)
-        console.log('test:', title);
 
         setRowsFiltered(rows.filter((row) => {
-            return (
-                row.name.toLowerCase().includes(name.toLowerCase()) &&
-                row.title.toLowerCase().includes(title.toLowerCase())
-            )
-        }))
+            return Object.keys(filter).every(key =>
+                row[key as keyof VpnFilter]?.toLowerCase().includes(filter[key as keyof VpnFilter].toLowerCase())
+            );
+        }));
+
+        setDialogFilterActive(false);
     }
 
     /// HOOKS
@@ -360,8 +365,21 @@ const PageVpns: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        setFilterFromQuery();
-    }, [rows]);
+        const queryParams = new URLSearchParams(location.search);
+
+        const filterParams: any = {};
+        for (const [key, value] of queryParams.entries()) {
+            filterParams[key] = value || '';
+        }
+
+        setFilter(filterParams);
+
+        setRowsFiltered(rows.filter((row) => {
+            return Object.keys(filterParams).every(key =>
+                row[key as keyof VpnFilter]?.toLowerCase().includes(filterParams[key].toLowerCase())
+            );
+        }));
+    }, [location.search, rows]);
 
     return (
         <>
@@ -617,24 +635,25 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Delete VPN'}
+                title={'Filter VPN'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <FieldInputString
-                        title={"Name"}
-                        placeholder={"Enter text"}
-                        value={filter.name}
-                        onChange={(e) => setFilter({...filter, name: e.target.value})}
-                    />
-                    <FieldInputString
-                        title={"Title"}
-                        placeholder={"Enter text"}
-                        value={filter.title}
-                        onChange={(e) => setFilter({...filter, title: e.target.value})}
-                    />
+                    {filterFields.map((filterField, index) => {
+                        return (
+                            <FieldInputString
+                                key={index}
+                                title={filterField.title}
+                                placeholder={filterField.placeholder}
+                                value={filter[filterField.key]}
+                                onChange={(e) => setFilter({...filter, [filterField.key]: e.target.value})}
+                            />
+                        )
+                    })
+                    }
                 </>}
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: 'Close'},
+                    {action: () => setQuery(), text: 'Confirm'},
                 ]}
             />}
         </>
