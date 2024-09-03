@@ -17,6 +17,7 @@ import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
 import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import {UserFields} from "./PageUsers.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -41,7 +42,15 @@ export interface VpnFields {
     disabled: 0 | 1,
 }
 
-const defTableHeaders: { text: string, field: keyof VpnFields, width: string, type: TypeField }[] = [
+interface TableHeaders {
+    text: string,
+    field: keyof VpnFields,
+    width: string,
+    type: TypeField,
+}
+
+
+const defTableHeaders: TableHeaders[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'VID', field: 'vpnId', width: '50px', type: 'String'},
     {text: 'Router', field: 'routerName', width: '150px', type: 'String'},
@@ -55,14 +64,28 @@ const defTableHeaders: { text: string, field: keyof VpnFields, width: string, ty
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
 
+export interface VpnFilter {
+    name: string;
+    title: string;
+}
+
+const VpnFilterDefault: VpnFilter = {
+    name: '',
+    title: '',
+}
+
 const PageVpns: React.FC = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [rows, setRows] = useState<VpnFields[]>([]);
+    const [rowsFiltered, setRowsFiltered] = useState<VpnFields[]>([]);
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
+    const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -79,17 +102,20 @@ const PageVpns: React.FC = () => {
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
 
+    const [filter, setFilter] = useState<VpnFilter>(VpnFilterDefault);
+
     /// CRUD
 
     const getAll = () => {
         dispatch(setAppLoading(true));
         axios.get(baseUrl + "/db/vpn", {}).then((response) => {
-            setRows(response.data.map((vpn: any) => {
+            const responseWithRouter = response.data.map((vpn: any) => {
                 return {
                     ...vpn,
                     routerName: vpn.router.name,
                 }
-            }));
+            })
+            setRows(responseWithRouter);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -251,6 +277,10 @@ const PageVpns: React.FC = () => {
         })
     }
 
+    const openFilterDialog = () => {
+        setDialogFilterActive(true)
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof VpnFields, asc: boolean) => {
@@ -292,12 +322,46 @@ const PageVpns: React.FC = () => {
         })
     }
 
+    const setQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        console.log(filter)
+        queryParams.set('name', filter.name);
+        queryParams.set('title', filter.title);
+        console.log(queryParams.toString())
+
+        navigate({
+            pathname: location.pathname,
+            search: queryParams.toString(),
+        }, {replace: true});
+    }
+
+    const setFilterFromQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        const name = queryParams.get('name') || '';
+        const title = queryParams.get('title') || '';
+        console.log('name:', name)
+        console.log('test:', title);
+
+        setRowsFiltered(rows.filter((row) => {
+            return (
+                row.name.toLowerCase().includes(name.toLowerCase()) &&
+                row.title.toLowerCase().includes(title.toLowerCase())
+            )
+        }))
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('VPNs'));
         getAll();
     }, []);
+
+    useEffect(() => {
+        setFilterFromQuery();
+    }, [rows]);
 
     return (
         <>
@@ -308,6 +372,7 @@ const PageVpns: React.FC = () => {
                         <th className={'action'}>
                             <div className={'action-buttons'}>
                                 <button
+                                    onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
                                 />
                                 <button
@@ -341,7 +406,7 @@ const PageVpns: React.FC = () => {
                 </table>
                 <table className={'body'}>
                     <tbody>
-                    {rows.map((row, index) => (
+                    {rowsFiltered.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
@@ -549,6 +614,27 @@ const PageVpns: React.FC = () => {
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
                     {action: () => remove(), text: 'Delete'},
+                ]}
+            />}
+            {dialogFilterActive && <Dialog
+                title={'Delete VPN'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <FieldInputString
+                        title={"Name"}
+                        placeholder={"Enter text"}
+                        value={filter.name}
+                        onChange={(e) => setFilter({...filter, name: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={"Title"}
+                        placeholder={"Enter text"}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogFilterActive(false), text: 'Close'},
                 ]}
             />}
         </>
