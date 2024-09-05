@@ -37,6 +37,7 @@ export interface VpnFields {
     routerName: string;
     userId: string;
     user: any;
+    userName: string;
 
     disabled: 0 | 1,
 }
@@ -51,15 +52,16 @@ interface TableHeaders {
 const defTableHeaders: TableHeaders[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'VID', field: 'vpnId', width: '50px', type: 'String'},
-    {text: 'Router', field: 'routerName', width: '150px', type: 'String'},
+    {text: 'Router', field: 'routerName', width: '100px', type: 'String'},
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
+    {text: 'User', field: 'userName', width: '150px', type: 'String'},
     {text: 'Remote Address', field: 'remoteAddress', width: '150px', type: 'String'},
     {text: 'Service', field: 'service', width: '100px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    // {text: 'Title', field: 'title', width: '150px', type: 'String'},
+    // {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
+    // {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 export interface VpnFilter {
@@ -122,8 +124,10 @@ const PageVpns: React.FC = () => {
                 return {
                     ...vpn,
                     routerName: vpn.router.name,
+                    userName: vpn.user ? getInitialsFromFullname(vpn.user.fullname) : 'NULL',
                 }
             })
+            console.log(responseWithRouter[0].userName)
             setRows(responseWithRouter);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -354,6 +358,22 @@ const PageVpns: React.FC = () => {
         }));
 
         setDialogFilterActive(false);
+    }
+
+    const getInitialsFromFullname = (fullname: string) => {
+        try {
+            const trimed = fullname.trim();
+            const splited = trimed.split(' ');
+            const surname = splited[0];
+            const name = splited[1];
+            const patronymic = splited[2];
+            const nameChar = name.charAt(0);
+            const patronymicChar = patronymic.charAt(0);
+
+            return `${surname} ${nameChar}. ${patronymicChar}.`
+        } catch (error) {
+            return '';
+        }
     }
 
     /// HOOKS
