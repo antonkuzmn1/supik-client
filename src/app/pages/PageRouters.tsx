@@ -33,7 +33,7 @@ export interface RouterFields {
 
 const defTableHeaders: { text: string, field: keyof RouterFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Local Address', field: 'localAddress', width: '150px', type: 'String'},
+    {text: 'Internal Address', field: 'localAddress', width: '150px', type: 'String'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
@@ -548,13 +548,13 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Local Addr"}
+                        title={"Internal Addr"}
                         placeholder={"Enter text"}
                         value={localAddress}
                         onChange={(e) => setLocalAddress(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Remote Addr"}
+                        title={"External Addr"}
                         placeholder={"Enter text"}
                         value={remoteAddress}
                         onChange={(e) => setRemoteAddress(e.target.value)}
@@ -572,8 +572,9 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={"VPN Server"}
                         value={disabled}
+                        invert={true}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
@@ -616,13 +617,13 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Local Addr"}
+                        title={"Internal Addr"}
                         placeholder={"Enter text"}
                         value={localAddress}
                         onChange={(e) => setLocalAddress(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Remote Addr"}
+                        title={"External Addr"}
                         placeholder={"Enter text"}
                         value={remoteAddress}
                         onChange={(e) => setRemoteAddress(e.target.value)}
@@ -640,8 +641,9 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={"VPN Server"}
                         value={disabled}
+                        invert={true}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
