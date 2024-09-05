@@ -36,9 +36,9 @@ export interface UserFields {
 const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Surname', field: 'surname', width: '100px', type: 'String'},
-    {text: 'Name', field: 'name', width: '100px', type: 'String'},
-    {text: 'Patronymic', field: 'patronymic', width: '100px', type: 'String'},
+    {text: 'Surname', field: 'surname', width: '150px', type: 'String'},
+    {text: 'Name', field: 'name', width: '150px', type: 'String'},
+    {text: 'Patronymic', field: 'patronymic', width: '150px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
     {text: 'Department', field: 'department', width: '150px', type: 'String'},
@@ -61,7 +61,6 @@ const PageUsers: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [patronymic, setPatronymic] = useState<string>('');
-    const [fullname, setFullname] = useState<string>('');
     const [department, setDepartment] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [login, setLogin] = useState<string>('');
@@ -95,7 +94,7 @@ const PageUsers: React.FC = () => {
             name: name,
             surname: surname,
             patronymic: patronymic,
-            fullname: fullname,
+            fullname: `${surname} ${name} ${patronymic}`,
             department: department,
             title: title,
             login: login,
@@ -122,7 +121,7 @@ const PageUsers: React.FC = () => {
             name: name,
             surname: surname,
             patronymic: patronymic,
-            fullname: fullname,
+            fullname: `${surname} ${name} ${patronymic}`,
             department: department,
             title: title,
             login: login,
@@ -169,7 +168,6 @@ const PageUsers: React.FC = () => {
         setName('');
         setSurname('');
         setPatronymic('');
-        setFullname('');
         setDepartment('');
         setTitle('');
         setLogin('');
@@ -189,7 +187,6 @@ const PageUsers: React.FC = () => {
             setName(response.data.name);
             setSurname(response.data.surname);
             setPatronymic(response.data.patronymic);
-            setFullname(response.data.fullname);
             setDepartment(response.data.department);
             setTitle(response.data.title);
             setLogin(response.data.login);
@@ -354,12 +351,6 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Full Name"}
-                        placeholder={"Enter text"}
-                        value={fullname}
-                        onChange={(e) => setFullname(e.target.value)}
-                    />
-                    <FieldInputString
                         title={"Department"}
                         placeholder={"Enter text"}
                         value={department}
@@ -420,12 +411,6 @@ const PageUsers: React.FC = () => {
                         placeholder={"Enter text"}
                         value={patronymic}
                         onChange={(e) => setPatronymic(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Full Name"}
-                        placeholder={"Enter text"}
-                        value={fullname}
-                        onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
                         title={"Department"}
