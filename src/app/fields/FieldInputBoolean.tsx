@@ -7,6 +7,7 @@ export interface FieldInputBooleanProps {
     value: boolean,
     setTrue: () => void,
     setFalse: () => void,
+    invert?: boolean,
 }
 
 const FieldInputBoolean: React.FC<FieldInputBooleanProps> = (props: FieldInputBooleanProps) => {
@@ -21,14 +22,14 @@ const FieldInputBoolean: React.FC<FieldInputBooleanProps> = (props: FieldInputBo
                         'active': props.value,
                     })}
                     onClick={props.setTrue}
-                    children={'True'}
+                    children={props.invert ? 'False' : 'True'}
                 />
                 <button
                     className={classNames({
                         'active': !props.value,
                     })}
                     onClick={props.setFalse}
-                    children={'False'}
+                    children={props.invert ? 'True' : 'False'}
                 />
             </div>
         </div>
