@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "ssh anton@192.168.250.103 'rm -rf /var/www/client/*' && scp -r dist/* anton@192.168.250.103:/var/www/client/"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
