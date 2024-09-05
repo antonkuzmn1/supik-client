@@ -6,7 +6,6 @@ import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../s
 import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import FieldInputString from "../fields/FieldInputString.tsx";
 
 const Auth: React.FC = () => {
@@ -23,7 +22,7 @@ const Auth: React.FC = () => {
         }
         dispatch(setAppLoading(true));
         try {
-            axios.post(baseUrl + '/security', {
+            axios.post(import.meta.env.VITE_BASE_URL + '/security', {
                 username, password
             }).then((response) => {
                 const token = response.data.token;

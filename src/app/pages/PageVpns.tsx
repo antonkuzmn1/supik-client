@@ -9,7 +9,6 @@ import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import {RouterFields} from "./PageRouters.tsx";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
@@ -118,7 +117,7 @@ const PageVpns: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {}).then((response) => {
             const responseWithRouter = response.data.map((vpn: any) => {
                 return {
                     ...vpn,
@@ -139,7 +138,7 @@ const PageVpns: React.FC = () => {
 
     const create = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/vpn", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             name: name,
             password: password,
             profile: profile,
@@ -165,7 +164,7 @@ const PageVpns: React.FC = () => {
 
     const update = () => {
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/db/vpn", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             id: id,
             name: name,
             password: password,
@@ -193,7 +192,7 @@ const PageVpns: React.FC = () => {
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/vpn", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             data: {
                 id: id,
                 vpnId: vpnId,
@@ -234,7 +233,7 @@ const PageVpns: React.FC = () => {
 
     const openEditDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             params: {
                 id: id,
             },
@@ -266,7 +265,7 @@ const PageVpns: React.FC = () => {
 
     const openDeleteDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/vpn", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             params: {
                 id: id,
             },
@@ -305,7 +304,7 @@ const PageVpns: React.FC = () => {
     };
 
     const getRouters = () => {
-        axios.get(baseUrl + "/db/router", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {}).then((response) => {
             setRouters(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -319,7 +318,7 @@ const PageVpns: React.FC = () => {
 
     const getUsers = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/user", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
             setUsers(response.data);
         }).catch((error) => {
             if (error.response && error.response.data) {

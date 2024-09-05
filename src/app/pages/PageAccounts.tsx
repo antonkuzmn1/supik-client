@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import {useDispatch} from "react-redux";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import {AccountFields} from "./PageAccount.tsx";
@@ -53,7 +52,7 @@ const PageAccounts: React.FC = () => {
 
     const getAccounts = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {}).then((response) => {
             setAccounts(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -73,7 +72,7 @@ const PageAccounts: React.FC = () => {
         }
 
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/security/account", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/security/account", {
             username: username,
             password: password,
             fullname: fullname,
@@ -101,7 +100,7 @@ const PageAccounts: React.FC = () => {
         }
 
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/security/account", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/security/account", {
             id: id,
             username: username,
             password: password,
@@ -125,7 +124,7 @@ const PageAccounts: React.FC = () => {
 
     const deleteAccount = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/security/account", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/security/account", {
             data: {id: id},
         }).then((_response) => {
             setDialogDeleteActive(false);
@@ -145,7 +144,7 @@ const PageAccounts: React.FC = () => {
         const accountId = id;
 
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/security/account-group", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/security/account-group", {
             accountId,
             groupId,
         }).then((_response) => {
@@ -165,7 +164,7 @@ const PageAccounts: React.FC = () => {
         const accountId = id;
 
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/security/account-group", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/security/account-group", {
             data: {
                 accountId,
                 groupId,
@@ -199,7 +198,7 @@ const PageAccounts: React.FC = () => {
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -224,7 +223,7 @@ const PageAccounts: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -243,11 +242,11 @@ const PageAccounts: React.FC = () => {
 
     const openGroupsDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/account", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {
             params: {id: Number(id)}
         }).then((response) => {
             setAccountGroups(response.data.accountGroups);
-            axios.get(baseUrl + "/security/group", {}).then((response) => {
+            axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
                 setGroups(response.data);
                 setDialogGroupsActive(true);
             }).catch((error) => {

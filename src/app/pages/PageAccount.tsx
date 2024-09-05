@@ -3,7 +3,6 @@ import {useDispatch} from "react-redux";
 import axios from "axios";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../slices/accountSlice.ts";
 import Cookies from "js-cookie";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import FieldValueString from "../fields/FieldValueString.tsx";
 
@@ -57,7 +56,7 @@ const PageAccount: React.FC = () => {
         const token = Cookies.get('token');
 
         if (token) {
-            axios.get(baseUrl + '/security', {
+            axios.get(import.meta.env.VITE_BASE_URL + '/security', {
                 headers: {'Authorization': `Bearer ${token}`}
             }).then((response) => {
                 setAccount(response.data);

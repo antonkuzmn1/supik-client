@@ -8,7 +8,6 @@ import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import {useDispatch} from "react-redux";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
@@ -76,7 +75,7 @@ const PageRouters: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/router", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {}).then((response) => {
             setRouters(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -91,7 +90,7 @@ const PageRouters: React.FC = () => {
 
     const create = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/router", {
             login: login,
             password: password,
             remoteAddress: remoteAddress,
@@ -118,7 +117,7 @@ const PageRouters: React.FC = () => {
 
     const update = () => {
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/db/router", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/db/router", {
             id: id,
             login: login,
             password: password,
@@ -146,7 +145,7 @@ const PageRouters: React.FC = () => {
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/router", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/router", {
             data: {id: id},
         }).then((_response) => {
             setDialogDeleteActive(false);
@@ -165,7 +164,7 @@ const PageRouters: React.FC = () => {
     const createViewer = (groupId: number) => {
         const routerId = id;
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router-group-viewer", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/router-group-viewer", {
             routerId,
             groupId,
         }).then((_response) => {
@@ -184,7 +183,7 @@ const PageRouters: React.FC = () => {
     const createEditor = (groupId: number) => {
         const routerId = id;
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router-group-editor", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/router-group-editor", {
             routerId,
             groupId,
         }).then((_response) => {
@@ -204,7 +203,7 @@ const PageRouters: React.FC = () => {
         const routerId = id;
 
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/router-group-viewer", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/router-group-viewer", {
             data: {
                 routerId,
                 groupId,
@@ -226,7 +225,7 @@ const PageRouters: React.FC = () => {
         const routerId = id;
 
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/router-group-editor", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/router-group-editor", {
             data: {
                 routerId,
                 groupId,
@@ -246,7 +245,7 @@ const PageRouters: React.FC = () => {
 
     const syncVpns = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router/sync/", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/router/sync/", {
             routerId: id,
         }).then((response) => {
             console.log(response)
@@ -280,7 +279,7 @@ const PageRouters: React.FC = () => {
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/router", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -312,7 +311,7 @@ const PageRouters: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/router", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -331,7 +330,7 @@ const PageRouters: React.FC = () => {
 
     const openTestDialog = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/router/test/", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/router/test/", {
             host: localAddress,
             user: login,
             password: password,
@@ -356,11 +355,11 @@ const PageRouters: React.FC = () => {
 
     const openViewersDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/router", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
             setViewers(response.data.routerGroupViewer);
-            axios.get(baseUrl + "/security/group", {}).then((response) => {
+            axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
                 setGroups(response.data);
                 setDialogViewersActive(true);
             }).catch((error) => {
@@ -383,11 +382,11 @@ const PageRouters: React.FC = () => {
 
     const openEditorsDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/router", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
             setEditors(response.data.routerGroupEditor);
-            axios.get(baseUrl + "/security/group", {}).then((response) => {
+            axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
                 setGroups(response.data);
                 setDialogEditorsActive(true);
             }).catch((error) => {

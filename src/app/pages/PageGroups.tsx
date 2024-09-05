@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import IconTableFilter from "../icons/IconTableFilter.tsx";
 import IconTableCreate from "../icons/IconTableCreate.tsx";
 import IconSortAsc from "../icons/IconSortAsc.tsx";
@@ -60,7 +59,7 @@ const PageGroups: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/group", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
             setGroups(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -83,7 +82,7 @@ const PageGroups: React.FC = () => {
         }
 
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/security/group", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/security/group", {
             name: name,
             title: title,
             accessRouters: accessRouters,
@@ -112,7 +111,7 @@ const PageGroups: React.FC = () => {
         }
 
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/security/group", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/security/group", {
             id: id,
             name: name,
             title: title,
@@ -134,7 +133,7 @@ const PageGroups: React.FC = () => {
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/security/group", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/security/group", {
             data: {id: id},
         }).then((_response) => {
             setDialogDeleteActive(false);
@@ -153,7 +152,7 @@ const PageGroups: React.FC = () => {
     const createAccountGroup = (accountId: number) => {
         const groupId = id;
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/security/account-group", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/security/account-group", {
             accountId,
             groupId,
         }).then((_response) => {
@@ -173,7 +172,7 @@ const PageGroups: React.FC = () => {
         const groupId = id;
 
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/security/account-group", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/security/account-group", {
             data: {
                 accountId,
                 groupId,
@@ -204,7 +203,7 @@ const PageGroups: React.FC = () => {
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/group", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -226,7 +225,7 @@ const PageGroups: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/group", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
             setId(response.data.id);
@@ -245,11 +244,11 @@ const PageGroups: React.FC = () => {
 
     const openGroupsDialog = (id: number) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/security/group", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
             params: {id: Number(id)}
         }).then((response) => {
             setAccountGroups(response.data.accountGroups);
-            axios.get(baseUrl + "/security/account", {}).then((response) => {
+            axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {}).then((response) => {
                 setAccounts(response.data);
                 setDialogGroupsActive(true);
             }).catch((error) => {

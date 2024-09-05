@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import {AppDispatch} from "../utils/store.ts";
 import {useDispatch} from "react-redux";
 import {useEffect} from "react";
-import {baseUrl} from "../utils/baseUrl.ts";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../slices/accountSlice.ts";
 import {setAppError, setAppLoading} from "../slices/appSlice.ts";
 
@@ -23,7 +22,7 @@ export const useAccount = () => {
         const token = Cookies.get('token');
 
         if (token) {
-            axios.get(baseUrl + '/security', {
+            axios.get(import.meta.env.VITE_BASE_URL + '/security', {
                 headers: {'Authorization': `Bearer ${token}`}
             }).then((response) => {
                 Cookies.set('token', token, {expires: 1});

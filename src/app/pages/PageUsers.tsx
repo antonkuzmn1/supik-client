@@ -9,7 +9,6 @@ import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
-import {baseUrl} from "../../utils/baseUrl.ts";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
@@ -73,7 +72,7 @@ const PageUsers: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/user", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
             setRows(response.data.map((vpn: any) => {
                 return {
                     ...vpn,
@@ -92,7 +91,7 @@ const PageUsers: React.FC = () => {
 
     const create = () => {
         dispatch(setAppLoading(true));
-        axios.post(baseUrl + "/db/user", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/user", {
             name: name,
             surname: surname,
             patronymic: patronymic,
@@ -118,7 +117,7 @@ const PageUsers: React.FC = () => {
 
     const update = () => {
         dispatch(setAppLoading(true));
-        axios.put(baseUrl + "/db/user", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/db/user", {
             id: id,
             name: name,
             surname: surname,
@@ -145,7 +144,7 @@ const PageUsers: React.FC = () => {
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(baseUrl + "/db/user", {
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/user", {
             data: {
                 id: id,
             },
@@ -181,7 +180,7 @@ const PageUsers: React.FC = () => {
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/user", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
             params: {
                 id: id,
             },
@@ -210,7 +209,7 @@ const PageUsers: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(baseUrl + "/db/user", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
             params: {
                 id: id,
             },
