@@ -34,7 +34,7 @@ export interface RouterFields {
 const defTableHeaders: { text: string, field: keyof RouterFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'Internal Address', field: 'localAddress', width: '150px', type: 'String'},
-    {text: 'Name', field: 'name', width: '200px', type: 'String'},
+    {text: 'Name', field: 'name', width: '150px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
