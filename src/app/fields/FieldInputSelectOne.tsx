@@ -29,7 +29,7 @@ const FieldInputSelectOne: React.FC<FieldInputSelectOneProps> = (props: FieldInp
                             key={i}
                             value={variant.value}
                         >
-                            {variant.text}
+                            [ID:{variant.value}] {variant.text}
                         </option>
                     ))}
                 </select>
