@@ -17,6 +17,7 @@ import FieldValueString from "../fields/FieldValueString.tsx";
 import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import {UserFields} from "./PageUsers.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
+import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -358,22 +359,6 @@ const PageVpns: React.FC = () => {
         }));
 
         setDialogFilterActive(false);
-    }
-
-    const getInitialsFromFullname = (fullname: string) => {
-        try {
-            const trimed = fullname.trim();
-            const splited = trimed.split(' ');
-            const surname = splited[0];
-            const name = splited[1];
-            const patronymic = splited[2];
-            const nameChar = name.charAt(0);
-            const patronymicChar = patronymic.charAt(0);
-
-            return `${surname} ${nameChar}. ${patronymicChar}.`
-        } catch (error) {
-            return '';
-        }
     }
 
     /// HOOKS
