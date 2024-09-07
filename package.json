@@ -1,7 +1,7 @@
 {
   "name": "supik-client",
   "private": true,
-  "version": "0.3.0-ALPHA",
+  "version": "0.3.1-ALPHA",
   "type": "module",
   "scripts": {
     "dev": "vite",
