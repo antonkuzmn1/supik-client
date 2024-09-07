@@ -310,7 +310,9 @@ const PageVpns: React.FC = () => {
 
     const getRouters = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {}).then((response) => {
-            setRouters(response.data)
+            setRouters(response.data.filter((router: any) => {
+                return router.disabled === 0;
+            }))
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
