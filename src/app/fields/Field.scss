@@ -44,6 +44,10 @@
       font-size: 12px;
       line-height: 15px;
       color: var(--text);
+
+      &.border-right {
+        border-right: 1px solid var(--border);
+      }
     }
 
     p {

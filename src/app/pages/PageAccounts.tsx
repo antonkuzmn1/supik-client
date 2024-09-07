@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useDispatch} from "react-redux";
 import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
-import {AccountFields} from "./PageAccount.tsx";
 import IconSortAsc from "../icons/IconSortAsc.tsx";
 import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableCreate from "../icons/IconTableCreate.tsx";
@@ -13,10 +12,21 @@ import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import {AccountFields} from "./PageAccount.tsx";
+import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
-const defTableHeaders: { text: string, field: keyof AccountFields, width: string, type: TypeField }[] = [
+interface TableHeaders {
+    text: string,
+    field: keyof AccountFields,
+    width: string,
+    type: TypeField,
+}
+
+const defTableHeaders: TableHeaders[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'Username', field: 'username', width: '150px', type: 'String'},
     {text: 'Admin', field: 'admin', width: '100px', type: 'Boolean'},
@@ -29,12 +39,16 @@ const defTableHeaders: { text: string, field: keyof AccountFields, width: string
 
 const PageAccounts: React.FC = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [accounts, setAccounts] = useState<AccountFields[]>([]);
+
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
+    const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [username, setUsername] = useState<string>('');
@@ -48,11 +62,15 @@ const PageAccounts: React.FC = () => {
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
     const [groups, setGroups] = useState<any[]>([]);
 
+    const [filter, setFilter] = useState<any>({});
+
     /// CRUD
 
     const getAccounts = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {
+            params: getQueryObj(),
+        }).then((response) => {
             setAccounts(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -268,6 +286,10 @@ const PageAccounts: React.FC = () => {
         })
     }
 
+    const openFilterDialog = () => {
+        setDialogFilterActive(true)
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof AccountFields, asc: boolean) => {
@@ -281,12 +303,57 @@ const PageAccounts: React.FC = () => {
         setAccounts(sortedAccounts);
     };
 
+    const setQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        Object.keys(filter).forEach(key => {
+            if (filter[key]) {
+                queryParams.set(key, filter[key]);
+            } else {
+                queryParams.delete(key);
+            }
+        });
+
+        navigate({
+            pathname: location.pathname,
+            search: queryParams.toString(),
+        }, {replace: true});
+
+        setDialogFilterActive(false);
+    }
+
+    const getQueryObj = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const queryObject: any = {};
+
+        for (const [key, value] of queryParams.entries()) {
+            queryObject[key] = value;
+        }
+
+        return queryObject;
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Accounts'));
         getAccounts();
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+
+        const filterParams: any = {};
+        for (const [key, value] of queryParams.entries()) {
+            filterParams[key] = value || '';
+        }
+
+        setFilter(filterParams);
+    }, [location.search, accounts]);
+
+    useEffect(() => {
+        console.log('filter:', filter);
+    }, [filter]);
 
     return (
         <>
@@ -297,6 +364,7 @@ const PageAccounts: React.FC = () => {
                         <th className={'action'}>
                             <div className={'action-buttons'}>
                                 <button
+                                    onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
                                 />
                                 <button
@@ -330,16 +398,16 @@ const PageAccounts: React.FC = () => {
                 </table>
                 <table className={'body'}>
                     <tbody>
-                    {accounts.map((account, index) => (
+                    {accounts.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
                                     <button
-                                        onClick={() => openEditDialog(account.id)}
+                                        onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
                                     />
                                     <button
-                                        onClick={() => openDeleteDialog(account.id)}
+                                        onClick={() => openDeleteDialog(row.id)}
                                         children={<IconTableDelete/>}
                                     />
                                 </div>
@@ -352,16 +420,16 @@ const PageAccounts: React.FC = () => {
                                     }}
                                 >
                                     {defTableHeader.type === 'String' && (
-                                        account[defTableHeader.field]
+                                        row[defTableHeader.field]
                                     )}
                                     {defTableHeader.type === 'Integer' && (
-                                        Number(account[defTableHeader.field])
+                                        Number(row[defTableHeader.field])
                                     )}
                                     {defTableHeader.type === 'Boolean' && (
-                                        account[defTableHeader.field] ? 'True' : 'False'
+                                        row[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(account[defTableHeader.field]).toDateString()
+                                        new Date(row[defTableHeader.field]).toDateString()
                                     )}
                                 </td>
                             ))}
@@ -531,6 +599,62 @@ const PageAccounts: React.FC = () => {
                 </div>}
                 buttons={[
                     {action: () => setDialogGroupsActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogFilterActive && <Dialog
+                title={'Filter Accounts'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <FieldInputDateRange
+                        title={'Created'}
+                        valueGte={filter.createdGte}
+                        valueLte={filter.createdLte}
+                        setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
+                    />
+                    <FieldInputDateRange
+                        title={'Updated'}
+                        valueGte={filter.updatedGte}
+                        valueLte={filter.updatedLte}
+                        setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Username'}
+                        placeholder={'Enter text'}
+                        value={filter.username}
+                        onChange={(e) => setFilter({...filter, username: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Fullname'}
+                        placeholder={'Enter text'}
+                        value={filter.fullname}
+                        onChange={(e) => setFilter({...filter, fullname: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Title'}
+                        placeholder={'Enter text'}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Admin'}
+                        value={filter.admin}
+                        setNull={() => setFilter({...filter, admin: 0})}
+                        setTrue={() => setFilter({...filter, admin: 'true'})}
+                        setFalse={() => setFilter({...filter, admin: 'false'})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Disabled'}
+                        value={filter.disabled}
+                        setNull={() => setFilter({...filter, disabled: 0})}
+                        setTrue={() => setFilter({...filter, disabled: 'true'})}
+                        setFalse={() => setFilter({...filter, disabled: 'false'})}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogFilterActive(false), text: 'Close'},
+                    {action: () => setQuery(), text: 'Confirm'},
                 ]}
             />}
         </>
