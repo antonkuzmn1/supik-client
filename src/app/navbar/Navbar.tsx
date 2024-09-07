@@ -64,6 +64,9 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
             <div className='title'>
                 <p>{displayedTitle}</p>
             </div>
+            <div className='version'>
+                <p>Version: {import.meta.env.VITE_VERSION}</p>
+            </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
                     {props.routePages.map((page, index) => (
