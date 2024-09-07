@@ -66,22 +66,28 @@ const defTableHeaders: TableHeaders[] = [
 ]
 
 export interface VpnFilter {
-    name: string;
-    title: string;
-    remoteAddress: string;
-    service: string;
+    routerName: string,
+    name: string,
+    // title: string,
+    userName: string;
+    remoteAddress: string,
+    service: string,
 }
 
 const VpnFilterDefault: VpnFilter = {
+    routerName: '',
     name: '',
-    title: '',
+    // title: '',
+    userName: '',
     remoteAddress: '',
     service: '',
 }
 
 const filterFields: { key: keyof VpnFilter, title: string, placeholder: string }[] = [
+    {key: 'routerName', title: 'Router', placeholder: 'Enter text'},
     {key: 'name', title: 'Name', placeholder: 'Enter text'},
-    {key: 'title', title: 'Title', placeholder: 'Enter text'},
+    // {key: 'title', title: 'Title', placeholder: 'Enter text'},
+    {key: 'userName', title: 'User', placeholder: 'Enter text'},
     {key: 'remoteAddress', title: 'Remote Address', placeholder: 'Enter text'},
     {key: 'service', title: 'Service', placeholder: 'Enter text'},
 ];
