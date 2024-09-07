@@ -326,7 +326,9 @@ const PageVpns: React.FC = () => {
     const getUsers = () => {
         dispatch(setAppLoading(true));
         axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
-            setUsers(response.data);
+            setUsers(response.data.filter((user: any) => {
+                return user.disabled === 0;
+            }));
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
