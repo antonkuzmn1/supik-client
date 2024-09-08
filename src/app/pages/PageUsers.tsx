@@ -36,9 +36,6 @@ export interface UserFields {
 const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    // {text: 'Surname', field: 'surname', width: '150px', type: 'String'},
-    // {text: 'Name', field: 'name', width: '150px', type: 'String'},
-    // {text: 'Patronymic', field: 'patronymic', width: '150px', type: 'String'},
     {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},

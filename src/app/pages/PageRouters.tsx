@@ -14,6 +14,9 @@ import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldInputFile from "../fields/FieldInputFile.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -42,6 +45,8 @@ const defTableHeaders: { text: string, field: keyof RouterFields, width: string,
 
 const PageRouters: React.FC = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [routers, setRouters] = useState<RouterFields[]>([]);
 
@@ -54,6 +59,7 @@ const PageRouters: React.FC = () => {
     const [dialogSyncActive, setDialogSyncActive] = useState<boolean>(false);
     const [dialogViewersActive, setDialogViewersActive] = useState<boolean>(false);
     const [dialogEditorsActive, setDialogEditorsActive] = useState<boolean>(false);
+    const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [login, setLogin] = useState<string>('');
@@ -71,11 +77,15 @@ const PageRouters: React.FC = () => {
     const [viewers, setViewers] = useState<any[]>([]);
     const [editors, setEditors] = useState<any[]>([]);
 
+    const [filter, setFilter] = useState<any>({});
+
     /// CRUD
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
+            params: getQueryObj(),
+        }).then((response) => {
             setRouters(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -407,6 +417,10 @@ const PageRouters: React.FC = () => {
         });
     }
 
+    const openFilterDialog = () => {
+        setDialogFilterActive(true)
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof RouterFields, asc: boolean) => {
@@ -442,12 +456,57 @@ const PageRouters: React.FC = () => {
         return new File([blob], fileName, {type: blob.type});
     };
 
+    const setQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        Object.keys(filter).forEach(key => {
+            if (filter[key]) {
+                queryParams.set(key, filter[key]);
+            } else {
+                queryParams.delete(key);
+            }
+        });
+
+        navigate({
+            pathname: location.pathname,
+            search: queryParams.toString(),
+        }, {replace: true});
+
+        setDialogFilterActive(false);
+    }
+
+    const getQueryObj = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const queryObject: any = {};
+
+        for (const [key, value] of queryParams.entries()) {
+            queryObject[key] = value;
+        }
+
+        return queryObject;
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Routers'));
         getAll();
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+
+        const filterParams: any = {};
+        for (const [key, value] of queryParams.entries()) {
+            filterParams[key] = value || '';
+        }
+
+        setFilter(filterParams);
+    }, [location.search, routers]);
+
+    useEffect(() => {
+        console.log('filter:', filter);
+    }, [filter]);
 
     return (
         <>
@@ -458,6 +517,7 @@ const PageRouters: React.FC = () => {
                         <th className={'action'}>
                             <div className={'action-buttons'}>
                                 <button
+                                    onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
                                 />
                                 <button
@@ -780,6 +840,80 @@ const PageRouters: React.FC = () => {
                 </div>}
                 buttons={[
                     {action: () => setDialogEditorsActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogFilterActive && <Dialog
+                title={'Filter Accounts'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <FieldInputDateRange
+                        title={'Created'}
+                        valueGte={filter.createdGte}
+                        valueLte={filter.createdLte}
+                        setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
+                    />
+                    <FieldInputDateRange
+                        title={'Updated'}
+                        valueGte={filter.updatedGte}
+                        valueLte={filter.updatedLte}
+                        setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Login'}
+                        placeholder={'Enter text'}
+                        value={filter.login}
+                        onChange={(e) => setFilter({...filter, login: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Password'}
+                        placeholder={'Enter text'}
+                        value={filter.password}
+                        onChange={(e) => setFilter({...filter, password: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Internal addr'}
+                        placeholder={'Enter text'}
+                        value={filter.localAddress}
+                        onChange={(e) => setFilter({...filter, localAddress: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'External addr'}
+                        placeholder={'Enter text'}
+                        value={filter.remoteAddress}
+                        onChange={(e) => setFilter({...filter, remoteAddress: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name'}
+                        placeholder={'Enter text'}
+                        value={filter.name}
+                        onChange={(e) => setFilter({...filter, name: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Title'}
+                        placeholder={'Enter text'}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'VPN Server'}
+                        value={filter.disabled}
+                        invert={true}
+                        setNull={() => setFilter({...filter, disabled: 0})}
+                        setTrue={() => setFilter({...filter, disabled: 'true'})}
+                        setFalse={() => setFilter({...filter, disabled: 'false'})}
+                    />
+                    <FieldInputString
+                        title={'L2TP Key'}
+                        placeholder={'Enter text'}
+                        value={filter.l2tpKey}
+                        onChange={(e) => setFilter({...filter, l2tpKey: e.target.value})}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogFilterActive(false), text: 'Close'},
+                    {action: () => setQuery(), text: 'Confirm'},
                 ]}
             />}
         </>

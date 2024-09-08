@@ -343,11 +343,7 @@ const PageGroups: React.FC = () => {
         }
 
         setFilter(filterParams);
-    }, [location.search, accounts]);
-
-    useEffect(() => {
-        console.log('filter:', filter);
-    }, [filter]);
+    }, [location.search, groups]);
 
     return (
         <>

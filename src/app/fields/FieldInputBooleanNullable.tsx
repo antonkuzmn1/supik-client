@@ -8,6 +8,7 @@ export interface FieldInputBooleanNullableProps {
     setNull: () => void,
     setTrue: () => void,
     setFalse: () => void,
+    invert?: boolean,
 }
 
 const FieldInputBooleanNullable: React.FC<FieldInputBooleanNullableProps> = (props: FieldInputBooleanNullableProps) => {
@@ -29,14 +30,14 @@ const FieldInputBooleanNullable: React.FC<FieldInputBooleanNullableProps> = (pro
                         'active': props.value === 'true',
                     })}
                     onClick={props.setTrue}
-                    children={'True'}
+                    children={props.invert ? 'False' : 'True'}
                 />
                 <button
                     className={classNames({
                         'active': props.value === 'false',
                     })}
                     onClick={props.setFalse}
-                    children={'False'}
+                    children={props.invert ? 'True' : 'False'}
                 />
             </div>
         </div>
