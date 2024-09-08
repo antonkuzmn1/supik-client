@@ -13,6 +13,9 @@ import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -46,14 +49,16 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
 ]
 
 const PageUsers: React.FC = () => {
-
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [rows, setRows] = useState<UserFields[]>([]);
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
+    const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -65,11 +70,15 @@ const PageUsers: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [disabled, setDisabled] = useState<boolean>(false);
 
+    const [filter, setFilter] = useState<any>({});
+
     /// CRUD
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
+            params: getQueryObj(),
+        }).then((response) => {
             setRows(response.data.map((vpn: any) => {
                 return {
                     ...vpn,
@@ -224,6 +233,10 @@ const PageUsers: React.FC = () => {
         })
     }
 
+    const openFilterDialog = () => {
+        setDialogFilterActive(true)
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof UserFields, asc: boolean) => {
@@ -237,12 +250,53 @@ const PageUsers: React.FC = () => {
         setRows(sorted);
     };
 
+    const setQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        Object.keys(filter).forEach(key => {
+            if (filter[key]) {
+                queryParams.set(key, filter[key]);
+            } else {
+                queryParams.delete(key);
+            }
+        });
+
+        navigate({
+            pathname: location.pathname,
+            search: queryParams.toString(),
+        }, {replace: true});
+
+        setDialogFilterActive(false);
+    }
+
+    const getQueryObj = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const queryObject: any = {};
+
+        for (const [key, value] of queryParams.entries()) {
+            queryObject[key] = value;
+        }
+
+        return queryObject;
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Users'));
         getAll();
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+
+        const filterParams: any = {};
+        for (const [key, value] of queryParams.entries()) {
+            filterParams[key] = value || '';
+        }
+
+        setFilter(filterParams);
+    }, [location.search, rows]);
 
     return (
         <>
@@ -253,6 +307,7 @@ const PageUsers: React.FC = () => {
                         <th className={'action'}>
                             <div className={'action-buttons'}>
                                 <button
+                                    onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
                                 />
                                 <button
@@ -455,6 +510,85 @@ const PageUsers: React.FC = () => {
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
                     {action: () => remove(), text: 'Delete'},
+                ]}
+            />}
+            {dialogFilterActive && <Dialog
+                title={'Filter Users'}
+                close={() => setDialogFilterActive(false)}
+                children={<>
+                    <FieldInputDateRange
+                        title={'Created'}
+                        valueGte={filter.createdGte}
+                        valueLte={filter.createdLte}
+                        setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
+                    />
+                    <FieldInputDateRange
+                        title={'Updated'}
+                        valueGte={filter.updatedGte}
+                        valueLte={filter.updatedLte}
+                        setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name'}
+                        placeholder={'Enter text'}
+                        value={filter.name}
+                        onChange={(e) => setFilter({...filter, name: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Surname'}
+                        placeholder={'Enter text'}
+                        value={filter.surname}
+                        onChange={(e) => setFilter({...filter, surname: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Patronymic'}
+                        placeholder={'Enter text'}
+                        value={filter.patronymic}
+                        onChange={(e) => setFilter({...filter, patronymic: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Fullname'}
+                        placeholder={'Enter text'}
+                        value={filter.fullname}
+                        onChange={(e) => setFilter({...filter, fullname: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Department'}
+                        placeholder={'Enter text'}
+                        value={filter.department}
+                        onChange={(e) => setFilter({...filter, department: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Title'}
+                        placeholder={'Enter text'}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Login'}
+                        placeholder={'Enter text'}
+                        value={filter.login}
+                        onChange={(e) => setFilter({...filter, login: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Password'}
+                        placeholder={'Enter text'}
+                        value={filter.password}
+                        onChange={(e) => setFilter({...filter, password: e.target.value})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Disabled'}
+                        value={filter.disabled}
+                        setNull={() => setFilter({...filter, disabled: 0})}
+                        setTrue={() => setFilter({...filter, disabled: 'true'})}
+                        setFalse={() => setFilter({...filter, disabled: 'false'})}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogFilterActive(false), text: 'Close'},
+                    {action: () => setQuery(), text: 'Confirm'},
                 ]}
             />}
         </>

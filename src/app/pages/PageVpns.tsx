@@ -369,10 +369,6 @@ const PageVpns: React.FC = () => {
         setFilter(filterParams);
     }, [location.search, routers]);
 
-    useEffect(() => {
-        console.log('filter:', filter);
-    }, [filter]);
-
     return (
         <>
             <div className={'table'}>
