@@ -568,7 +568,7 @@ const PageGroups: React.FC = () => {
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Accounts'}
+                title={'Filter Groups'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <FieldInputDateRange

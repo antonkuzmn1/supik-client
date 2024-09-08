@@ -504,10 +504,6 @@ const PageRouters: React.FC = () => {
         setFilter(filterParams);
     }, [location.search, routers]);
 
-    useEffect(() => {
-        console.log('filter:', filter);
-    }, [filter]);
-
     return (
         <>
             <div className={'table'}>
@@ -843,7 +839,7 @@ const PageRouters: React.FC = () => {
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Accounts'}
+                title={'Filter Routers'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <FieldInputDateRange

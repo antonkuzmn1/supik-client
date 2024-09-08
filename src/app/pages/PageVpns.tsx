@@ -18,6 +18,9 @@ import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import {UserFields} from "./PageUsers.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
+import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -60,37 +63,7 @@ const defTableHeaders: TableHeaders[] = [
     {text: 'User', field: 'userName', width: '150px', type: 'String'},
     {text: 'Remote Address', field: 'remoteAddress', width: '150px', type: 'String'},
     {text: 'Service', field: 'service', width: '100px', type: 'String'},
-    // {text: 'Title', field: 'title', width: '150px', type: 'String'},
-    // {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    // {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
-
-export interface VpnFilter {
-    routerName: string,
-    name: string,
-    // title: string,
-    userName: string;
-    remoteAddress: string,
-    service: string,
-}
-
-const VpnFilterDefault: VpnFilter = {
-    routerName: '',
-    name: '',
-    // title: '',
-    userName: '',
-    remoteAddress: '',
-    service: '',
-}
-
-const filterFields: { key: keyof VpnFilter, title: string, placeholder: string }[] = [
-    {key: 'routerName', title: 'Router', placeholder: 'Enter text'},
-    {key: 'name', title: 'Name', placeholder: 'Enter text'},
-    // {key: 'title', title: 'Title', placeholder: 'Enter text'},
-    {key: 'userName', title: 'User', placeholder: 'Enter text'},
-    {key: 'remoteAddress', title: 'Remote Address', placeholder: 'Enter text'},
-    {key: 'service', title: 'Service', placeholder: 'Enter text'},
-];
 
 const PageVpns: React.FC = () => {
     const dispatch = useDispatch();
@@ -98,7 +71,6 @@ const PageVpns: React.FC = () => {
     const navigate = useNavigate();
 
     const [rows, setRows] = useState<VpnFields[]>([]);
-    const [rowsFiltered, setRowsFiltered] = useState<VpnFields[]>([]);
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
@@ -120,13 +92,15 @@ const PageVpns: React.FC = () => {
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
 
-    const [filter, setFilter] = useState<VpnFilter>(VpnFilterDefault);
+    const [filter, setFilter] = useState<any>({});
 
     /// CRUD
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {
+            params: getQueryObj(),
+        }).then((response) => {
             const responseWithRouter = response.data.map((vpn: any) => {
                 return {
                     ...vpn,
@@ -134,7 +108,6 @@ const PageVpns: React.FC = () => {
                     userName: vpn.user ? getInitialsFromFullname(vpn.user.fullname) : 'NULL',
                 }
             })
-            console.log(responseWithRouter[0].userName)
             setRows(responseWithRouter);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -350,8 +323,8 @@ const PageVpns: React.FC = () => {
         const queryParams = new URLSearchParams(location.search);
 
         Object.keys(filter).forEach(key => {
-            if (filter[key as keyof VpnFilter]) {
-                queryParams.set(key, filter[key as keyof VpnFilter]);
+            if (filter[key]) {
+                queryParams.set(key, filter[key]);
             } else {
                 queryParams.delete(key);
             }
@@ -362,13 +335,18 @@ const PageVpns: React.FC = () => {
             search: queryParams.toString(),
         }, {replace: true});
 
-        setRowsFiltered(rows.filter((row) => {
-            return Object.keys(filter).every(key =>
-                row[key as keyof VpnFilter]?.toLowerCase().includes(filter[key as keyof VpnFilter].toLowerCase())
-            );
-        }));
-
         setDialogFilterActive(false);
+    }
+
+    const getQueryObj = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const queryObject: any = {};
+
+        for (const [key, value] of queryParams.entries()) {
+            queryObject[key] = value;
+        }
+
+        return queryObject;
     }
 
     /// HOOKS
@@ -376,7 +354,9 @@ const PageVpns: React.FC = () => {
     useEffect(() => {
         dispatch(setAppTitle('VPNs'));
         getAll();
-    }, []);
+        getRouters();
+        getUsers();
+    }, [location.search]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -387,13 +367,11 @@ const PageVpns: React.FC = () => {
         }
 
         setFilter(filterParams);
+    }, [location.search, routers]);
 
-        setRowsFiltered(rows.filter((row) => {
-            return Object.keys(filterParams).every(key =>
-                row[key as keyof VpnFilter]?.toLowerCase().includes(filterParams[key].toLowerCase())
-            );
-        }));
-    }, [location.search, rows]);
+    useEffect(() => {
+        console.log('filter:', filter);
+    }, [filter]);
 
     return (
         <>
@@ -438,7 +416,7 @@ const PageVpns: React.FC = () => {
                 </table>
                 <table className={'body'}>
                     <tbody>
-                    {rowsFiltered.map((row, index) => (
+                    {rows.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
@@ -649,21 +627,88 @@ const PageVpns: React.FC = () => {
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter VPN'}
-                close={() => setDialogDeleteActive(false)}
+                title={'Filter VPNs'}
+                close={() => setDialogFilterActive(false)}
                 children={<>
-                    {filterFields.map((filterField, index) => {
-                        return (
-                            <FieldInputString
-                                key={index}
-                                title={filterField.title}
-                                placeholder={filterField.placeholder}
-                                value={filter[filterField.key]}
-                                onChange={(e) => setFilter({...filter, [filterField.key]: e.target.value})}
-                            />
-                        )
-                    })
-                    }
+                    <FieldInputDateRange
+                        title={'Created'}
+                        valueGte={filter.createdGte}
+                        valueLte={filter.createdLte}
+                        setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
+                    />
+                    <FieldInputDateRange
+                        title={'Updated'}
+                        valueGte={filter.updatedGte}
+                        valueLte={filter.updatedLte}
+                        setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name'}
+                        placeholder={'Enter text'}
+                        value={filter.name}
+                        onChange={(e) => setFilter({...filter, name: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Password'}
+                        placeholder={'Enter text'}
+                        value={filter.password}
+                        onChange={(e) => setFilter({...filter, password: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Profile'}
+                        placeholder={'Enter text'}
+                        value={filter.profile}
+                        onChange={(e) => setFilter({...filter, profile: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Service'}
+                        placeholder={'Enter text'}
+                        value={filter.service}
+                        onChange={(e) => setFilter({...filter, service: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Remote addr'}
+                        placeholder={'Enter text'}
+                        value={filter.remoteAddress}
+                        onChange={(e) => setFilter({...filter, remoteAddress: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Title'}
+                        placeholder={'Enter text'}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Disabled'}
+                        value={filter.disabled}
+                        setNull={() => setFilter({...filter, disabled: 0})}
+                        setTrue={() => setFilter({...filter, disabled: 'true'})}
+                        setFalse={() => setFilter({...filter, disabled: 'false'})}
+                    />
+                    <FieldInputSelectMany
+                        title={'Routers'}
+                        value={filter.routerId || []}
+                        setValue={(ids: number[]) => setFilter({...filter, routerId: ids})}
+                        variants={routers.map((router: RouterFields) => {
+                            return {
+                                value: Number(router.id),
+                                text: `[ID:${router.id}] ${router.name}`
+                            };
+                        })}
+                    />
+                    <FieldInputSelectMany
+                        title={'Users'}
+                        value={filter.userId || []}
+                        setValue={(ids: number[]) => setFilter({...filter, userId: ids})}
+                        variants={users.map((user: UserFields) => {
+                            return {
+                                value: Number(user.id),
+                                text: `[ID:${user.id}] ${user.fullname}`
+                            };
+                        })}
+                    />
                 </>}
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: 'Close'},
