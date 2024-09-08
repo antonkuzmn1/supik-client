@@ -19,7 +19,7 @@ const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStri
                 <input
                     type={props.password ? 'password' : 'text'}
                     placeholder={props.placeholder}
-                    value={props.value}
+                    value={props.value || ''}
                     onChange={props.onChange}
                 />
             </div>

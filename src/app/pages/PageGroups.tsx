@@ -13,6 +13,9 @@ import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
 import FieldInputRadio from "../fields/FieldInputRadio.tsx";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
+import FieldInputRadioNullable from "../fields/FieldInputRadioNullable.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -38,6 +41,8 @@ const defTableHeaders: { text: string, field: keyof GroupFields, width: string, 
 
 const PageGroups: React.FC = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [groups, setGroups] = useState<GroupFields[]>([]);
 
@@ -45,6 +50,7 @@ const PageGroups: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
+    const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -55,11 +61,15 @@ const PageGroups: React.FC = () => {
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
 
+    const [filter, setFilter] = useState<any>({});
+
     /// CRUD
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
+        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
+            params: getQueryObj(),
+        }).then((response) => {
             setGroups(response.data)
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -270,6 +280,10 @@ const PageGroups: React.FC = () => {
         })
     }
 
+    const openFilterDialog = () => {
+        setDialogFilterActive(true)
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof GroupFields, asc: boolean) => {
@@ -283,12 +297,57 @@ const PageGroups: React.FC = () => {
         setGroups(sorted);
     };
 
+    const setQuery = () => {
+        const queryParams = new URLSearchParams(location.search);
+
+        Object.keys(filter).forEach(key => {
+            if (filter[key]) {
+                queryParams.set(key, filter[key]);
+            } else {
+                queryParams.delete(key);
+            }
+        });
+
+        navigate({
+            pathname: location.pathname,
+            search: queryParams.toString(),
+        }, {replace: true});
+
+        setDialogFilterActive(false);
+    }
+
+    const getQueryObj = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const queryObject: any = {};
+
+        for (const [key, value] of queryParams.entries()) {
+            queryObject[key] = value;
+        }
+
+        return queryObject;
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Groups'));
         getAll();
-    }, []);
+    }, [location.search]);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+
+        const filterParams: any = {};
+        for (const [key, value] of queryParams.entries()) {
+            filterParams[key] = value || '';
+        }
+
+        setFilter(filterParams);
+    }, [location.search, accounts]);
+
+    useEffect(() => {
+        console.log('filter:', filter);
+    }, [filter]);
 
     return (
         <>
@@ -299,6 +358,7 @@ const PageGroups: React.FC = () => {
                         <th className={'action'}>
                             <div className={'action-buttons'}>
                                 <button
+                                    onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
                                 />
                                 <button
@@ -509,6 +569,62 @@ const PageGroups: React.FC = () => {
                 </div>}
                 buttons={[
                     {action: () => setDialogGroupsActive(false), text: 'Close'},
+                ]}
+            />}
+            {dialogFilterActive && <Dialog
+                title={'Filter Accounts'}
+                close={() => setDialogDeleteActive(false)}
+                children={<>
+                    <FieldInputDateRange
+                        title={'Created'}
+                        valueGte={filter.createdGte}
+                        valueLte={filter.createdLte}
+                        setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
+                    />
+                    <FieldInputDateRange
+                        title={'Updated'}
+                        valueGte={filter.updatedGte}
+                        valueLte={filter.updatedLte}
+                        setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
+                        setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name'}
+                        placeholder={'Enter text'}
+                        value={filter.name}
+                        onChange={(e) => setFilter({...filter, name: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Title'}
+                        placeholder={'Enter text'}
+                        value={filter.title}
+                        onChange={(e) => setFilter({...filter, title: e.target.value})}
+                    />
+                    <FieldInputRadioNullable
+                        title={'Access Users'}
+                        value={filter.accessUsers}
+                        variants={[
+                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessUsers: undefined})},
+                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessUsers: 'no'})},
+                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessUsers: 'viewer'})},
+                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessUsers: 'editor'})},
+                        ]}
+                    />
+                    <FieldInputRadioNullable
+                        title={'Access Routers'}
+                        value={filter.accessRouters}
+                        variants={[
+                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessRouters: undefined})},
+                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessRouters: 'no'})},
+                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessRouters: 'viewer'})},
+                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessRouters: 'editor'})},
+                        ]}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogFilterActive(false), text: 'Close'},
+                    {action: () => setQuery(), text: 'Confirm'},
                 ]}
             />}
         </>

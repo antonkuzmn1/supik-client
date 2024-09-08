@@ -351,10 +351,6 @@ const PageAccounts: React.FC = () => {
         setFilter(filterParams);
     }, [location.search, accounts]);
 
-    useEffect(() => {
-        console.log('filter:', filter);
-    }, [filter]);
-
     return (
         <>
             <div className={'table'}>
