@@ -34,17 +34,18 @@ export interface RoutePageInterface {
     element: ReactNode;
     icon: ReactNode;
     title: string;
+    admin: boolean;
 }
 
 export const routePages: RoutePageInterface[] = [
-    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: ""},
-    {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts"},
-    {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups"},
-    {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers"},
-    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "VPNs"},
-    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "Users"},
-    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails"},
-    {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items"},
+    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "", admin: false},
+    {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts", admin: true},
+    {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups", admin: true},
+    {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers", admin: false},
+    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "VPNs", admin: false},
+    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "Users", admin: false},
+    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails",  admin: true},
+    {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items", admin: true},
 ];
 
 const router = createBrowserRouter([

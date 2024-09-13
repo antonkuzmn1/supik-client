@@ -17,9 +17,12 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
 
     const pageTitle = useSelector((state: RootState) => state.app.title);
     const accountFullname = useSelector((state: RootState) => state.account.fullname);
+    const accountAdmin = useSelector((state: RootState) => state.account.admin);
 
     const [dropdownIsActive, setDropdownIsActive] = useState(false);
     const [displayedTitle, setDisplayedTitle] = useState<string>('');
+
+    const [filteredRoutePages, setFilteredRoutePages] = useState<RoutePageInterface[]>([]);
 
     const toggleDropdown = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -50,6 +53,14 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
         setDisplayedTitle(pageTitle === "" ? accountFullname : pageTitle);
     }, [pageTitle]);
 
+    useEffect(() => {
+        if (accountAdmin) {
+            setFilteredRoutePages(props.routePages);
+        } else {
+            setFilteredRoutePages(props.routePages.filter(page => !page.admin));
+        }
+    }, [props.routePages]);
+
     return (
         <div
             className='Navbar'
@@ -69,7 +80,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
-                    {props.routePages.map((page, index) => (
+                    {filteredRoutePages.map((page, index) => (
                         <button
                             key={index}
                             onClick={() => changePage(page)}
