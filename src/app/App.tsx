@@ -28,6 +28,8 @@ import {DeviceSize} from "../slices/deviceSlice.ts";
 import Auth from "./auth/Auth.tsx";
 import Dialog from "./dialogs/Dialog.tsx";
 import {setAppError} from "../slices/appSlice.ts";
+import PageLogs from "./pages/PageLogs.tsx";
+import IconLogs from "./icons/IconLogs.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -46,6 +48,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "Users", admin: false},
     {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails",  admin: true},
     {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items", admin: true},
+    {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "Logs", admin: true},
 ];
 
 const router = createBrowserRouter([
