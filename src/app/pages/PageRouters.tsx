@@ -292,21 +292,21 @@ const PageRouters: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
-            setId(response.data.id);
-            setLogin(response.data.login);
-            setPassword(response.data.password);
-            setLocalAddress(response.data.localAddress);
-            setRemoteAddress(response.data.remoteAddress);
-            setName(response.data.name);
-            setTitle(response.data.title);
-            setDisabled(response.data.disabled);
-            if (response.data.certificate) {
-                const file = convertToFile(response.data.certificate, 'certificate.crt')
+            setId(response.data.router.id);
+            setLogin(response.data.router.login);
+            setPassword(response.data.router.password);
+            setLocalAddress(response.data.router.localAddress);
+            setRemoteAddress(response.data.router.remoteAddress);
+            setName(response.data.router.name);
+            setTitle(response.data.router.title);
+            setDisabled(response.data.router.disabled);
+            if (response.data.router.certificate) {
+                const file = convertToFile(response.data.router.certificate, 'certificate.crt')
                 setCertificate(file);
             } else {
                 setCertificate(null);
             }
-            setL2tpKey(response.data.l2tpKey);
+            setL2tpKey(response.data.router.l2tpKey);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -324,8 +324,8 @@ const PageRouters: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
-            setId(response.data.id);
-            setName(response.data.name);
+            setId(response.data.router.id);
+            setName(response.data.router.name);
             setDialogDeleteActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {

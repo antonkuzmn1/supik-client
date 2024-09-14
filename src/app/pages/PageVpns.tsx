@@ -91,6 +91,7 @@ const PageVpns: React.FC = () => {
 
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
+    const [profiles, setProfiles] = useState<any[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -302,6 +303,23 @@ const PageVpns: React.FC = () => {
         })
     }
 
+    const getRouterWithProfiles = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            setProfiles(response.data.profiles);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     const getUsers = () => {
         dispatch(setAppLoading(true));
         axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
@@ -368,6 +386,15 @@ const PageVpns: React.FC = () => {
 
         setFilter(filterParams);
     }, [location.search, routers]);
+
+    useEffect(() => {
+        if (routerId > 0) {
+            getRouterWithProfiles(routerId);
+        } else {
+            setProfiles([]);
+            setProfile('NULL');
+        }
+    }, [routerId]);
 
     return (
         <>
@@ -468,12 +495,30 @@ const PageVpns: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <FieldInputString
-                        title={"Profile"}
-                        placeholder={"Enter text"}
-                        value={profile}
-                        onChange={(e) => setProfile(e.target.value)}
-                    />
+                    <div className='Field'>
+                        <div className='title'>
+                            <p>{'Profile'}</p>
+                        </div>
+                        <div className='field'>
+                            <select
+                                value={profile}
+                                onChange={(e) => setProfile(e.target.value)}
+                            >
+                                <option
+                                    value={'NULL'}
+                                    children={'NULL'}
+                                />
+                                {profiles.map((profile, i) => (
+                                    <option
+                                        key={i}
+                                        value={profile.name}
+                                    >
+                                        {profile.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <FieldInputString
                         title={"Service"}
                         placeholder={"Enter text"}
@@ -552,12 +597,30 @@ const PageVpns: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <FieldInputString
-                        title={"Profile"}
-                        placeholder={"Enter text"}
-                        value={profile}
-                        onChange={(e) => setProfile(e.target.value)}
-                    />
+                    <div className='Field'>
+                        <div className='title'>
+                            <p>{'Profile'}</p>
+                        </div>
+                        <div className='field'>
+                            <select
+                                value={profile}
+                                onChange={(e) => setProfile(e.target.value)}
+                            >
+                                <option
+                                    value={'NULL'}
+                                    children={'NULL'}
+                                />
+                                {profiles.map((profile, i) => (
+                                    <option
+                                        key={i}
+                                        value={profile.name}
+                                    >
+                                        {profile.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <FieldInputString
                         title={"Service"}
                         placeholder={"Enter text"}
