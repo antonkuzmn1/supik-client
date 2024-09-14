@@ -57,7 +57,7 @@ const Auth: React.FC = () => {
     return (
         <div className="Auth">
             <div className='frame'>
-                <form onSubmit={login} className='content'>
+                <div className='content'>
                     <div className='header'>
                         <h1>Authorization</h1>
                     </div>
@@ -77,12 +77,12 @@ const Auth: React.FC = () => {
                     <div className='form'>
                         <button
                             className='submit'
-                            type="submit"
+                            onClick={login}
                         >
                             Sign in
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     )
