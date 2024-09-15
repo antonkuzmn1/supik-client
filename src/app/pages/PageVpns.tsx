@@ -92,6 +92,8 @@ const PageVpns: React.FC = () => {
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
     const [profiles, setProfiles] = useState<any[]>([]);
+    const [pools, setPools] = useState<any>({});
+    const [selectedPool, setSelectedPool] = useState<string[] | undefined>(undefined);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -303,12 +305,14 @@ const PageVpns: React.FC = () => {
         })
     }
 
-    const getRouterWithProfiles = (id: number) => {
+    const getRouter = (id: number) => {
         dispatch(setAppLoading(true));
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
+            setPools(response.data.pools);
             setProfiles(response.data.profiles);
+            setSelectedPool(response.data.pools[profile]);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -389,12 +393,16 @@ const PageVpns: React.FC = () => {
 
     useEffect(() => {
         if (routerId > 0) {
-            getRouterWithProfiles(routerId);
+            getRouter(routerId);
         } else {
             setProfiles([]);
             setProfile('NULL');
         }
     }, [routerId]);
+
+    useEffect(() => {
+        setSelectedPool(pools[profile]);
+    }, [profile]);
 
     return (
         <>
@@ -525,12 +533,28 @@ const PageVpns: React.FC = () => {
                         value={service}
                         onChange={(e) => setService(e.target.value)}
                     />
-                    <FieldInputString
-                        title={"Remote Addr"}
-                        placeholder={"Enter text"}
-                        value={remoteAddress}
-                        onChange={(e) => setRemoteAddress(e.target.value)}
-                    />
+                    <div className='Field'>
+                        <div className='title'>
+                            <p>{'Remote Addr'}</p>
+                        </div>
+                        <div className='field'>
+                            <input
+                                type='search'
+                                value={remoteAddress}
+                                onChange={(e) => setRemoteAddress(e.target.value)}
+                                list='remote-options'
+                                placeholder='Enter text'
+                                style={{height: '100%'}}
+                            />
+                            <datalist id='remote-options'>
+                                {selectedPool && selectedPool.map((addr: string, i: number) => (
+                                    <option key={i} value={addr}>
+                                        {addr}
+                                    </option>
+                                ))}
+                            </datalist>
+                        </div>
+                    </div>
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
@@ -627,12 +651,28 @@ const PageVpns: React.FC = () => {
                         value={service}
                         onChange={(e) => setService(e.target.value)}
                     />
-                    <FieldInputString
-                        title={"Remote Addr"}
-                        placeholder={"Enter text"}
-                        value={remoteAddress}
-                        onChange={(e) => setRemoteAddress(e.target.value)}
-                    />
+                    <div className='Field'>
+                        <div className='title'>
+                            <p>{'Remote Addr'}</p>
+                        </div>
+                        <div className='field'>
+                            <input
+                                type='search'
+                                value={remoteAddress}
+                                onChange={(e) => setRemoteAddress(e.target.value)}
+                                list='remote-options'
+                                placeholder='Enter text'
+                                style={{height: '100%'}}
+                            />
+                            <datalist id='remote-options'>
+                                {selectedPool && selectedPool.map((addr: string, i: number) => (
+                                    <option key={i} value={addr}>
+                                        {addr}
+                                    </option>
+                                ))}
+                            </datalist>
+                        </div>
+                    </div>
                     <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
