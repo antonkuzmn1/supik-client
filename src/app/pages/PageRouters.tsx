@@ -368,7 +368,7 @@ const PageRouters: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
-            setViewers(response.data.routerGroupViewer);
+            setViewers(response.data.router.routerGroupViewer);
             axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
                 setGroups(response.data);
                 setDialogViewersActive(true);
@@ -395,7 +395,7 @@ const PageRouters: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
             params: {id: Number(id)}
         }).then((response) => {
-            setEditors(response.data.routerGroupEditor);
+            setEditors(response.data.router.routerGroupEditor);
             axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {}).then((response) => {
                 setGroups(response.data);
                 setDialogEditorsActive(true);
