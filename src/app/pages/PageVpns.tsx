@@ -297,9 +297,9 @@ const PageVpns: React.FC = () => {
             }))
         }).catch((error) => {
             if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
+                // dispatch(setAppError(error.response.data));
             } else {
-                dispatch(setAppError(error.message));
+                // dispatch(setAppError(error.message));
             }
         }).finally(() => {
         })
@@ -315,9 +315,9 @@ const PageVpns: React.FC = () => {
             setSelectedPool(response.data.pools[profile]);
         }).catch((error) => {
             if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
+                // dispatch(setAppError(error.response.data));
             } else {
-                dispatch(setAppError(error.message));
+                // dispatch(setAppError(error.message));
             }
         }).finally(() => {
             dispatch(setAppLoading(false));
@@ -332,9 +332,9 @@ const PageVpns: React.FC = () => {
             }));
         }).catch((error) => {
             if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
+                // dispatch(setAppError(error.response.data));
             } else {
-                dispatch(setAppError(error.message));
+                // dispatch(setAppError(error.message));
             }
         }).finally(() => {
             dispatch(setAppLoading(false));
