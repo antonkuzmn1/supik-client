@@ -19,6 +19,7 @@ import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import {DepartmentFields} from "./PageDepartments.tsx";
 import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
+import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -46,7 +47,7 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
-    {text: 'Password', field: 'password', width: '150px', type: 'String'},
+    // {text: 'Password', field: 'password', width: '150px', type: 'String'},
     {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
@@ -445,6 +446,10 @@ const PageUsers: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
+                    />
                     <FieldInputSelectOne
                         title={'Department'}
                         value={departmentId}
@@ -512,6 +517,10 @@ const PageUsers: React.FC = () => {
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
                     />
                     <FieldInputSelectOne
                         title={'Department'}

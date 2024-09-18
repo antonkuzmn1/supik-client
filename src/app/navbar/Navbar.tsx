@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {setAppTitle} from "../../slices/appSlice.ts";
 import {RootState} from "../../utils/store.ts";
+import {version} from "../../../package.json";
 
 export interface NavbarProps {
     routePages: RoutePageInterface[]
@@ -76,7 +77,8 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 <p>{displayedTitle}</p>
             </div>
             <div className='version'>
-                <p>Version: {import.meta.env.VITE_VERSION}</p>
+                {/*<p>Version: {import.meta.env.VITE_VERSION}</p>*/}
+                <p>Version: {version}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
