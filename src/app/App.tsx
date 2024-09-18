@@ -30,6 +30,8 @@ import Dialog from "./dialogs/Dialog.tsx";
 import {setAppError} from "../slices/appSlice.ts";
 import PageLogs from "./pages/PageLogs.tsx";
 import IconLogs from "./icons/IconLogs.tsx";
+import PageDepartments from "./pages/PageDepartments.tsx";
+import IconDepartments from "./icons/IconDepartments.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -46,6 +48,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers", admin: false},
     {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "VPNs", admin: false},
     {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "Users", admin: false},
+    {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "Departments", admin: false},
     {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails",  admin: true},
     {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items", admin: true},
     {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "Logs", admin: true},

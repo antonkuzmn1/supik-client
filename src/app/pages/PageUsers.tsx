@@ -16,6 +16,9 @@ import FieldValueString from "../fields/FieldValueString.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
+import {DepartmentFields} from "./PageDepartments.tsx";
+import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
+import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -28,10 +31,12 @@ export interface UserFields {
     surname: string,
     patronymic: string,
     fullname: string,
-    department: string,
     title: string,
     login: string,
     password: string,
+
+    departmentId: number,
+    departmentName: string,
 
     disabled: 0 | 1,
 }
@@ -42,7 +47,7 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
     {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
-    {text: 'Department', field: 'department', width: '150px', type: 'String'},
+    {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
@@ -64,11 +69,13 @@ const PageUsers: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [patronymic, setPatronymic] = useState<string>('');
-    const [department, setDepartment] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [departmentId, setDepartmentId] = useState<number>(0);
     const [disabled, setDisabled] = useState<boolean>(false);
+
+    const [departments, setDepartments] = useState<DepartmentFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -79,9 +86,10 @@ const PageUsers: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
             params: getQueryObj(),
         }).then((response) => {
-            setRows(response.data.map((vpn: any) => {
+            setRows(response.data.map((row: any) => {
                 return {
-                    ...vpn,
+                    ...row,
+                    departmentName: row.department ? row.department.name : 'NULL',
                 }
             }));
         }).catch((error) => {
@@ -102,10 +110,10 @@ const PageUsers: React.FC = () => {
             surname: surname,
             patronymic: patronymic,
             fullname: `${surname} ${name} ${patronymic}`,
-            department: department,
             title: title,
             login: login,
             password: password,
+            departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
             setDialogCreateActive(false);
@@ -129,10 +137,10 @@ const PageUsers: React.FC = () => {
             surname: surname,
             patronymic: patronymic,
             fullname: `${surname} ${name} ${patronymic}`,
-            department: department,
             title: title,
             login: login,
             password: password,
+            departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
             setDialogUpdateActive(false);
@@ -175,10 +183,10 @@ const PageUsers: React.FC = () => {
         setName('');
         setSurname('');
         setPatronymic('');
-        setDepartment('');
         setTitle('');
         setLogin('');
         setPassword('');
+        setDepartmentId(0);
         setDisabled(false);
         setDialogCreateActive(true);
     }
@@ -194,11 +202,11 @@ const PageUsers: React.FC = () => {
             setName(response.data.name);
             setSurname(response.data.surname);
             setPatronymic(response.data.patronymic);
-            setDepartment(response.data.department);
             setTitle(response.data.title);
             setLogin(response.data.login);
             setPassword(response.data.password);
             setDisabled(response.data.disabled);
+            setDepartmentId(response.data.departmentId ? response.data.departmentId : 0);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -280,11 +288,27 @@ const PageUsers: React.FC = () => {
         return queryObject;
     }
 
+    const getDepartments = () => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/department", {}).then((response) => {
+            setDepartments(response.data.departments);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                // dispatch(setAppError(error.response.data));
+            } else {
+                // dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// HOOKS
 
     useEffect(() => {
         dispatch(setAppTitle('Users'));
         getAll();
+        getDepartments();
     }, [location.search]);
 
     useEffect(() => {
@@ -404,12 +428,6 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Department"}
-                        placeholder={"Enter text"}
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                    />
-                    <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
                         value={title}
@@ -426,6 +444,18 @@ const PageUsers: React.FC = () => {
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldInputSelectOne
+                        title={'Department'}
+                        value={departmentId}
+                        setValue={setDepartmentId}
+                        nullable={true}
+                        variants={departments.map((department) => {
+                            return {
+                                value: Number(department.id),
+                                text: department.name
+                            }
+                        })}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -466,12 +496,6 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Department"}
-                        placeholder={"Enter text"}
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                    />
-                    <FieldInputString
                         title={"Title"}
                         placeholder={"Enter text"}
                         value={title}
@@ -488,6 +512,18 @@ const PageUsers: React.FC = () => {
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldInputSelectOne
+                        title={'Department'}
+                        value={departmentId}
+                        setValue={setDepartmentId}
+                        nullable={true}
+                        variants={departments.map((department) => {
+                            return {
+                                value: Number(department.id),
+                                text: department.name
+                            }
+                        })}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -555,12 +591,6 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setFilter({...filter, fullname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Department'}
-                        placeholder={'Enter text'}
-                        value={filter.department}
-                        onChange={(e) => setFilter({...filter, department: e.target.value})}
-                    />
-                    <FieldInputString
                         title={'Title'}
                         placeholder={'Enter text'}
                         value={filter.title}
@@ -577,6 +607,17 @@ const PageUsers: React.FC = () => {
                         placeholder={'Enter text'}
                         value={filter.password}
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
+                    />
+                    <FieldInputSelectMany
+                        title={'Departments'}
+                        value={filter.departmentId || []}
+                        setValue={(ids: number[]) => setFilter({...filter, departmentId: ids})}
+                        variants={departments.map((department: DepartmentFields) => {
+                            return {
+                                value: Number(department.id),
+                                text: `[ID:${department.id}] ${department.name}`
+                            };
+                        })}
                     />
                     <FieldInputBooleanNullable
                         title={'Disabled'}

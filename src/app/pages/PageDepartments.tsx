@@ -1,65 +1,66 @@
 import './Page.scss';
 import React, {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
-import axios from "axios";
 import IconTableFilter from "../icons/IconTableFilter.tsx";
 import IconTableCreate from "../icons/IconTableCreate.tsx";
 import IconSortAsc from "../icons/IconSortAsc.tsx";
 import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
+import {useDispatch} from "react-redux";
+import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import axios from "axios";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
 import FieldValueString from "../fields/FieldValueString.tsx";
-import FieldInputRadio from "../fields/FieldInputRadio.tsx";
-import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
-import FieldInputRadioNullable from "../fields/FieldInputRadioNullable.tsx";
+import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import {UserFields} from "./PageUsers.tsx";
+import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
+import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
-export interface GroupFields {
+export interface DepartmentFields {
     id: string;
     created: string;
     updated: string;
-    name: string;
-    title: string;
-    accessRouters: 0 | 1 | 2,
-    accessUsers: 0 | 1 | 2,
+
+    name: string,
+    title: string,
+
+    leaderId: number,
+    leaderName: string,
+    membersLength: number,
 }
 
-const defTableHeaders: { text: string, field: keyof GroupFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
+const defTableHeaders: { text: string, field: keyof DepartmentFields, width: string, type: TypeField }[] = [
+    {text: 'ID', field: 'id', width: '50px', type: 'String'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Routers', field: 'accessRouters', width: '100px', type: 'Integer'},
-    {text: 'Users', field: 'accessUsers', width: '100px', type: 'Integer'},
+    {text: 'Leader Name', field: 'leaderName', width: '300px', type: 'String'},
+    {text: 'Members', field: 'membersLength', width: '100px', type: 'Integer'},
+    {text: 'Title', field: 'title', width: '200px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
 
-const PageGroups: React.FC = () => {
+const PageDepartments: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [groups, setGroups] = useState<GroupFields[]>([]);
+    const [rows, setRows] = useState<DepartmentFields[]>([]);
 
     const [dialogCreateActive, setDialogCreateActive] = useState<boolean>(false);
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
-    const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
     const [title, setTitle] = useState<string>('');
-    const [accessRouters, setAccessRouters] = useState<number>(0);
-    const [accessUsers, setAccessUsers] = useState<number>(0);
+    const [leaderId, setLeaderId] = useState<number>(0);
 
-    const [accountGroups, setAccountGroups] = useState<any[]>([]);
-    const [accounts, setAccounts] = useState<any[]>([]);
+    const [users, setUsers] = useState<UserFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -67,10 +68,16 @@ const PageGroups: React.FC = () => {
 
     const getAll = () => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/department", {
             params: getQueryObj(),
         }).then((response) => {
-            setGroups(response.data)
+            setRows(response.data.departments.map((row: any) => {
+                return {
+                    ...row,
+                    leaderName: row.leader ? row.leader.fullname : 'NULL',
+                    membersLength: row.members.length,
+                }
+            }));
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -83,20 +90,11 @@ const PageGroups: React.FC = () => {
     }
 
     const create = () => {
-        if (accessRouters > 2 ||
-            accessRouters < 0 ||
-            accessUsers > 2 ||
-            accessUsers < 0
-        ) {
-            return;
-        }
-
         dispatch(setAppLoading(true));
-        axios.post(import.meta.env.VITE_BASE_URL + "/security/group", {
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/department", {
             name: name,
             title: title,
-            accessRouters: accessRouters,
-            accessUsers: accessUsers,
+            leaderId: leaderId,
         }).then((_response) => {
             setDialogCreateActive(false);
             getAll();
@@ -108,25 +106,16 @@ const PageGroups: React.FC = () => {
             }
         }).finally(() => {
             dispatch(setAppLoading(false));
-        })
+        });
     }
 
     const update = () => {
-        if (accessRouters > 2 ||
-            accessRouters < 0 ||
-            accessUsers > 2 ||
-            accessUsers < 0
-        ) {
-            return;
-        }
-
         dispatch(setAppLoading(true));
-        axios.put(import.meta.env.VITE_BASE_URL + "/security/group", {
+        axios.put(import.meta.env.VITE_BASE_URL + "/db/department", {
             id: id,
             name: name,
             title: title,
-            accessRouters: accessRouters,
-            accessUsers: accessUsers,
+            leaderId: leaderId,
         }).then((_response) => {
             setDialogUpdateActive(false);
             getAll();
@@ -138,13 +127,15 @@ const PageGroups: React.FC = () => {
             }
         }).finally(() => {
             dispatch(setAppLoading(false));
-        })
+        });
     }
 
     const remove = () => {
         dispatch(setAppLoading(true));
-        axios.delete(import.meta.env.VITE_BASE_URL + "/security/group", {
-            data: {id: id},
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/department", {
+            data: {
+                id: id,
+            },
         }).then((_response) => {
             setDialogDeleteActive(false);
             getAll();
@@ -159,68 +150,27 @@ const PageGroups: React.FC = () => {
         })
     }
 
-    const createAccountGroup = (accountId: number) => {
-        const groupId = id;
-        dispatch(setAppLoading(true));
-        axios.post(import.meta.env.VITE_BASE_URL + "/security/account-group", {
-            accountId,
-            groupId,
-        }).then((_response) => {
-            openGroupsDialog(groupId);
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        })
-    }
-
-    const deleteAccountGroup = (accountId: number) => {
-        const groupId = id;
-
-        dispatch(setAppLoading(true));
-        axios.delete(import.meta.env.VITE_BASE_URL + "/security/account-group", {
-            data: {
-                accountId,
-                groupId,
-            }
-        }).then((_response) => {
-            openGroupsDialog(groupId);
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        })
-    }
-
-    /// OPEN DIALOG
+    /// DIALOG
 
     const openCreateDialog = () => {
         setId(0);
         setName('');
         setTitle('');
-        setAccessRouters(0);
-        setAccessUsers(0);
-        setDialogCreateActive(true)
+        setLeaderId(0);
+        setDialogCreateActive(true);
     }
 
     const openEditDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
-            params: {id: Number(id)}
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/department", {
+            params: {
+                id: id,
+            },
         }).then((response) => {
-            setId(response.data.id);
-            setName(response.data.name);
-            setTitle(response.data.title);
-            setAccessRouters(response.data.accessRouters);
-            setAccessUsers(response.data.accessUsers);
+            setId(response.data.department.id);
+            setName(response.data.department.name);
+            setTitle(response.data.department.title);
+            setLeaderId(response.data.department.leaderId ? response.data.department.leaderId : 0);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -235,11 +185,13 @@ const PageGroups: React.FC = () => {
 
     const openDeleteDialog = (id: string) => {
         dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
-            params: {id: Number(id)}
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/department", {
+            params: {
+                id: id,
+            },
         }).then((response) => {
-            setId(response.data.id);
-            setName(response.data.name);
+            setId(response.data.department.id);
+            setName(response.data.department.name);
             setDialogDeleteActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -252,49 +204,21 @@ const PageGroups: React.FC = () => {
         })
     }
 
-    const openGroupsDialog = (id: number) => {
-        dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/security/group", {
-            params: {id: Number(id)}
-        }).then((response) => {
-            setAccountGroups(response.data.accountGroups);
-            axios.get(import.meta.env.VITE_BASE_URL + "/security/account", {}).then((response) => {
-                setAccounts(response.data);
-                setDialogGroupsActive(true);
-            }).catch((error) => {
-                if (error.response && error.response.data) {
-                    dispatch(setAppError(error.response.data));
-                } else {
-                    dispatch(setAppError(error.message));
-                }
-            }).finally(() => {
-                dispatch(setAppLoading(false));
-            })
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-            dispatch(setAppLoading(false));
-        })
-    }
-
     const openFilterDialog = () => {
         setDialogFilterActive(true)
     }
 
     /// OTHER
 
-    const sortTable = (column: keyof GroupFields, asc: boolean) => {
-        const sorted = [...groups];
+    const sortTable = (column: keyof DepartmentFields, asc: boolean) => {
+        const sorted = [...rows];
         sorted.sort((a, b): number => {
             ``
             if (a[column] > b[column]) return asc ? 1 : -1;
             if (a[column] < b[column]) return asc ? -1 : 1;
             return 0;
         });
-        setGroups(sorted);
+        setRows(sorted);
     };
 
     const setQuery = () => {
@@ -327,11 +251,29 @@ const PageGroups: React.FC = () => {
         return queryObject;
     }
 
+    const getUsers = () => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
+            setUsers(response.data.filter((user: any) => {
+                return user.disabled === 0;
+            }));
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                // dispatch(setAppError(error.response.data));
+            } else {
+                // dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Groups'));
+        dispatch(setAppTitle('Departments'));
         getAll();
+        getUsers();
     }, [location.search]);
 
     useEffect(() => {
@@ -343,7 +285,7 @@ const PageGroups: React.FC = () => {
         }
 
         setFilter(filterParams);
-    }, [location.search, groups]);
+    }, [location.search, rows]);
 
     return (
         <>
@@ -388,16 +330,16 @@ const PageGroups: React.FC = () => {
                 </table>
                 <table className={'body'}>
                     <tbody>
-                    {groups.map((account, index) => (
+                    {rows.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
                                     <button
-                                        onClick={() => openEditDialog(account.id)}
+                                        onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
                                     />
                                     <button
-                                        onClick={() => openDeleteDialog(account.id)}
+                                        onClick={() => openDeleteDialog(row.id)}
                                         children={<IconTableDelete/>}
                                     />
                                 </div>
@@ -410,16 +352,16 @@ const PageGroups: React.FC = () => {
                                     }}
                                 >
                                     {defTableHeader.type === 'String' && (
-                                        account[defTableHeader.field]
+                                        row[defTableHeader.field]
                                     )}
                                     {defTableHeader.type === 'Integer' && (
-                                        Number(account[defTableHeader.field])
+                                        Number(row[defTableHeader.field])
                                     )}
                                     {defTableHeader.type === 'Boolean' && (
-                                        account[defTableHeader.field] ? 'True' : 'False'
+                                        row[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(account[defTableHeader.field]).toDateString()
+                                        new Date(row[defTableHeader.field]).toDateString()
                                     )}
                                 </td>
                             ))}
@@ -429,7 +371,7 @@ const PageGroups: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Group'}
+                title={'Create User'}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
@@ -444,25 +386,17 @@ const PageGroups: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputRadio
-                        title={'Access Routers'}
-                        value={accessRouters}
-                        setValue={setAccessRouters}
-                        variants={[
-                            {value: 0, text: 'No'},
-                            {value: 1, text: 'Viewer'},
-                            {value: 2, text: 'Editor'},
-                        ]}
-                    />
-                    <FieldInputRadio
-                        title={'Access Users'}
-                        value={accessUsers}
-                        setValue={setAccessUsers}
-                        variants={[
-                            {value: 0, text: 'No'},
-                            {value: 1, text: 'Viewer'},
-                            {value: 2, text: 'Editor'},
-                        ]}
+                    <FieldInputSelectOne
+                        title={'Leader'}
+                        value={leaderId}
+                        setValue={setLeaderId}
+                        nullable={true}
+                        variants={users.map((user) => {
+                            return {
+                                value: Number(user.id),
+                                text: user.fullname
+                            }
+                        })}
                     />
                 </>}
                 buttons={[
@@ -471,7 +405,7 @@ const PageGroups: React.FC = () => {
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Group'}
+                title={'Update User'}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
@@ -490,35 +424,26 @@ const PageGroups: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
-                    <FieldInputRadio
-                        title={'Access Routers'}
-                        value={accessRouters}
-                        setValue={setAccessRouters}
-                        variants={[
-                            {value: 0, text: 'No'},
-                            {value: 1, text: 'Viewer'},
-                            {value: 2, text: 'Editor'},
-                        ]}
-                    />
-                    <FieldInputRadio
-                        title={'Access Users'}
-                        value={accessUsers}
-                        setValue={setAccessUsers}
-                        variants={[
-                            {value: 0, text: 'No'},
-                            {value: 1, text: 'Viewer'},
-                            {value: 2, text: 'Editor'},
-                        ]}
+                    <FieldInputSelectOne
+                        title={'Leader'}
+                        value={leaderId}
+                        setValue={setLeaderId}
+                        nullable={true}
+                        variants={users.map((user) => {
+                            return {
+                                value: Number(user.id),
+                                text: user.fullname
+                            }
+                        })}
                     />
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openGroupsDialog(id), text: 'Accounts'},
                     {action: () => update(), text: 'Update'},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Group'}
+                title={'Delete User'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <p>Are u sure want to delete "{name}" (ID: {id})?</p>
@@ -528,48 +453,9 @@ const PageGroups: React.FC = () => {
                     {action: () => remove(), text: 'Delete'},
                 ]}
             />}
-            {dialogGroupsActive && <Dialog
-                title={'Account-Group'}
-                close={() => setDialogGroupsActive(false)}
-                children={<div className={'groups'}>
-                    <div className={'left'}>
-                        {accountGroups.map((accountGroup, index) => (
-                            <div className={'group'} key={index}>
-                                <div className={'left'}>
-                                    <p>{accountGroup.account.fullname}</p>
-                                </div>
-                                <div className={'right'}>
-                                    <button
-                                        onClick={() => deleteAccountGroup(accountGroup.accountId)}
-                                    >Del
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className={'right'}>
-                        {accounts.map((account, index) => (
-                            <div className={'group'} key={index}>
-                                <div className={'left'}>
-                                    <p>{account.fullname}</p>
-                                </div>
-                                <div className={'right'}>
-                                    <button
-                                        onClick={() => createAccountGroup(account.id)}
-                                    >Add
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>}
-                buttons={[
-                    {action: () => setDialogGroupsActive(false), text: 'Close'},
-                ]}
-            />}
             {dialogFilterActive && <Dialog
-                title={'Filter Groups'}
-                close={() => setDialogDeleteActive(false)}
+                title={'Filter Users'}
+                close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
                         title={'Created'}
@@ -597,25 +483,16 @@ const PageGroups: React.FC = () => {
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
-                    <FieldInputRadioNullable
-                        title={'Access Users'}
-                        value={filter.accessUsers}
-                        variants={[
-                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessUsers: undefined})},
-                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessUsers: 'no'})},
-                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessUsers: 'viewer'})},
-                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessUsers: 'editor'})},
-                        ]}
-                    />
-                    <FieldInputRadioNullable
-                        title={'Access Routers'}
-                        value={filter.accessRouters}
-                        variants={[
-                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessRouters: undefined})},
-                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessRouters: 'no'})},
-                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessRouters: 'viewer'})},
-                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessRouters: 'editor'})},
-                        ]}
+                    <FieldInputSelectMany
+                        title={'Leaders'}
+                        value={filter.leaderId || []}
+                        setValue={(ids: number[]) => setFilter({...filter, leaderId: ids})}
+                        variants={users.map((user: UserFields) => {
+                            return {
+                                value: Number(user.id),
+                                text: `[ID:${user.id}] ${user.fullname}`
+                            };
+                        })}
                     />
                 </>}
                 buttons={[
@@ -627,4 +504,4 @@ const PageGroups: React.FC = () => {
     )
 }
 
-export default PageGroups
+export default PageDepartments
