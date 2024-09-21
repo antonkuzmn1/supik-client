@@ -16,7 +16,7 @@ import PageGroups from "./pages/PageGroups.tsx";
 import PageRouters from "./pages/PageRouters.tsx";
 import PageVpns from "./pages/PageVpns.tsx";
 import PageUsers from "./pages/PageUsers.tsx";
-import PageMails from "./pages/page-mails/PageMails.tsx";
+import PageMails from "./pages/PageMails.tsx";
 import PageItems from "./pages/page-items/PageItems.tsx";
 import useDevice from "../hooks/useDevice.ts";
 import {useAccount} from "../hooks/useAccount.ts";
