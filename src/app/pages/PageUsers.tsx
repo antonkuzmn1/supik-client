@@ -443,6 +443,7 @@ const PageUsers: React.FC = () => {
                     <FieldInputString
                         title={"Password"}
                         placeholder={"Enter text"}
+                        password={true}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
@@ -515,6 +516,7 @@ const PageUsers: React.FC = () => {
                     <FieldInputString
                         title={"Password"}
                         placeholder={"Enter text"}
+                        password={true}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />

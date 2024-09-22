@@ -31,7 +31,6 @@ export interface MailFields {
     nameFirst: string,
     nameLast: string,
     nameMiddle: string,
-    gender: string,
     position: string,
     isAdmin: boolean,
     isEnabled: boolean,
@@ -48,7 +47,6 @@ const defTableHeaders: { text: string, field: keyof MailFields, width: string, t
     {text: 'First name', field: 'nameFirst', width: '100px', type: 'String'},
     {text: 'Middle name', field: 'nameMiddle', width: '100px', type: 'String'},
     {text: 'Last name', field: 'nameLast', width: '100px', type: 'String'},
-    {text: 'Gender', field: 'gender', width: '100px', type: 'String'},
     {text: 'Position', field: 'position', width: '200px', type: 'String'},
     {text: 'Admin', field: 'isAdmin', width: '100px', type: 'Boolean'},
     {text: 'Enabled', field: 'isEnabled', width: '100px', type: 'Boolean'},
@@ -73,7 +71,6 @@ const PageMails: React.FC = () => {
     const [nameFirst, setNameFirst] = useState<string>('');
     const [nameLast, setNameLast] = useState<string>('');
     const [nameMiddle, setNameMiddle] = useState<string>('');
-    const [gender, setGender] = useState<string>('');
     const [position, setPosition] = useState<string>('');
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isEnabled, setIsEnabled] = useState<boolean>(false);
@@ -116,7 +113,6 @@ const PageMails: React.FC = () => {
                 nameFirst,
                 nameLast,
                 nameMiddle,
-                gender,
                 position,
                 isAdmin,
                 userId,
@@ -144,7 +140,6 @@ const PageMails: React.FC = () => {
                 nameFirst,
                 nameLast,
                 nameMiddle,
-                gender,
                 position,
                 isAdmin,
                 isEnabled,
@@ -173,11 +168,11 @@ const PageMails: React.FC = () => {
         setNameFirst('');
         setNameLast('');
         setNameMiddle('');
-        setGender('');
         setPosition('');
         setIsAdmin(false);
         setIsEnabled(false);
         setUserId(0);
+        setPassword('');
         setDialogCreateActive(true);
     }
 
@@ -193,7 +188,6 @@ const PageMails: React.FC = () => {
             setNameFirst(response.data.mail.nameFirst);
             setNameLast(response.data.mail.nameLast);
             setNameMiddle(response.data.mail.nameMiddle);
-            setGender(response.data.mail.gender);
             setPosition(response.data.mail.position);
             setIsAdmin(response.data.mail.isAdmin);
             setIsEnabled(response.data.mail.isEnabled);
@@ -298,6 +292,7 @@ const PageMails: React.FC = () => {
     const syncAccounts = () => {
         dispatch(setAppLoading(true));
         axios.get(import.meta.env.VITE_BASE_URL + "/db/mail/sync/", {}).then((response) => {
+            console.log(response);
             getAll();
             dispatch(setAppError('Successfully success! (Not error)'));
         }).catch((error) => {
@@ -404,6 +399,7 @@ const PageMails: React.FC = () => {
                                         row[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
+                                        // @ts-ignore
                                         new Date(row[defTableHeader.field]).toDateString()
                                     )}
                                 </td>
@@ -440,12 +436,6 @@ const PageMails: React.FC = () => {
                         placeholder={"Enter text"}
                         value={nameMiddle}
                         onChange={(e) => setNameMiddle(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Gender"}
-                        placeholder={"Enter text"}
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
                     />
                     <FieldInputString
                         title={"Position"}
@@ -520,12 +510,6 @@ const PageMails: React.FC = () => {
                         placeholder={"Enter text"}
                         value={nameMiddle}
                         onChange={(e) => setNameMiddle(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={"Gender"}
-                        placeholder={"Enter text"}
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
                     />
                     <FieldInputString
                         title={"Position"}
