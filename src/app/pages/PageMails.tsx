@@ -192,6 +192,7 @@ const PageMails: React.FC = () => {
             setIsAdmin(response.data.mail.isAdmin);
             setIsEnabled(response.data.mail.isEnabled);
             setUserId(response.data.mail.userId ? response.data.mail.userId : 0);
+            setPassword('');
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
