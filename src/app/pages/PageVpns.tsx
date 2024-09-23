@@ -21,6 +21,7 @@ import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
+import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -503,6 +504,10 @@ const PageVpns: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
+                    />
                     <div className='Field'>
                         <div className='title'>
                             <p>{'Profile'}</p>
@@ -620,6 +625,10 @@ const PageVpns: React.FC = () => {
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
                     />
                     <div className='Field'>
                         <div className='title'>
