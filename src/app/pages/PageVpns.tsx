@@ -95,6 +95,8 @@ const PageVpns: React.FC = () => {
     const [profiles, setProfiles] = useState<any[]>([]);
     const [pools, setPools] = useState<any>({});
     const [selectedPool, setSelectedPool] = useState<string[] | undefined>(undefined);
+    const [routerRemoteAddr, setRouterRemoteAddr] = useState<string>('');
+    const [routerL2tpKey, setRouterL2tpKey] = useState<string>('');
 
     const [filter, setFilter] = useState<any>({});
 
@@ -314,6 +316,8 @@ const PageVpns: React.FC = () => {
             setPools(response.data.pools);
             setProfiles(response.data.profiles);
             setSelectedPool(response.data.pools[profile]);
+            setRouterRemoteAddr(response.data.router.remoteAddress);
+            setRouterL2tpKey(response.data.router.l2tpKey);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 // dispatch(setAppError(error.response.data));
@@ -398,6 +402,8 @@ const PageVpns: React.FC = () => {
         } else {
             setProfiles([]);
             setProfile('NULL');
+            setRouterRemoteAddr('');
+            setRouterL2tpKey('');
         }
     }, [routerId]);
 
@@ -578,6 +584,14 @@ const PageVpns: React.FC = () => {
                             }
                         })}
                     />
+                    <FieldValueString
+                        title={"External Addr"}
+                        value={routerRemoteAddr}
+                    />
+                    <FieldValueString
+                        title={"L2TP Key"}
+                        value={routerL2tpKey}
+                    />
                     <FieldInputSelectOne
                         title={'User'}
                         value={userId}
@@ -698,6 +712,14 @@ const PageVpns: React.FC = () => {
                                 text: router.name
                             }
                         })}
+                    />
+                    <FieldValueString
+                        title={"External Addr"}
+                        value={routerRemoteAddr}
+                    />
+                    <FieldValueString
+                        title={"L2TP Key"}
+                        value={routerL2tpKey}
                     />
                     <FieldInputSelectOne
                         title={'User'}
