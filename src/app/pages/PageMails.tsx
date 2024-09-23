@@ -18,6 +18,7 @@ import {UserFields} from "./PageUsers.tsx";
 import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -439,7 +440,7 @@ const PageMails: React.FC = () => {
                                     )}
                                     {defTableHeader.type === 'Date' && (
                                         // @ts-ignore
-                                        new Date(row[defTableHeader.field]).toDateString()
+                                        dateToString(new Date(row[defTableHeader.field]))
                                     )}
                                 </td>
                             ))}

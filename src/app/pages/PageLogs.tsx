@@ -10,6 +10,7 @@ import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -198,7 +199,7 @@ const PageLogs: React.FC = () => {
                                         row[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(row[defTableHeader.field]).toDateString()
+                                        dateToString(new Date(row[defTableHeader.field]))
                                     )}
                                 </td>
                             ))}

@@ -22,6 +22,7 @@ import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -485,7 +486,7 @@ const PageVpns: React.FC = () => {
                                         row[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(row[defTableHeader.field]).toDateString()
+                                        dateToString(new Date(row[defTableHeader.field]))
                                     )}
                                 </td>
                             ))}

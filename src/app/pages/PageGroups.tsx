@@ -16,6 +16,7 @@ import FieldInputRadio from "../fields/FieldInputRadio.tsx";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import FieldInputRadioNullable from "../fields/FieldInputRadioNullable.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -430,7 +431,7 @@ const PageGroups: React.FC = () => {
                                         account[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(account[defTableHeader.field]).toDateString()
+                                        dateToString(new Date(account[defTableHeader.field]))
                                     )}
                                 </td>
                             ))}

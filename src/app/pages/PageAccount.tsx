@@ -5,6 +5,7 @@ import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../s
 import Cookies from "js-cookie";
 import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import FieldValueString from "../fields/FieldValueString.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 export interface AccountFields {
     id: string;
@@ -89,8 +90,8 @@ const PageAccount: React.FC = () => {
         if (account) {
             setFields({
                 id: account.id.toString(),
-                created: new Date(account.created).toDateString(),
-                updated: new Date(account.updated).toDateString(),
+                created: dateToString(new Date(account.created)),
+                updated: dateToString(new Date(account.updated)),
                 fullname: account.fullname,
                 title: account.title,
                 username: account.username,

@@ -17,6 +17,7 @@ import FieldValueString from "../fields/FieldValueString.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
+import {dateToString} from "../../utils/dateToString.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -578,7 +579,7 @@ const PageRouters: React.FC = () => {
                                         router[defTableHeader.field] ? 'True' : 'False'
                                     )}
                                     {defTableHeader.type === 'Date' && (
-                                        new Date(router[defTableHeader.field]).toDateString()
+                                        dateToString(new Date(router[defTableHeader.field]))
                                     )}
                                 </td>
                             ))}
