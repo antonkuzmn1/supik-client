@@ -16,6 +16,7 @@
     max-width: 800px;
     width: 100%;
     min-height: 200px;
+    max-height: calc(100vh - 5vh);
     border: 1px solid var(--border);
 
     .header {
@@ -71,12 +72,15 @@
     .content {
       height: fit-content;
       min-height: calc(200px - 50px - 50px - 20px);
+      max-height: calc(100vh - 30vh);
       width: calc(100% - 20px);
       padding: 10px;
       display: flex;
       flex-direction: column;
       text-align: center;
       gap: 10px;
+      overflow-y: auto;
+      overflow-x: hidden;
 
       .groups {
         display: flex;
