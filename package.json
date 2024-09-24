@@ -1,7 +1,7 @@
 {
   "name": "supik-client",
   "private": true,
-  "version": "24.9.9",
+  "version": "24.10.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "axios": "^1.7.4",
     "classnames": "^2.5.1",
     "js-cookie": "^3.0.5",
+    "jspdf": "^2.5.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",

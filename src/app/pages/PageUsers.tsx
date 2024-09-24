@@ -21,6 +21,10 @@ import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import JsPDF from 'jspdf';
+import robotoNormalFont from '../../fonts/Roboto/Roboto-Regular.ttf';
+import robotoBoldFont from '../../fonts/Roboto/Roboto-Bold.ttf';
+import {MailFields} from "./PageMails.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -83,6 +87,7 @@ const PageUsers: React.FC = () => {
     const [disabled, setDisabled] = useState<boolean>(false);
 
     const [departments, setDepartments] = useState<DepartmentFields[]>([]);
+    const [mails, setMails] = useState<MailFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -222,6 +227,7 @@ const PageUsers: React.FC = () => {
             setPhone(response.data.phone);
             setDisabled(response.data.disabled);
             setDepartmentId(response.data.departmentId ? response.data.departmentId : 0);
+            setMails(response.data.mails);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -317,6 +323,57 @@ const PageUsers: React.FC = () => {
             dispatch(setAppLoading(false));
         })
     }
+
+    const exportUserPDF = async () => {
+        const doc = new JsPDF({
+            format: 'a4',
+            unit: 'px',
+        });
+
+        doc.addFont(robotoNormalFont, 'Roboto', 'normal');
+        doc.addFont(robotoBoldFont, 'Roboto', 'bold');
+        doc.setFont('Roboto');
+
+
+        const header = 'Карточка сотрудника'
+        // noinspection HttpUrlsUsage
+        const data = [
+            ['Фамилия', surname],
+            ['Имя', name],
+            ['Отчество', patronymic],
+            ['Должность', title],
+            ['Рабочее место', workplace],
+            ['Внутренний номер', phone],
+            ['Почтовый логин', mails[0].email],
+            ['Почтовый пароль', mails[0].password],
+            ['Системный логин', login],
+            ['Системный пароль', password],
+            ['Почтовый клиент', 'https://mail.yandex.ru'],
+            ['Корпоративный месссенджер', 'Spark'],
+            ['Руководство пользователя', 'http://info'],
+        ];
+
+        const columnWidths = 150;
+        const startX = 10;
+        const startY = 60;
+        const rowHeight = 20;
+
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(20);
+
+        doc.text(header, 10, 30);
+
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(12);
+
+        for (let i = 0; i < data.length; i++) {
+            doc.text(data[i][0], startX, startY + rowHeight * i);
+            doc.text(data[i][1], columnWidths, startY + rowHeight * i);
+            doc.line(startX, startY + 4 + rowHeight * i, 400, startY + 4 + rowHeight * i);
+        }
+
+        doc.save('document.pdf');
+    };
 
     /// HOOKS
 
@@ -583,6 +640,7 @@ const PageUsers: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: 'Cancel'},
+                    {action: () => exportUserPDF(), text: 'Export PDF'},
                     {action: () => update(), text: 'Update'},
                 ]}
             />}
