@@ -36,6 +36,8 @@ export interface UserFields {
     title: string,
     login: string,
     password: string,
+    workplace: string,
+    phone: string,
 
     departmentId: number,
     departmentName: string,
@@ -48,8 +50,9 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
-    // {text: 'Password', field: 'password', width: '150px', type: 'String'},
     {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
+    {text: 'Workplace', field: 'workplace', width: '200px', type: 'String'},
+    {text: 'Phone', field: 'phone', width: '100px', type: 'String'},
     {text: 'Title', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
@@ -74,6 +77,8 @@ const PageUsers: React.FC = () => {
     const [title, setTitle] = useState<string>('');
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [workplace, setWorkplace] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
     const [departmentId, setDepartmentId] = useState<number>(0);
     const [disabled, setDisabled] = useState<boolean>(false);
 
@@ -115,6 +120,8 @@ const PageUsers: React.FC = () => {
             title: title,
             login: login,
             password: password,
+            workplace: workplace,
+            phone: phone,
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
@@ -142,6 +149,8 @@ const PageUsers: React.FC = () => {
             title: title,
             login: login,
             password: password,
+            workplace: workplace,
+            phone: phone,
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
@@ -188,6 +197,8 @@ const PageUsers: React.FC = () => {
         setTitle('');
         setLogin('');
         setPassword('');
+        setWorkplace('');
+        setPhone('');
         setDepartmentId(0);
         setDisabled(false);
         setDialogCreateActive(true);
@@ -207,6 +218,8 @@ const PageUsers: React.FC = () => {
             setTitle(response.data.title);
             setLogin(response.data.login);
             setPassword(response.data.password);
+            setWorkplace(response.data.workplace);
+            setPhone(response.data.phone);
             setDisabled(response.data.disabled);
             setDepartmentId(response.data.departmentId ? response.data.departmentId : 0);
             setDialogUpdateActive(true);
@@ -464,6 +477,18 @@ const PageUsers: React.FC = () => {
                             }
                         })}
                     />
+                    <FieldInputString
+                        title={"Workplace"}
+                        placeholder={"Enter text"}
+                        value={workplace}
+                        onChange={(e) => setWorkplace(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Phone"}
+                        placeholder={"Enter text"}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
                     <FieldInputBoolean
                         title={"Disabled"}
                         value={disabled}
@@ -536,6 +561,18 @@ const PageUsers: React.FC = () => {
                                 text: department.name
                             }
                         })}
+                    />
+                    <FieldInputString
+                        title={"Workplace"}
+                        placeholder={"Enter text"}
+                        value={workplace}
+                        onChange={(e) => setWorkplace(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Phone"}
+                        placeholder={"Enter text"}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -630,6 +667,18 @@ const PageUsers: React.FC = () => {
                                 text: `[ID:${department.id}] ${department.name}`
                             };
                         })}
+                    />
+                    <FieldInputString
+                        title={'Workplace'}
+                        placeholder={'Enter text'}
+                        value={filter.workplace}
+                        onChange={(e) => setFilter({...filter, workplace: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Phone'}
+                        placeholder={'Enter text'}
+                        value={filter.phone}
+                        onChange={(e) => setFilter({...filter, phone: e.target.value})}
                     />
                     <FieldInputBooleanNullable
                         title={'Disabled'}
