@@ -19,6 +19,7 @@ import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -28,6 +29,7 @@ export interface MailFields {
     updated: string;
 
     nickname: string,
+    password: string,
     email: string,
     nameFirst: string,
     nameLast: string,
@@ -42,7 +44,7 @@ export interface MailFields {
 
 const defTableHeaders: { text: string, field: keyof MailFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'User', field: 'userName', width: '300px', type: 'String'},
+    {text: 'User', field: 'userName', width: '200px', type: 'String'},
     {text: 'Nickname', field: 'nickname', width: '200px', type: 'String'},
     {text: 'EMail', field: 'email', width: '250px', type: 'String'},
     {text: 'First name', field: 'nameFirst', width: '100px', type: 'String'},
@@ -69,6 +71,7 @@ const PageMails: React.FC = () => {
 
     const [id, setId] = useState<number>(0);
     const [nickname, setNickname] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [nameFirst, setNameFirst] = useState<string>('');
     const [nameLast, setNameLast] = useState<string>('');
     const [nameMiddle, setNameMiddle] = useState<string>('');
@@ -76,7 +79,6 @@ const PageMails: React.FC = () => {
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isEnabled, setIsEnabled] = useState<boolean>(false);
     const [userId, setUserId] = useState<number>(0);
-    const [password, setPassword] = useState<string>('');
 
     const [users, setUsers] = useState<UserFields[]>([]);
 
@@ -92,7 +94,7 @@ const PageMails: React.FC = () => {
             setRows(response.data.mails.map((row: any) => {
                 return {
                     ...row,
-                    userName: row.user?.fullname ? row.user.fullname : 'NULL',
+                    userName: row.user?.fullname ? getInitialsFromFullname(row.user.fullname) : 'NULL',
                 }
             }));
         }).catch((error) => {
@@ -111,13 +113,13 @@ const PageMails: React.FC = () => {
         axios.post(import.meta.env.VITE_BASE_URL + "/db/mail", {
             data: {
                 nickname,
+                password,
                 nameFirst,
                 nameLast,
                 nameMiddle,
                 position,
                 isAdmin,
                 userId,
-                password,
             }
         }).then((_response) => {
             setDialogCreateActive(false);
@@ -138,6 +140,8 @@ const PageMails: React.FC = () => {
         axios.put(import.meta.env.VITE_BASE_URL + "/db/mail", {
             data: {
                 id,
+                nickname,
+                password,
                 nameFirst,
                 nameLast,
                 nameMiddle,
@@ -145,7 +149,6 @@ const PageMails: React.FC = () => {
                 isAdmin,
                 isEnabled,
                 userId,
-                password,
             }
         }).then((_response) => {
             setDialogUpdateActive(false);
@@ -166,6 +169,7 @@ const PageMails: React.FC = () => {
     const openCreateDialog = () => {
         setId(0);
         setNickname('');
+        setPassword('');
         setNameFirst('');
         setNameLast('');
         setNameMiddle('');
@@ -173,7 +177,6 @@ const PageMails: React.FC = () => {
         setIsAdmin(false);
         setIsEnabled(false);
         setUserId(0);
-        setPassword('');
         setDialogCreateActive(true);
     }
 
@@ -186,6 +189,7 @@ const PageMails: React.FC = () => {
         }).then((response) => {
             setId(response.data.mail.id);
             setNickname(response.data.mail.nickname);
+            setPassword(response.data.mail.password);
             setNameFirst(response.data.mail.nameFirst);
             setNameLast(response.data.mail.nameLast);
             setNameMiddle(response.data.mail.nameMiddle);
@@ -193,7 +197,6 @@ const PageMails: React.FC = () => {
             setIsAdmin(response.data.mail.isAdmin);
             setIsEnabled(response.data.mail.isEnabled);
             setUserId(response.data.mail.userId ? response.data.mail.userId : 0);
-            setPassword('');
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -460,6 +463,17 @@ const PageMails: React.FC = () => {
                         onChange={(e) => setNickname(e.target.value)}
                     />
                     <FieldInputString
+                        title={"Password"}
+                        placeholder={"Enter text"}
+                        value={password}
+                        password={true}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
+                    />
+                    <FieldInputString
                         title={"Name First"}
                         placeholder={"Enter text"}
                         value={nameFirst}
@@ -501,17 +515,6 @@ const PageMails: React.FC = () => {
                             }
                         })}
                     />
-                    <FieldInputString
-                        title={"Password"}
-                        placeholder={"Enter text"}
-                        value={password}
-                        password={true}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <FieldGenerator
-                        type={PasswordType.Normal}
-                        length={10}
-                    />
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
@@ -533,6 +536,17 @@ const PageMails: React.FC = () => {
                         placeholder={"Enter text"}
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Password"}
+                        placeholder={"Enter text"}
+                        value={password}
+                        password={true}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <FieldGenerator
+                        type={PasswordType.Normal}
+                        length={10}
                     />
                     <FieldInputString
                         title={"Name First"}
@@ -581,17 +595,6 @@ const PageMails: React.FC = () => {
                                 text: user.fullname
                             }
                         })}
-                    />
-                    <FieldInputString
-                        title={"Password"}
-                        placeholder={"Enter text"}
-                        value={password}
-                        password={true}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <FieldGenerator
-                        type={PasswordType.Normal}
-                        length={10}
                     />
                 </>}
                 buttons={[
