@@ -257,6 +257,8 @@ const PageDepartments: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {}).then((response) => {
             setUsers(response.data.filter((user: any) => {
                 return user.disabled === 0;
+            }).sort((a: any, b: any) => {
+                return a.fullname.localeCompare(b.fullname)
             }));
         }).catch((error) => {
             if (error.response && error.response.data) {
