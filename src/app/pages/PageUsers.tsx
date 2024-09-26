@@ -57,7 +57,7 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
     {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
     {text: 'Workplace', field: 'workplace', width: '200px', type: 'String'},
     {text: 'Phone', field: 'phone', width: '100px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
+    {text: 'Post', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -500,7 +500,7 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={"Post"}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -585,7 +585,7 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={"Post"}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -698,7 +698,7 @@ const PageUsers: React.FC = () => {
                         onChange={(e) => setFilter({...filter, fullname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={'Post'}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
