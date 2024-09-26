@@ -372,7 +372,7 @@ const PageUsers: React.FC = () => {
             doc.line(startX, startY + 4 + rowHeight * i, 400, startY + 4 + rowHeight * i);
         }
 
-        doc.save('document.pdf');
+        doc.save(`${surname} ${name} ${patronymic}.pdf`);
     };
 
     /// HOOKS
