@@ -57,7 +57,6 @@ interface TableHeaders {
 
 const defTableHeaders: TableHeaders[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'VID', field: 'vpnId', width: '50px', type: 'String'},
     {text: 'Router', field: 'routerName', width: '100px', type: 'String'},
     {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
@@ -621,10 +620,6 @@ const PageVpns: React.FC = () => {
                         title={"ID"}
                         value={id.toString()}
                     />
-                    <FieldValueString
-                        title={"VPN ID"}
-                        value={vpnId.toString()}
-                    />
                     <FieldInputString
                         title={"Name"}
                         placeholder={"Enter text"}
@@ -740,7 +735,7 @@ const PageVpns: React.FC = () => {
                 title={'Delete VPN'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id}; VPN ID: {vpnId}; RouterID: {routerId})?</p>
+                    <p>Are u sure want to delete "{name}" (ID: {id}; RouterID: {routerId})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
