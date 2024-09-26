@@ -334,7 +334,6 @@ const PageUsers: React.FC = () => {
         doc.addFont(robotoBoldFont, 'Roboto', 'bold');
         doc.setFont('Roboto');
 
-
         const header = 'Карточка сотрудника'
         // noinspection HttpUrlsUsage
         const data = [

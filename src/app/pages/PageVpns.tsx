@@ -541,12 +541,6 @@ const PageVpns: React.FC = () => {
                             </select>
                         </div>
                     </div>
-                    <FieldInputString
-                        title={"Service"}
-                        placeholder={"Enter text"}
-                        value={service}
-                        onChange={(e) => setService(e.target.value)}
-                    />
                     <div className='Field'>
                         <div className='title'>
                             <p>{'Remote Addr'}</p>
@@ -671,12 +665,6 @@ const PageVpns: React.FC = () => {
                             </select>
                         </div>
                     </div>
-                    <FieldInputString
-                        title={"Service"}
-                        placeholder={"Enter text"}
-                        value={service}
-                        onChange={(e) => setService(e.target.value)}
-                    />
                     <div className='Field'>
                         <div className='title'>
                             <p>{'Remote Addr'}</p>
