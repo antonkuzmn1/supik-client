@@ -29,6 +29,7 @@ export interface GroupFields {
     accessRouters: 0 | 1 | 2,
     accessUsers: 0 | 1 | 2,
     accessDepartments: 0 | 1 | 2,
+    accessMails: 0 | 1 | 2,
 }
 
 const defTableHeaders: { text: string, field: keyof GroupFields, width: string, type: TypeField }[] = [
@@ -38,6 +39,7 @@ const defTableHeaders: { text: string, field: keyof GroupFields, width: string, 
     {text: 'Routers', field: 'accessRouters', width: '100px', type: 'Integer'},
     {text: 'Users', field: 'accessUsers', width: '100px', type: 'Integer'},
     {text: 'Departments', field: 'accessDepartments', width: '100px', type: 'Integer'},
+    {text: 'Mails', field: 'accessMails', width: '100px', type: 'Integer'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -61,6 +63,7 @@ const PageGroups: React.FC = () => {
     const [accessRouters, setAccessRouters] = useState<number>(0);
     const [accessUsers, setAccessUsers] = useState<number>(0);
     const [accessDepartments, setAccessDepartments] = useState<number>(0);
+    const [accessMails, setAccessMails] = useState<number>(0);
 
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
@@ -92,7 +95,9 @@ const PageGroups: React.FC = () => {
             accessUsers > 2 ||
             accessUsers < 0 ||
             accessDepartments > 2 ||
-            accessDepartments < 0
+            accessDepartments < 0 ||
+            accessMails > 2 ||
+            accessMails < 0
         ) {
             return;
         }
@@ -104,6 +109,7 @@ const PageGroups: React.FC = () => {
             accessRouters: accessRouters,
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
+            accessMails: accessMails,
         }).then((_response) => {
             setDialogCreateActive(false);
             getAll();
@@ -124,7 +130,9 @@ const PageGroups: React.FC = () => {
             accessUsers > 2 ||
             accessUsers < 0 ||
             accessDepartments > 2 ||
-            accessDepartments < 0
+            accessDepartments < 0 ||
+            accessMails > 2 ||
+            accessMails < 0
         ) {
             return;
         }
@@ -137,6 +145,7 @@ const PageGroups: React.FC = () => {
             accessRouters: accessRouters,
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
+            accessMails: accessMails,
         }).then((_response) => {
             setDialogUpdateActive(false);
             getAll();
@@ -219,6 +228,7 @@ const PageGroups: React.FC = () => {
         setAccessRouters(0);
         setAccessUsers(0);
         setAccessDepartments(0);
+        setAccessMails(0);
         setDialogCreateActive(true)
     }
 
@@ -233,6 +243,7 @@ const PageGroups: React.FC = () => {
             setAccessRouters(response.data.accessRouters);
             setAccessUsers(response.data.accessUsers);
             setAccessDepartments(response.data.accessDepartments);
+            setAccessMails(response.data.accessMails);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -486,6 +497,16 @@ const PageGroups: React.FC = () => {
                             {value: 2, text: 'Editor'},
                         ]}
                     />
+                    <FieldInputRadio
+                        title={'Access Mails'}
+                        value={accessMails}
+                        setValue={setAccessMails}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
+                    />
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
@@ -536,6 +557,16 @@ const PageGroups: React.FC = () => {
                         title={'Access Departments'}
                         value={accessDepartments}
                         setValue={setAccessDepartments}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
+                    />
+                    <FieldInputRadio
+                        title={'Access Mails'}
+                        value={accessMails}
+                        setValue={setAccessMails}
                         variants={[
                             {value: 0, text: 'No'},
                             {value: 1, text: 'Viewer'},
@@ -657,6 +688,16 @@ const PageGroups: React.FC = () => {
                             {value: 'no', text: 'No', set: () => setFilter({...filter, accessDepartments: 'no'})},
                             {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessDepartments: 'viewer'})},
                             {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessDepartments: 'editor'})},
+                        ]}
+                    />
+                    <FieldInputRadioNullable
+                        title={'Access Mails'}
+                        value={filter.accessMails}
+                        variants={[
+                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessMails: undefined})},
+                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessMails: 'no'})},
+                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessMails: 'viewer'})},
+                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessMails: 'editor'})},
                         ]}
                     />
                 </>}
