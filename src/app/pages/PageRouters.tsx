@@ -29,6 +29,7 @@ export interface RouterFields {
     password: string,
     localAddress: string,
     remoteAddress: string,
+    defaultProfile: string,
     name: string,
     title: string,
     disabled: 0 | 1,
@@ -67,6 +68,7 @@ const PageRouters: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [localAddress, setLocalAddress] = useState<string>('');
     const [remoteAddress, setRemoteAddress] = useState<string>('');
+    const [defaultProfile, setDefaultProfile] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [disabled, setDisabled] = useState<boolean>(false);
@@ -77,6 +79,7 @@ const PageRouters: React.FC = () => {
     const [groups, setGroups] = useState<any[]>([]);
     const [viewers, setViewers] = useState<any[]>([]);
     const [editors, setEditors] = useState<any[]>([]);
+    const [profiles, setProfiles] = useState<any[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -134,6 +137,7 @@ const PageRouters: React.FC = () => {
             password: password,
             remoteAddress: remoteAddress,
             localAddress: localAddress,
+            defaultProfile: defaultProfile,
             name: name,
             title: title,
             disabled: disabled ? 1 : 0,
@@ -280,6 +284,7 @@ const PageRouters: React.FC = () => {
         setPassword('');
         setLocalAddress('');
         setRemoteAddress('');
+        setDefaultProfile('');
         setName('');
         setTitle('');
         setDisabled(false);
@@ -298,9 +303,11 @@ const PageRouters: React.FC = () => {
             setPassword(response.data.router.password);
             setLocalAddress(response.data.router.localAddress);
             setRemoteAddress(response.data.router.remoteAddress);
+            setDefaultProfile(response.data.router.defaultProfile);
             setName(response.data.router.name);
             setTitle(response.data.router.title);
             setDisabled(response.data.router.disabled);
+            setProfiles(response.data.profiles);
             if (response.data.router.certificate) {
                 const file = convertToFile(response.data.router.certificate, 'certificate.crt')
                 setCertificate(file);
@@ -687,6 +694,30 @@ const PageRouters: React.FC = () => {
                         value={remoteAddress}
                         onChange={(e) => setRemoteAddress(e.target.value)}
                     />
+                    <div className='Field'>
+                        <div className='title'>
+                            <p>{'Default Profile'}</p>
+                        </div>
+                        <div className='field'>
+                            <select
+                                value={defaultProfile}
+                                onChange={(e) => setDefaultProfile(e.target.value)}
+                            >
+                                <option
+                                    value={'NULL'}
+                                    children={'NULL'}
+                                />
+                                {profiles && profiles.map((profile, i) => (
+                                    <option
+                                        key={i}
+                                        value={profile.name}
+                                    >
+                                        {profile.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <FieldInputString
                         title={"name"}
                         placeholder={"Enter text"}

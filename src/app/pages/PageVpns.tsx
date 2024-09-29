@@ -63,7 +63,6 @@ const defTableHeaders: TableHeaders[] = [
     {text: 'Password', field: 'password', width: '150px', type: 'String'},
     {text: 'User', field: 'userName', width: '150px', type: 'String'},
     {text: 'Remote Address', field: 'remoteAddress', width: '150px', type: 'String'},
-    {text: 'Service', field: 'service', width: '100px', type: 'String'},
 ]
 
 const PageVpns: React.FC = () => {
@@ -92,7 +91,6 @@ const PageVpns: React.FC = () => {
 
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
-    const [profiles, setProfiles] = useState<any[]>([]);
     const [pools, setPools] = useState<any>({});
     const [selectedPool, setSelectedPool] = useState<string[] | undefined>(undefined);
     const [routerRemoteAddr, setRouterRemoteAddr] = useState<string>('');
@@ -314,7 +312,6 @@ const PageVpns: React.FC = () => {
             params: {id: Number(id)}
         }).then((response) => {
             setPools(response.data.pools);
-            setProfiles(response.data.profiles);
             setSelectedPool(response.data.pools[profile]);
             setRouterRemoteAddr(response.data.router.remoteAddress);
             setRouterL2tpKey(response.data.router.l2tpKey);
@@ -402,7 +399,6 @@ const PageVpns: React.FC = () => {
         if (routerId > 0) {
             getRouter(routerId);
         } else {
-            setProfiles([]);
             setProfile('NULL');
             setRouterRemoteAddr('');
             setRouterL2tpKey('');
@@ -518,30 +514,6 @@ const PageVpns: React.FC = () => {
                     />
                     <div className='Field'>
                         <div className='title'>
-                            <p>{'Profile'}</p>
-                        </div>
-                        <div className='field'>
-                            <select
-                                value={profile}
-                                onChange={(e) => setProfile(e.target.value)}
-                            >
-                                <option
-                                    value={'NULL'}
-                                    children={'NULL'}
-                                />
-                                {profiles.map((profile, i) => (
-                                    <option
-                                        key={i}
-                                        value={profile.name}
-                                    >
-                                        {profile.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className='Field'>
-                        <div className='title'>
                             <p>{'Remote Addr'}</p>
                         </div>
                         <div className='field'>
@@ -636,30 +608,6 @@ const PageVpns: React.FC = () => {
                         type={PasswordType.Normal}
                         length={10}
                     />
-                    <div className='Field'>
-                        <div className='title'>
-                            <p>{'Profile'}</p>
-                        </div>
-                        <div className='field'>
-                            <select
-                                value={profile}
-                                onChange={(e) => setProfile(e.target.value)}
-                            >
-                                <option
-                                    value={'NULL'}
-                                    children={'NULL'}
-                                />
-                                {profiles.map((profile, i) => (
-                                    <option
-                                        key={i}
-                                        value={profile.name}
-                                    >
-                                        {profile.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
                     <div className='Field'>
                         <div className='title'>
                             <p>{'Remote Addr'}</p>
