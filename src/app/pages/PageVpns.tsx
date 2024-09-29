@@ -378,6 +378,52 @@ const PageVpns: React.FC = () => {
         return queryObject;
     }
 
+    const autofill = () => {
+        if (routerId === 0) {
+            dispatch(setAppError('Router field required'));
+            return;
+        }
+
+        if (userId === 0) {
+            dispatch(setAppError('User field required'));
+            return;
+        }
+
+        const user = users.find(user => Number(user.id) === userId);
+        if (user) {
+            setName(`vpn_amt_${translit(user.surname.toLowerCase())}`);
+
+            const remoteAddress = selectedPool ? selectedPool[0] : ''
+            setRemoteAddress(remoteAddress)
+
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let generatedPassword = "";
+            for (let i = 0; i < 10; i++) {
+                generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            setPassword(generatedPassword);
+        }
+    }
+
+    const translit = (word: string): string => {
+        const translitMap: { [key: string]: string } = {
+            'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+            'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+            'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+            'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+            'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch',
+            'ш': 'sh', 'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'yu',
+            'я': 'ya', 'ь': '', 'ъ': ''
+        };
+
+        return word.split('').map((char) => {
+            const lowerChar = char.toLowerCase();
+            const isUpperCase = char !== lowerChar;
+            const translitChar = translitMap[lowerChar];
+            return isUpperCase ? translitChar.toUpperCase() : translitChar;
+        }).join('');
+    }
+
     /// HOOKS
 
     useEffect(() => {
@@ -585,6 +631,7 @@ const PageVpns: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: 'Cancel'},
+                    {action: () => autofill(), text: 'Autofill'},
                     {action: () => create(), text: 'Create'},
                 ]}
             />}
