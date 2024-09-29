@@ -772,12 +772,6 @@ const PageVpns: React.FC = () => {
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Profile'}
-                        placeholder={'Enter text'}
-                        value={filter.profile}
-                        onChange={(e) => setFilter({...filter, profile: e.target.value})}
-                    />
-                    <FieldInputString
                         title={'Service'}
                         placeholder={'Enter text'}
                         value={filter.service}

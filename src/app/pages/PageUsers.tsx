@@ -41,7 +41,9 @@ export interface UserFields {
     login: string,
     password: string,
     workplace: string,
+    localWorkplace: string,
     phone: string,
+    cellular: string,
 
     departmentId: number,
     departmentName: string,
@@ -55,8 +57,10 @@ const defTableHeaders: { text: string, field: keyof UserFields, width: string, t
     {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
     {text: 'Login', field: 'login', width: '150px', type: 'String'},
     {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
-    {text: 'Workplace', field: 'workplace', width: '200px', type: 'String'},
+    {text: 'Remote Workplace', field: 'workplace', width: '200px', type: 'String'},
+    {text: 'Local Workplace', field: 'localWorkplace', width: '200px', type: 'String'},
     {text: 'Phone', field: 'phone', width: '100px', type: 'String'},
+    {text: 'Cellular', field: 'cellular', width: '150px', type: 'String'},
     {text: 'Post', field: 'title', width: '300px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
@@ -82,7 +86,9 @@ const PageUsers: React.FC = () => {
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [workplace, setWorkplace] = useState<string>('');
+    const [localWorkplace, setLocalWorkplace] = useState<string>('');
     const [phone, setPhone] = useState<string>('');
+    const [cellular, setCellular] = useState<string>('');
     const [departmentId, setDepartmentId] = useState<number>(0);
     const [disabled, setDisabled] = useState<boolean>(false);
 
@@ -126,7 +132,9 @@ const PageUsers: React.FC = () => {
             login: login,
             password: password,
             workplace: workplace,
+            localWorkplace: localWorkplace,
             phone: phone,
+            cellular: cellular,
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
@@ -155,7 +163,9 @@ const PageUsers: React.FC = () => {
             login: login,
             password: password,
             workplace: workplace,
+            localWorkplace: localWorkplace,
             phone: phone,
+            cellular: cellular,
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
@@ -203,7 +213,9 @@ const PageUsers: React.FC = () => {
         setLogin('');
         setPassword('');
         setWorkplace('');
+        setLocalWorkplace('');
         setPhone('');
+        setCellular('');
         setDepartmentId(0);
         setDisabled(false);
         setDialogCreateActive(true);
@@ -224,7 +236,9 @@ const PageUsers: React.FC = () => {
             setLogin(response.data.login);
             setPassword(response.data.password);
             setWorkplace(response.data.workplace);
+            setLocalWorkplace(response.data.localWorkplace);
             setPhone(response.data.phone);
+            setCellular(response.data.cellular);
             setDisabled(response.data.disabled);
             setDepartmentId(response.data.departmentId ? response.data.departmentId : 0);
             setMails(response.data.mails);
@@ -534,16 +548,28 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={"Workplace"}
+                        title={"Remote Workplace"}
                         placeholder={"Enter text"}
                         value={workplace}
                         onChange={(e) => setWorkplace(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Local Workplace"}
+                        placeholder={"Enter text"}
+                        value={localWorkplace}
+                        onChange={(e) => setLocalWorkplace(e.target.value)}
                     />
                     <FieldInputString
                         title={"Phone"}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Cellular"}
+                        placeholder={"Enter text"}
+                        value={cellular}
+                        onChange={(e) => setCellular(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -619,16 +645,28 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={"Workplace"}
+                        title={"Remote Workplace"}
                         placeholder={"Enter text"}
                         value={workplace}
                         onChange={(e) => setWorkplace(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Local Workplace"}
+                        placeholder={"Enter text"}
+                        value={localWorkplace}
+                        onChange={(e) => setLocalWorkplace(e.target.value)}
                     />
                     <FieldInputString
                         title={"Phone"}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={"Cellular"}
+                        placeholder={"Enter text"}
+                        value={cellular}
+                        onChange={(e) => setCellular(e.target.value)}
                     />
                     <FieldInputBoolean
                         title={"Disabled"}
@@ -726,16 +764,28 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={'Workplace'}
+                        title={'Remote Workplace'}
                         placeholder={'Enter text'}
                         value={filter.workplace}
                         onChange={(e) => setFilter({...filter, workplace: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Local Workplace'}
+                        placeholder={'Enter text'}
+                        value={filter.localWorkplace}
+                        onChange={(e) => setFilter({...filter, localWorkplace: e.target.value})}
                     />
                     <FieldInputString
                         title={'Phone'}
                         placeholder={'Enter text'}
                         value={filter.phone}
                         onChange={(e) => setFilter({...filter, phone: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Cellular'}
+                        placeholder={'Enter text'}
+                        value={filter.cellular}
+                        onChange={(e) => setFilter({...filter, cellular: e.target.value})}
                     />
                     <FieldInputBooleanNullable
                         title={'Disabled'}

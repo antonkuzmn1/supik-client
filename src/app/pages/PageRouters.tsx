@@ -915,6 +915,12 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setFilter({...filter, remoteAddress: e.target.value})}
                     />
                     <FieldInputString
+                        title={'Default Profile'}
+                        placeholder={'Enter text'}
+                        value={filter.defaultProfile}
+                        onChange={(e) => setFilter({...filter, defaultProfile: e.target.value})}
+                    />
+                    <FieldInputString
                         title={'Name'}
                         placeholder={'Enter text'}
                         value={filter.name}
