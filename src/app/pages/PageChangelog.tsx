@@ -295,8 +295,8 @@ const PageDepartments: React.FC = () => {
                 {cards.map((card: CardInterface, index: number) => {
                     return (
                         <div className={'card'} key={index}>
-                            <h1>{card.version}</h1>
-                            <h3>Времени затрачено: {card.time}</h3>
+                            <h3>{card.version}</h3>
+                            <p>Времени затрачено: {card.time}</p>
                             <ul>
                                 {card.changes.map((change: string, index: number) => {
                                     return (
