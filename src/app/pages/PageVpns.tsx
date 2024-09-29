@@ -91,6 +91,7 @@ const PageVpns: React.FC = () => {
 
     const [routers, setRouters] = useState<RouterFields[]>([]);
     const [users, setUsers] = useState<UserFields[]>([]);
+    const [_profiles, setProfiles] = useState<any[]>([]);
     const [pools, setPools] = useState<any>({});
     const [selectedPool, setSelectedPool] = useState<string[] | undefined>(undefined);
     const [routerRemoteAddr, setRouterRemoteAddr] = useState<string>('');
@@ -312,7 +313,9 @@ const PageVpns: React.FC = () => {
             params: {id: Number(id)}
         }).then((response) => {
             setPools(response.data.pools);
+            setProfiles(response.data.profiles);
             setSelectedPool(response.data.pools[profile]);
+            setProfile(response.data.router.defaultProfile);
             setRouterRemoteAddr(response.data.router.remoteAddress);
             setRouterL2tpKey(response.data.router.l2tpKey);
         }).catch((error) => {
@@ -399,6 +402,7 @@ const PageVpns: React.FC = () => {
         if (routerId > 0) {
             getRouter(routerId);
         } else {
+            setProfiles([]);
             setProfile('NULL');
             setRouterRemoteAddr('');
             setRouterL2tpKey('');
