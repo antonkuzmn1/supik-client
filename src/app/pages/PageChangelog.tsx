@@ -12,6 +12,13 @@ interface CardInterface {
 
 const cards: CardInterface[] = [
     {
+        version: '24.11.1',
+        time: '00:05',
+        changes: [
+            'Небольшие изменения стиля страницы Changelog',
+        ],
+    },
+    {
         version: '24.11',
         time: '00:30',
         changes: [
