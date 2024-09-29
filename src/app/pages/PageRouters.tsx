@@ -107,16 +107,16 @@ const PageRouters: React.FC = () => {
     const create = () => {
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/db/router", {
-            login: login,
-            password: password,
-            remoteAddress: remoteAddress,
-            localAddress: localAddress,
-            prefix: prefix,
-            name: name,
-            title: title,
+            login: login.trim(),
+            password: password.trim(),
+            remoteAddress: remoteAddress.trim(),
+            localAddress: localAddress.trim(),
+            prefix: prefix.trim(),
+            name: name.trim(),
+            title: title.trim(),
             disabled: disabled ? 1 : 0,
             certificate: fileBase64 ? fileBase64 : null,
-            l2tpKey: l2tpKey,
+            l2tpKey: l2tpKey.trim(),
         }).then((response) => {
             console.log(response);
             setDialogCreateActive(false);
@@ -136,17 +136,17 @@ const PageRouters: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.put(import.meta.env.VITE_BASE_URL + "/db/router", {
             id: id,
-            login: login,
-            password: password,
-            remoteAddress: remoteAddress,
-            localAddress: localAddress,
-            defaultProfile: defaultProfile,
-            prefix: prefix,
-            name: name,
-            title: title,
+            login: login.trim(),
+            password: password.trim(),
+            remoteAddress: remoteAddress.trim(),
+            localAddress: localAddress.trim(),
+            defaultProfile: defaultProfile.trim(),
+            prefix: prefix.trim(),
+            name: name.trim(),
+            title: title.trim(),
             disabled: disabled ? 1 : 0,
             certificate: fileBase64 ? fileBase64 : null,
-            l2tpKey: l2tpKey,
+            l2tpKey: l2tpKey.trim(),
         }).then((response) => {
             console.log(response);
             setDialogUpdateActive(false);

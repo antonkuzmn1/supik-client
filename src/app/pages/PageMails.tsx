@@ -112,14 +112,14 @@ const PageMails: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/db/mail", {
             data: {
-                nickname,
-                password,
-                nameFirst,
-                nameLast,
-                nameMiddle,
-                position,
-                isAdmin,
-                userId,
+                nickname: nickname.trim(),
+                password: password.trim(),
+                nameFirst: nameFirst.trim(),
+                nameLast: nameLast.trim(),
+                nameMiddle: nameMiddle.trim(),
+                position: position.trim(),
+                isAdmin: isAdmin,
+                userId: userId,
             }
         }).then((_response) => {
             setDialogCreateActive(false);
@@ -140,15 +140,15 @@ const PageMails: React.FC = () => {
         axios.put(import.meta.env.VITE_BASE_URL + "/db/mail", {
             data: {
                 id,
-                nickname,
-                password,
-                nameFirst,
-                nameLast,
-                nameMiddle,
-                position,
-                isAdmin,
-                isEnabled,
-                userId,
+                nickname: nickname.trim(),
+                password: password.trim(),
+                nameFirst: nameFirst.trim(),
+                nameLast: nameLast.trim(),
+                nameMiddle: nameMiddle.trim(),
+                position: position.trim(),
+                isAdmin: isAdmin,
+                isEnabled: isEnabled,
+                userId: userId,
             }
         }).then((_response) => {
             setDialogUpdateActive(false);

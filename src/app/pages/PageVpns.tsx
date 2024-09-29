@@ -129,12 +129,12 @@ const PageVpns: React.FC = () => {
     const create = () => {
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/db/vpn", {
-            name: name,
-            password: password,
-            profile: profile,
-            service: service,
-            remoteAddress: remoteAddress,
-            title: title,
+            name: name.trim(),
+            password: password.trim(),
+            profile: profile.trim(),
+            service: service.trim(),
+            remoteAddress: remoteAddress.trim(),
+            title: title.trim(),
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
@@ -156,12 +156,12 @@ const PageVpns: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.put(import.meta.env.VITE_BASE_URL + "/db/vpn", {
             id: id,
-            name: name,
-            password: password,
-            profile: profile,
-            service: service,
-            remoteAddress: remoteAddress,
-            title: title,
+            name: name.trim(),
+            password: password.trim(),
+            profile: profile.trim(),
+            service: service.trim(),
+            remoteAddress: remoteAddress.trim(),
+            title: title.trim(),
             vpnId: vpnId,
             routerId: routerId,
             userId: userId,

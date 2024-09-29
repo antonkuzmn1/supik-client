@@ -92,10 +92,10 @@ const PageAccounts: React.FC = () => {
 
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/security/account", {
-            username: username,
-            password: password,
-            fullname: fullname,
-            title: title,
+            username: username.trim(),
+            password: password.trim(),
+            fullname: fullname.trim(),
+            title: title.trim(),
             admin: admin ? 1 : 0,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {
@@ -121,10 +121,10 @@ const PageAccounts: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.put(import.meta.env.VITE_BASE_URL + "/security/account", {
             id: id,
-            username: username,
-            password: password,
-            fullname: fullname,
-            title: title,
+            username: username.trim(),
+            password: password.trim(),
+            fullname: fullname.trim(),
+            title: title.trim(),
             admin: admin ? 1 : 0,
             disabled: disabled ? 1 : 0,
         }).then((_response) => {

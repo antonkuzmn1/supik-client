@@ -99,8 +99,8 @@ const PageGroups: React.FC = () => {
 
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/security/group", {
-            name: name,
-            title: title,
+            name: name.trim(),
+            title: title.trim(),
             accessRouters: accessRouters,
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
@@ -132,8 +132,8 @@ const PageGroups: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.put(import.meta.env.VITE_BASE_URL + "/security/group", {
             id: id,
-            name: name,
-            title: title,
+            name: name.trim(),
+            title: title.trim(),
             accessRouters: accessRouters,
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,

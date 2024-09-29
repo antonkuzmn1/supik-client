@@ -93,8 +93,8 @@ const PageDepartments: React.FC = () => {
     const create = () => {
         dispatch(setAppLoading(true));
         axios.post(import.meta.env.VITE_BASE_URL + "/db/department", {
-            name: name,
-            title: title,
+            name: name.trim(),
+            title: title.trim(),
             leaderId: leaderId,
         }).then((_response) => {
             setDialogCreateActive(false);
@@ -114,8 +114,8 @@ const PageDepartments: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.put(import.meta.env.VITE_BASE_URL + "/db/department", {
             id: id,
-            name: name,
-            title: title,
+            name: name.trim(),
+            title: title.trim(),
             leaderId: leaderId,
         }).then((_response) => {
             setDialogUpdateActive(false);

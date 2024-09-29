@@ -12,6 +12,13 @@ interface CardInterface {
 
 const cards: CardInterface[] = [
     {
+        version: '24.11.2',
+        time: '00:05',
+        changes: [
+            'Добавлен trim для всех полей (удаление лишних пробелов)',
+        ],
+    },
+    {
         version: '24.11.1',
         time: '00:05',
         changes: [
