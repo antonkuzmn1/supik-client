@@ -13,9 +13,10 @@ interface CardInterface {
 const cards: CardInterface[] = [
     {
         version: '24.11.3',
-        time: '00:05',
+        time: '00:10',
         changes: [
             'Добавлено поле Access Mails для Groups',
+            'Добавлены фильтры для страницы Mails',
         ],
     },
     {

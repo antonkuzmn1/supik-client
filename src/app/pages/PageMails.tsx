@@ -20,6 +20,8 @@ import FieldInputBoolean from "../fields/FieldInputBoolean.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
 import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
+import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
+import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -632,29 +634,73 @@ const PageMails: React.FC = () => {
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
-                    {/*<FieldInputString*/}
-                    {/*    title={'Name'}*/}
-                    {/*    placeholder={'Enter text'}*/}
-                    {/*    value={filter.name}*/}
-                    {/*    onChange={(e) => setFilter({...filter, name: e.target.value})}*/}
-                    {/*/>*/}
-                    {/*<FieldInputString*/}
-                    {/*    title={'Title'}*/}
-                    {/*    placeholder={'Enter text'}*/}
-                    {/*    value={filter.title}*/}
-                    {/*    onChange={(e) => setFilter({...filter, title: e.target.value})}*/}
-                    {/*/>*/}
-                    {/*<FieldInputSelectMany*/}
-                    {/*    title={'Leaders'}*/}
-                    {/*    value={filter.leaderId || []}*/}
-                    {/*    setValue={(ids: number[]) => setFilter({...filter, leaderId: ids})}*/}
-                    {/*    variants={users.map((user: UserFields) => {*/}
-                    {/*        return {*/}
-                    {/*            value: Number(user.id),*/}
-                    {/*            text: `[ID:${user.id}] ${user.fullname}`*/}
-                    {/*        };*/}
-                    {/*    })}*/}
-                    {/*/>*/}
+                    <FieldInputString
+                        title={'Nickname'}
+                        placeholder={'Enter text'}
+                        value={filter.nickname}
+                        onChange={(e) => setFilter({...filter, nickname: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Password'}
+                        placeholder={'Enter text'}
+                        value={filter.password}
+                        onChange={(e) => setFilter({...filter, password: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'EMail'}
+                        placeholder={'Enter text'}
+                        value={filter.email}
+                        onChange={(e) => setFilter({...filter, email: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name First'}
+                        placeholder={'Enter text'}
+                        value={filter.nameFirst}
+                        onChange={(e) => setFilter({...filter, nameFirst: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name Last'}
+                        placeholder={'Enter text'}
+                        value={filter.nameLast}
+                        onChange={(e) => setFilter({...filter, nameLast: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Name Middle'}
+                        placeholder={'Enter text'}
+                        value={filter.nameMiddle}
+                        onChange={(e) => setFilter({...filter, nameMiddle: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Position'}
+                        placeholder={'Enter text'}
+                        value={filter.position}
+                        onChange={(e) => setFilter({...filter, position: e.target.value})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Is Admin'}
+                        value={filter.isAdmin}
+                        setNull={() => setFilter({...filter, isAdmin: 0})}
+                        setTrue={() => setFilter({...filter, isAdmin: 'true'})}
+                        setFalse={() => setFilter({...filter, isAdmin: 'false'})}
+                    />
+                    <FieldInputBooleanNullable
+                        title={'Is Enabled'}
+                        value={filter.isEnabled}
+                        setNull={() => setFilter({...filter, isEnabled: 0})}
+                        setTrue={() => setFilter({...filter, isEnabled: 'true'})}
+                        setFalse={() => setFilter({...filter, isEnabled: 'false'})}
+                    />
+                    <FieldInputSelectMany
+                        title={'User'}
+                        value={filter.userId || []}
+                        setValue={(ids: number[]) => setFilter({...filter, userId: ids})}
+                        variants={users.map((user: UserFields) => {
+                            return {
+                                value: Number(user.id),
+                                text: `[ID:${user.id}] ${user.fullname}`
+                            };
+                        })}
+                    />
                 </>}
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: 'Close'},
