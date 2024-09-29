@@ -1,5 +1,5 @@
 import './Dialog.scss';
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import IconClose from "../icons/IconClose.tsx";
 
 export interface DialogProps {
@@ -29,6 +29,13 @@ const Dialog: React.FC<DialogProps> = (props: DialogProps) => {
         setIsDragging(false);
     };
 
+    const onkeypressHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+        } else if (event.key === 'Escape') {
+            props.close();
+        }
+    }
+
     React.useEffect(() => {
         if (isDragging) {
             window.addEventListener("mousemove", handleMouseMove);
@@ -42,6 +49,14 @@ const Dialog: React.FC<DialogProps> = (props: DialogProps) => {
             window.removeEventListener("mouseup", handleMouseUp);
         };
     }, [isDragging]);
+
+    useEffect(() => {
+        window.addEventListener('keydown', onkeypressHandler);
+
+        return () => {
+            window.removeEventListener('keydown', onkeypressHandler);
+        }
+    })
 
     return (
         <div

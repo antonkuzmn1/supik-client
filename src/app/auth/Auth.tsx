@@ -1,5 +1,5 @@
 import './Auth.scss';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AppDispatch} from "../../utils/store.ts";
 import {useDispatch} from "react-redux";
 import {setAccountAdmin, setAccountAuthorized, setAccountFullname} from "../../slices/accountSlice.ts";
@@ -14,8 +14,7 @@ const Auth: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const login = async (event: any) => {
-        event.preventDefault();
+    const login = async () => {
         if (!username || !password) {
             dispatch(setAppError('field "username" and "password" is required'))
             return;
@@ -53,6 +52,23 @@ const Auth: React.FC = () => {
             dispatch(setAppLoading(false));
         }
     };
+
+    const onkeypressHandler = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            console.log(username);
+            login().then();
+        } else if (event.key === 'Escape') {
+            // console.log('Esc');
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', onkeypressHandler);
+
+        return () => {
+            window.removeEventListener('keydown', onkeypressHandler);
+        }
+    })
 
     return (
         <div className="Auth">
