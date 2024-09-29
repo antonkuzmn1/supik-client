@@ -30,6 +30,7 @@ export interface RouterFields {
     localAddress: string,
     remoteAddress: string,
     defaultProfile: string,
+    prefix: string,
     name: string,
     title: string,
     disabled: 0 | 1,
@@ -69,6 +70,7 @@ const PageRouters: React.FC = () => {
     const [localAddress, setLocalAddress] = useState<string>('');
     const [remoteAddress, setRemoteAddress] = useState<string>('');
     const [defaultProfile, setDefaultProfile] = useState<string>('');
+    const [prefix, setPrefix] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [disabled, setDisabled] = useState<boolean>(false);
@@ -109,6 +111,7 @@ const PageRouters: React.FC = () => {
             password: password,
             remoteAddress: remoteAddress,
             localAddress: localAddress,
+            prefix: prefix,
             name: name,
             title: title,
             disabled: disabled ? 1 : 0,
@@ -138,6 +141,7 @@ const PageRouters: React.FC = () => {
             remoteAddress: remoteAddress,
             localAddress: localAddress,
             defaultProfile: defaultProfile,
+            prefix: prefix,
             name: name,
             title: title,
             disabled: disabled ? 1 : 0,
@@ -285,6 +289,7 @@ const PageRouters: React.FC = () => {
         setLocalAddress('');
         setRemoteAddress('');
         setDefaultProfile('');
+        setPrefix('');
         setName('');
         setTitle('');
         setDisabled(false);
@@ -304,6 +309,7 @@ const PageRouters: React.FC = () => {
             setLocalAddress(response.data.router.localAddress);
             setRemoteAddress(response.data.router.remoteAddress);
             setDefaultProfile(response.data.router.defaultProfile);
+            setPrefix(response.data.router.prefix);
             setName(response.data.router.name);
             setTitle(response.data.router.title);
             setDisabled(response.data.router.disabled);
@@ -625,6 +631,12 @@ const PageRouters: React.FC = () => {
                         onChange={(e) => setRemoteAddress(e.target.value)}
                     />
                     <FieldInputString
+                        title={"Prefix"}
+                        placeholder={"Enter text"}
+                        value={prefix}
+                        onChange={(e) => setPrefix(e.target.value)}
+                    />
+                    <FieldInputString
                         title={"name"}
                         placeholder={"Enter text"}
                         value={name}
@@ -718,6 +730,12 @@ const PageRouters: React.FC = () => {
                             </select>
                         </div>
                     </div>
+                    <FieldInputString
+                        title={"Prefix"}
+                        placeholder={"Enter text"}
+                        value={prefix}
+                        onChange={(e) => setPrefix(e.target.value)}
+                    />
                     <FieldInputString
                         title={"name"}
                         placeholder={"Enter text"}
@@ -919,6 +937,12 @@ const PageRouters: React.FC = () => {
                         placeholder={'Enter text'}
                         value={filter.defaultProfile}
                         onChange={(e) => setFilter({...filter, defaultProfile: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={'Prefix'}
+                        placeholder={'Enter text'}
+                        value={filter.prefix}
+                        onChange={(e) => setFilter({...filter, prefix: e.target.value})}
                     />
                     <FieldInputString
                         title={'Name'}

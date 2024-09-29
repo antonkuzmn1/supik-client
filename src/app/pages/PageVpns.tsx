@@ -96,6 +96,7 @@ const PageVpns: React.FC = () => {
     const [selectedPool, setSelectedPool] = useState<string[] | undefined>(undefined);
     const [routerRemoteAddr, setRouterRemoteAddr] = useState<string>('');
     const [routerL2tpKey, setRouterL2tpKey] = useState<string>('');
+    const [routerPrefix, setRouterPrefix] = useState<string>('');
 
     const [filter, setFilter] = useState<any>({});
 
@@ -318,6 +319,7 @@ const PageVpns: React.FC = () => {
             setProfile(response.data.router.defaultProfile);
             setRouterRemoteAddr(response.data.router.remoteAddress);
             setRouterL2tpKey(response.data.router.l2tpKey);
+            setRouterPrefix(response.data.router.prefix);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 // dispatch(setAppError(error.response.data));
@@ -391,7 +393,8 @@ const PageVpns: React.FC = () => {
 
         const user = users.find(user => Number(user.id) === userId);
         if (user) {
-            setName(`vpn_amt_${translit(user.surname.toLowerCase())}`);
+            const prefix = routerPrefix.length > 0 ? `${routerPrefix}_` : '';
+            setName(`${prefix}${translit(user.surname.toLowerCase())}`);
 
             const remoteAddress = selectedPool ? selectedPool[0] : ''
             setRemoteAddress(remoteAddress)
