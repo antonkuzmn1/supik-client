@@ -32,6 +32,8 @@ import PageLogs from "./pages/PageLogs.tsx";
 import IconLogs from "./icons/IconLogs.tsx";
 import PageDepartments from "./pages/PageDepartments.tsx";
 import IconDepartments from "./icons/IconDepartments.tsx";
+import PageChangelog from "./pages/PageChangelog.tsx";
+import IconChangelog from "./icons/IconChangelog.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -52,6 +54,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails",  admin: true},
     {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items", admin: true},
     {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "Logs", admin: true},
+    {path: '/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "Changelog", admin: true},
 ];
 
 const router = createBrowserRouter([

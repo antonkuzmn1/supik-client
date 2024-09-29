@@ -162,4 +162,15 @@
     text-align: center;
   }
 
+  .changelog {
+    padding: 20px;
+    display: grid;
+    grid-gap: 10px;
+
+    .card {
+      padding: 0 20px;
+      border: 1px solid var(--border);
+    }
+  }
+
 }
