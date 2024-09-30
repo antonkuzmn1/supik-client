@@ -2,9 +2,10 @@ import './Field.scss';
 import React, {useState} from "react";
 
 export enum PasswordType {
+    // noinspection SpellCheckingInspection
     PIN = "0123456789",
-    Normal = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-    Strong = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!№;%:?*()_+=",
+    Normal = "ABCDEFGHKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789",
+    Strong = "ABCDEFGHKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!№;%:?*()_+=",
 }
 
 export interface FieldGeneratorProps {
@@ -24,11 +25,25 @@ const FieldGenerator: React.FC<FieldGeneratorProps> = (props: FieldGeneratorProp
 
     const generate = () => {
         let password = "";
-        for (let i = 0; i < length; i++){
-            password += type.charAt(Math.floor(Math.random() * type.length));
+        let hasNumber = false;
+
+        for (let i = 0; i < length; i++) {
+            const char = type.charAt(Math.floor(Math.random() * type.length));
+            password += char;
+
+            if (!isNaN(parseInt(char))) {
+                hasNumber = true;
+            }
         }
+
+        if (!hasNumber) {
+            const randomIndex = Math.floor(Math.random() * length);
+            const randomDigit = PasswordType.PIN.charAt(Math.floor(Math.random() * PasswordType.PIN.length));
+            password = password.substring(0, randomIndex) + randomDigit + password.substring(randomIndex + 1);
+        }
+
         setValue(password);
-    }
+    };
 
     // const copy = () => {
     //     navigator.clipboard.writeText(value).then(() => {

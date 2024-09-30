@@ -6,6 +6,14 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.11.5',
+        time: '00:15',
+        changes: [
+            '[00:05] Убраны символы из словаря для генерации паролей: "1", "0", "l" (маленькая L), "I" (большая i), "O", "o", "J"',
+            '[00:10] Изменен алгоритм генерации паролей: теперь пароли всегда содержат цифры',
+        ],
+    },
+    {
         version: '24.11.4',
         time: '01:10',
         changes: [

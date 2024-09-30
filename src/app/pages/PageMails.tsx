@@ -345,10 +345,20 @@ const PageMails: React.FC = () => {
             setNameLast(user.surname);
             setPosition(user.title);
 
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            const chars = PasswordType.Normal;
+            let hasNumber = false;
             let generatedPassword = "";
             for (let i = 0; i < 10; i++) {
-                generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+                const char = chars.charAt(Math.floor(Math.random() * chars.length));
+                generatedPassword += char;
+                if (!isNaN(parseInt(char))) {
+                    hasNumber = true;
+                }
+            }
+            if (!hasNumber) {
+                const randomIndex = Math.floor(Math.random() * length);
+                const randomDigit = PasswordType.PIN.charAt(Math.floor(Math.random() * PasswordType.PIN.length));
+                generatedPassword = password.substring(0, randomIndex) + randomDigit + password.substring(randomIndex + 1);
             }
             setPassword(generatedPassword);
         }
