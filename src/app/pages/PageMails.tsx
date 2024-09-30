@@ -166,6 +166,26 @@ const PageMails: React.FC = () => {
         });
     }
 
+    const remove = () => {
+        dispatch(setAppLoading(true));
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/mail", {
+            data: {
+                id: id,
+            },
+        }).then((_response) => {
+            setDialogDeleteActive(false);
+            getAll();
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// DIALOG
 
     const openCreateDialog = () => {
@@ -610,10 +630,11 @@ const PageMails: React.FC = () => {
                 title={'Delete User'}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Action "Delete" is not available<br></br>:(</p>
+                    <p>Are u sure want to delete "{nickname}" (ID: {id})?</p>
                 </>}
                 buttons={[
                     {action: () => setDialogDeleteActive(false), text: 'Cancel'},
+                    {action: () => remove(), text: 'Delete'},
                 ]}
             />}
             {dialogFilterActive && <Dialog
