@@ -31,14 +31,12 @@ export interface DepartmentFields {
 
     leaderId: number,
     leaderName: string,
-    membersLength: number,
 }
 
 const defTableHeaders: { text: string, field: keyof DepartmentFields, width: string, type: TypeField }[] = [
     {text: 'ID', field: 'id', width: '50px', type: 'String'},
     {text: 'Name', field: 'name', width: '200px', type: 'String'},
     {text: 'Leader Name', field: 'leaderName', width: '300px', type: 'String'},
-    {text: 'Members', field: 'membersLength', width: '100px', type: 'Integer'},
     {text: 'Title', field: 'title', width: '200px', type: 'String'},
     {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
     {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
@@ -76,7 +74,6 @@ const PageDepartments: React.FC = () => {
                 return {
                     ...row,
                     leaderName: row.leader ? row.leader.fullname : 'NULL',
-                    membersLength: row.members.length,
                 }
             }));
         }).catch((error) => {
@@ -96,9 +93,13 @@ const PageDepartments: React.FC = () => {
             name: name.trim(),
             title: title.trim(),
             leaderId: leaderId,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogCreateActive(false);
-            getAll();
+            rows.unshift({
+                ...response.data.newValue,
+                leaderName: response.data.newValue.leader ? response.data.newValue.leader.fullname : 'NULL',
+            });
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -117,9 +118,16 @@ const PageDepartments: React.FC = () => {
             name: name.trim(),
             title: title.trim(),
             leaderId: leaderId,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAll();
+            const index = rows.findIndex((row: DepartmentFields) => {
+                return row.id === response.data.newValue.id
+            });
+            rows[index] = {
+                ...response.data.newValue,
+                leaderName: response.data.newValue.leader ? response.data.newValue.leader.fullname : 'NULL',
+            };
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -137,9 +145,13 @@ const PageDepartments: React.FC = () => {
             data: {
                 id: id,
             },
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = rows.findIndex((row: DepartmentFields) => {
+                return row.id === response.data.newValue.id
+            });
+            rows.splice(index, 1);
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));

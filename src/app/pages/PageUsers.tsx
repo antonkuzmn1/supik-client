@@ -137,9 +137,13 @@ const PageUsers: React.FC = () => {
             cellular: cellular.trim(),
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogCreateActive(false);
-            getAll();
+            rows.unshift({
+                ...response.data,
+                departmentName: response.data.department ? response.data.department.name : 'NULL',
+            });
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -168,9 +172,16 @@ const PageUsers: React.FC = () => {
             cellular: cellular.trim(),
             departmentId: departmentId,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAll();
+            const index = rows.findIndex((row: UserFields) => {
+                return row.id === response.data.id
+            });
+            rows[index] = {
+                ...response.data,
+                departmentName: response.data.department ? response.data.department.name : 'NULL',
+            };
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -188,9 +199,13 @@ const PageUsers: React.FC = () => {
             data: {
                 id: id,
             },
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = rows.findIndex((row: UserFields) => {
+                return row.id === response.data.id
+            });
+            rows.splice(index, 1);
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -261,7 +276,6 @@ const PageUsers: React.FC = () => {
                 id: id,
             },
         }).then((response) => {
-            console.log(response.data)
             setId(response.data.id);
             setName(response.data.name);
             setDialogDeleteActive(true);

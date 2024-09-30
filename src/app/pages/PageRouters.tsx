@@ -118,9 +118,11 @@ const PageRouters: React.FC = () => {
             certificate: fileBase64 ? fileBase64 : null,
             l2tpKey: l2tpKey.trim(),
         }).then((response) => {
-            console.log(response);
             setDialogCreateActive(false);
-            getAll();
+            routers.unshift({
+                ...response.data,
+            });
+            setRouters(routers);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -148,9 +150,14 @@ const PageRouters: React.FC = () => {
             certificate: fileBase64 ? fileBase64 : null,
             l2tpKey: l2tpKey.trim(),
         }).then((response) => {
-            console.log(response);
             setDialogUpdateActive(false);
-            getAll();
+            const index = routers.findIndex((row: RouterFields) => {
+                return row.id === response.data.id
+            });
+            routers[index] = {
+                ...response.data,
+            };
+            setRouters(routers);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -166,9 +173,13 @@ const PageRouters: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.delete(import.meta.env.VITE_BASE_URL + "/db/router", {
             data: {id: id},
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = routers.findIndex((row: RouterFields) => {
+                return row.id === response.data.id
+            });
+            routers.splice(index, 1);
+            setRouters(routers);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));

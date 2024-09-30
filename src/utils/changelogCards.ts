@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.12',
+        time: '00:45',
+        changes: [
+            '[00:45] Добавлено сохранение сортировки, теперь она не будет сбрасываться после каждого изменения',
+        ],
+    },
+    {
         version: '24.11.5',
         time: '00:15',
         changes: [

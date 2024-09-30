@@ -123,9 +123,15 @@ const PageMails: React.FC = () => {
                 isAdmin: isAdmin,
                 userId: userId,
             }
-        }).then((_response) => {
+        }).then((response) => {
             setDialogCreateActive(false);
-            getAll();
+            rows.unshift({
+                ...response.data.created,
+                userName: response.data.created.user?.fullname
+                    ? getInitialsFromFullname(response.data.created.user.fullname)
+                    : 'NULL',
+            });
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -152,9 +158,18 @@ const PageMails: React.FC = () => {
                 isEnabled: isEnabled,
                 userId: userId,
             }
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAll();
+            const index = rows.findIndex((row: MailFields) => {
+                return row.id === response.data.created.id
+            });
+            rows[index] = {
+                ...response.data.created,
+                userName: response.data.created.user?.fullname
+                    ? getInitialsFromFullname(response.data.created.user.fullname)
+                    : 'NULL',
+            };
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -172,9 +187,13 @@ const PageMails: React.FC = () => {
             data: {
                 id: id,
             },
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = rows.findIndex((row: MailFields) => {
+                return row.id === response.data.id
+            });
+            rows.splice(index, 1);
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));

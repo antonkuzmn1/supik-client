@@ -98,9 +98,13 @@ const PageAccounts: React.FC = () => {
             title: title.trim(),
             admin: admin ? 1 : 0,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
+            console.log(response.data);
             setDialogCreateActive(false);
-            getAccounts();
+            accounts.unshift({
+                ...response.data,
+            });
+            setAccounts(accounts);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -127,9 +131,15 @@ const PageAccounts: React.FC = () => {
             title: title.trim(),
             admin: admin ? 1 : 0,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAccounts();
+            const index = accounts.findIndex((row: AccountFields) => {
+                return row.id === response.data.id
+            });
+            accounts[index] = {
+                ...response.data,
+            };
+            setAccounts(accounts);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -145,9 +155,13 @@ const PageAccounts: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.delete(import.meta.env.VITE_BASE_URL + "/security/account", {
             data: {id: id},
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAccounts();
+            const index = accounts.findIndex((row: AccountFields) => {
+                return row.id === response.data.id
+            });
+            accounts.splice(index, 1);
+            setAccounts(accounts);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));

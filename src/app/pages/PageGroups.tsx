@@ -110,9 +110,12 @@ const PageGroups: React.FC = () => {
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
             accessMails: accessMails,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogCreateActive(false);
-            getAll();
+            groups.unshift({
+                ...response.data,
+            });
+            setGroups(groups);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -146,9 +149,15 @@ const PageGroups: React.FC = () => {
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
             accessMails: accessMails,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAll();
+            const index = groups.findIndex((row: GroupFields) => {
+                return row.id === response.data.id
+            });
+            groups[index] = {
+                ...response.data,
+            };
+            setGroups(groups);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -164,9 +173,13 @@ const PageGroups: React.FC = () => {
         dispatch(setAppLoading(true));
         axios.delete(import.meta.env.VITE_BASE_URL + "/security/group", {
             data: {id: id},
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = groups.findIndex((row: GroupFields) => {
+                return row.id === response.data.id
+            });
+            groups.splice(index, 1);
+            setGroups(groups);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));

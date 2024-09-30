@@ -138,9 +138,14 @@ const PageVpns: React.FC = () => {
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogCreateActive(false);
-            getAll();
+            rows.unshift({
+                ...response.data,
+                routerName: response.data.router.name,
+                userName: response.data.user ? getInitialsFromFullname(response.data.user.fullname) : 'NULL',
+            });
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -166,9 +171,17 @@ const PageVpns: React.FC = () => {
             routerId: routerId,
             userId: userId,
             disabled: disabled ? 1 : 0,
-        }).then((_response) => {
+        }).then((response) => {
             setDialogUpdateActive(false);
-            getAll();
+            const index = rows.findIndex((row: VpnFields) => {
+                return row.id === response.data.id
+            });
+            rows[index] = {
+                ...response.data,
+                routerName: response.data.router.name,
+                userName: response.data.user ? getInitialsFromFullname(response.data.user.fullname) : 'NULL',
+            };
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -188,9 +201,13 @@ const PageVpns: React.FC = () => {
                 vpnId: vpnId,
                 routerId: routerId,
             },
-        }).then((_response) => {
+        }).then((response) => {
             setDialogDeleteActive(false);
-            getAll();
+            const index = rows.findIndex((row: VpnFields) => {
+                return row.id === response.data.id
+            });
+            rows.splice(index, 1);
+            setRows(rows);
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
