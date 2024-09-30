@@ -4,12 +4,14 @@ export interface AppState {
     loading: boolean;
     title: string;
     error: string;
+    message: string;
 }
 
 const initialState: AppState = {
     loading: false,
     title: '',
     error: '',
+    message: '',
 }
 
 const appSlice = createSlice({
@@ -24,7 +26,10 @@ const appSlice = createSlice({
         },
         setAppError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
-        }
+        },
+        setAppMessage: (state, action: PayloadAction<string>) => {
+            state.message = action.payload;
+        },
     },
 });
 
@@ -32,6 +37,7 @@ export const {
     setAppLoading,
     setAppTitle,
     setAppError,
+    setAppMessage,
 } = appSlice.actions;
 
 export default appSlice.reducer;

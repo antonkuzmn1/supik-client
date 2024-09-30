@@ -27,7 +27,7 @@ import NotSupported from "./not-supported/NotSupported.tsx";
 import {DeviceSize} from "../slices/deviceSlice.ts";
 import Auth from "./auth/Auth.tsx";
 import Dialog from "./dialogs/Dialog.tsx";
-import {setAppError} from "../slices/appSlice.ts";
+import {setAppError, setAppMessage} from "../slices/appSlice.ts";
 import PageLogs from "./pages/PageLogs.tsx";
 import IconLogs from "./icons/IconLogs.tsx";
 import PageDepartments from "./pages/PageDepartments.tsx";
@@ -75,6 +75,7 @@ const App: React.FC = () => {
     const authorized = useSelector((state: RootState) => state.account.authorized);
     const loading = useSelector((state: RootState) => state.app.loading);
     const error = useSelector((state: RootState) => state.app.error);
+    const message = useSelector((state: RootState) => state.app.message);
 
     return (
         <div className='App'>
@@ -91,6 +92,16 @@ const App: React.FC = () => {
                 }
                 buttons={[
                     {action: () => dispatch(setAppError('')), text: 'Close'}
+                ]}
+            />}
+            {message.length > 0 && <Dialog
+                title={'Message'}
+                close={() => dispatch(setAppMessage(''))}
+                children={
+                    <p>{message}</p>
+                }
+                buttons={[
+                    {action: () => dispatch(setAppMessage('')), text: 'Close'}
                 ]}
             />}
         </div>

@@ -7,7 +7,7 @@ import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
-import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppMessage, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
@@ -303,7 +303,7 @@ const PageMails: React.FC = () => {
         axios.get(import.meta.env.VITE_BASE_URL + "/db/mail/sync/", {}).then((response) => {
             console.log(response);
             getAll();
-            dispatch(setAppError('Successfully success! (Not error)'));
+            dispatch(setAppMessage('Successfully success!'));
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
