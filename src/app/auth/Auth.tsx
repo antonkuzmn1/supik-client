@@ -7,9 +7,12 @@ import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Cookies from "js-cookie";
 import FieldInputString from "../fields/FieldInputString.tsx";
+import {useTranslation} from "react-i18next";
 
 const Auth: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+
+    const {t} = useTranslation();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -75,18 +78,18 @@ const Auth: React.FC = () => {
             <div className='frame'>
                 <div className='content'>
                     <div className='header'>
-                        <h1>Authorization</h1>
+                        <h1>{t('authHeader')}</h1>
                     </div>
                     <FieldInputString
-                        title={'Username'}
-                        placeholder={'Enter username'}
+                        title={t('authUsername')}
+                        placeholder={t('authUsernamePlaceholder')}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <FieldInputString
-                        title={'Password'}
+                        title={t('authPassword')}
                         password={true}
-                        placeholder={'Enter password'}
+                        placeholder={t('authUsernamePassword')}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
@@ -95,7 +98,7 @@ const Auth: React.FC = () => {
                             className='submit'
                             onClick={login}
                         >
-                            Sign in
+                            {t('authSignIn')}
                         </button>
                     </div>
                 </div>

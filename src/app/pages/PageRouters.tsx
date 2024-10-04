@@ -18,6 +18,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -38,18 +39,20 @@ export interface RouterFields {
 }
 
 const defTableHeaders: { text: string, field: keyof RouterFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Internal Address', field: 'localAddress', width: '150px', type: 'String'},
-    {text: 'Name', field: 'name', width: '150px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'routersTableID', field: 'id', width: '50px', type: 'Integer'},
+    {text: 'routersTableInternalAddress', field: 'localAddress', width: '150px', type: 'String'},
+    {text: 'routersTableName', field: 'name', width: '150px', type: 'String'},
+    {text: 'routersTableTitle', field: 'title', width: '300px', type: 'String'},
+    {text: 'routersTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'routersTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageRouters: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [routers, setRouters] = useState<RouterFields[]>([]);
 
@@ -514,7 +517,7 @@ const PageRouters: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Routers'));
+        dispatch(setAppTitle('routersTitle'));
         getAll();
     }, [location.search]);
 
@@ -564,7 +567,7 @@ const PageRouters: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -613,113 +616,113 @@ const PageRouters: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Router'}
+                title={t('routersCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Login"}
+                        title={t('routersCreateFieldLogin')}
                         placeholder={"Enter text"}
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('routersCreateFieldPassword')}
                         placeholder={"Enter text"}
                         password={true}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Internal Addr"}
+                        title={t('routersCreateFieldInternalAddress')}
                         placeholder={"Enter text"}
                         value={localAddress}
                         onChange={(e) => setLocalAddress(e.target.value)}
                     />
                     <FieldInputString
-                        title={"External Addr"}
+                        title={t('routersCreateFieldExternalAddress')}
                         placeholder={"Enter text"}
                         value={remoteAddress}
                         onChange={(e) => setRemoteAddress(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Prefix"}
+                        title={t('routersCreateFieldPrefix')}
                         placeholder={"Enter text"}
                         value={prefix}
                         onChange={(e) => setPrefix(e.target.value)}
                     />
                     <FieldInputString
-                        title={"name"}
+                        title={t('routersCreateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('routersCreateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"VPN Server"}
+                        title={t('routersCreateVpnServer')}
                         value={disabled}
                         invert={true}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                     <FieldInputFile
-                        title={"Certificate"}
+                        title={t('routersCreateCertificate')}
                         placeholder={"Upload file"}
                         value={certificate}
                         onChange={handleFileChange}
                     />
                     <FieldInputString
-                        title={"L2TP Key"}
+                        title={t('routersCreateL2tpKey')}
                         placeholder={"Enter text"}
                         value={l2tpKey}
                         onChange={(e) => setL2tpKey(e.target.value)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('routersCreateButtonCancel')},
+                    {action: () => create(), text: t('routersCreateButtonConfirm')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Router'}
+                title={t('routersUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('routersUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Login"}
+                        title={t('routersUpdateFieldLogin')}
                         placeholder={"Enter text"}
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('routersUpdateFieldPassword')}
                         placeholder={"Enter text"}
                         password={true}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Internal Addr"}
+                        title={t('routersUpdateFieldInternalAddress')}
                         placeholder={"Enter text"}
                         value={localAddress}
                         onChange={(e) => setLocalAddress(e.target.value)}
                     />
                     <FieldInputString
-                        title={"External Addr"}
+                        title={t('routersUpdateFieldExternalAddress')}
                         placeholder={"Enter text"}
                         value={remoteAddress}
                         onChange={(e) => setRemoteAddress(e.target.value)}
                     />
                     <div className='Field'>
                         <div className='title'>
-                            <p>{'Default Profile'}</p>
+                            <p>{t('routersUpdateFieldDefaultProfile')}</p>
                         </div>
                         <div className='field'>
                             <select
@@ -742,89 +745,89 @@ const PageRouters: React.FC = () => {
                         </div>
                     </div>
                     <FieldInputString
-                        title={"Prefix"}
+                        title={t('routersUpdateFieldPrefix')}
                         placeholder={"Enter text"}
                         value={prefix}
                         onChange={(e) => setPrefix(e.target.value)}
                     />
                     <FieldInputString
-                        title={"name"}
+                        title={t('routersUpdateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('routersUpdateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"VPN Server"}
+                        title={t('routersUpdateVpnServer')}
                         value={disabled}
                         invert={true}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                     <FieldInputFile
-                        title={"Certificate"}
+                        title={t('routersUpdateCertificate')}
                         placeholder={"Upload file"}
                         value={certificate}
                         onChange={handleFileChange}
                     />
                     <FieldInputString
-                        title={"L2TP Key"}
+                        title={t('routersUpdateL2tpKey')}
                         placeholder={"Enter text"}
                         value={l2tpKey}
                         onChange={(e) => setL2tpKey(e.target.value)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openTestDialog(), text: 'Test'},
-                    {action: () => openSyncDialog(), text: 'Sync'},
-                    {action: () => openViewersDialog(id), text: 'Viewers'},
-                    {action: () => openEditorsDialog(id), text: 'Editors'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('routersUpdateButtonCancel')},
+                    {action: () => openTestDialog(), text: t('routersUpdateButtonTest')},
+                    {action: () => openSyncDialog(), text: t('routersUpdateButtonSynchronize')},
+                    {action: () => openViewersDialog(id), text: t('routersUpdateButtonViewers')},
+                    {action: () => openEditorsDialog(id), text: t('routersUpdateButtonEditors')},
+                    {action: () => update(), text: t('routersUpdateButtonConfirm')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Router'}
+                title={t('routersDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
+                    <p>{t('routersDeleteText')} "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('routersDeleteButtonCancel')},
+                    {action: () => remove(), text: t('routersDeleteButtonDelete')},
                 ]}
             />}
             {dialogTestActive && <Dialog
-                title={'Test Connection'}
+                title={t('routersTestTitle')}
                 close={() => setDialogTestActive(false)}
                 children={<>
                     {connected
-                        ? <p>Successfully success: "{name}" (ID: {id})</p>
-                        : <p>Connection failed: "{name}" (ID: {id})</p>
+                        ? <p>{t('routersTestTextSuccess')}: "{name}" (ID: {id})</p>
+                        : <p>{t('routersTestTextFailed')}: "{name}" (ID: {id})</p>
                     }
                 </>}
                 buttons={[
-                    {action: () => setDialogTestActive(false), text: 'Close'},
+                    {action: () => setDialogTestActive(false), text: t('routersTestButtonClose')},
                 ]}
             />}
             {dialogSyncActive && <Dialog
-                title={'Synchronize VPN accounts'}
+                title={t('routersSynchronizeTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to sync VPN accounts by "{name}" (ID: {id})?</p>
+                    <p>{t('routersSynchronizeText')} "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogSyncActive(false), text: 'Cancel'},
-                    {action: () => syncVpns(), text: 'Yes'},
+                    {action: () => setDialogSyncActive(false), text: t('routersSynchronizeButtonCancel')},
+                    {action: () => syncVpns(), text: t('routersSynchronizeButtonYes')},
                 ]}
             />}
             {dialogViewersActive && <Dialog
-                title={'Viewers'}
+                title={t('routersViewersTitle')}
                 close={() => setDialogViewersActive(false)}
                 children={<div className={'groups'}>
                     <div className={'left'}>
@@ -836,7 +839,7 @@ const PageRouters: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => deleteViewer(viewer.groupId)}
-                                    >Del
+                                    >{t('routersViewersDel')}
                                     </button>
                                 </div>
                             </div>
@@ -851,7 +854,7 @@ const PageRouters: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => createViewer(group.id)}
-                                    >Add
+                                    >{t('routersViewersAdd')}
                                     </button>
                                 </div>
                             </div>
@@ -859,11 +862,11 @@ const PageRouters: React.FC = () => {
                     </div>
                 </div>}
                 buttons={[
-                    {action: () => setDialogViewersActive(false), text: 'Close'},
+                    {action: () => setDialogViewersActive(false), text: t('routersViewersButtonClose')},
                 ]}
             />}
             {dialogEditorsActive && <Dialog
-                title={'Editors'}
+                title={t('routersEditorsTitle')}
                 close={() => setDialogViewersActive(false)}
                 children={<div className={'groups'}>
                     <div className={'left'}>
@@ -875,7 +878,7 @@ const PageRouters: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => deleteEditor(editor.groupId)}
-                                    >Del
+                                    >{t('routersEditorsDel')}
                                     </button>
                                 </div>
                             </div>
@@ -890,7 +893,7 @@ const PageRouters: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => createEditor(group.id)}
-                                    >Add
+                                    >{t('routersEditorsAdd')}
                                     </button>
                                 </div>
                             </div>
@@ -898,77 +901,77 @@ const PageRouters: React.FC = () => {
                     </div>
                 </div>}
                 buttons={[
-                    {action: () => setDialogEditorsActive(false), text: 'Close'},
+                    {action: () => setDialogEditorsActive(false), text: t('routersEditorsButtonClose')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Routers'}
-                close={() => setDialogDeleteActive(false)}
+                title={t('routersFilterTitle')}
+                close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('routersFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('routersFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Login'}
+                        title={t('routersFilterFieldLogin')}
                         placeholder={'Enter text'}
                         value={filter.login}
                         onChange={(e) => setFilter({...filter, login: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Password'}
+                        title={t('routersFilterFieldPassword')}
                         placeholder={'Enter text'}
                         value={filter.password}
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Internal addr'}
+                        title={t('routersFilterFieldInternalAddress')}
                         placeholder={'Enter text'}
                         value={filter.localAddress}
                         onChange={(e) => setFilter({...filter, localAddress: e.target.value})}
                     />
                     <FieldInputString
-                        title={'External addr'}
+                        title={t('routersFilterFieldExternalAddress')}
                         placeholder={'Enter text'}
                         value={filter.remoteAddress}
                         onChange={(e) => setFilter({...filter, remoteAddress: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Default Profile'}
+                        title={t('routersFilterFieldDefaultProfile')}
                         placeholder={'Enter text'}
                         value={filter.defaultProfile}
                         onChange={(e) => setFilter({...filter, defaultProfile: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Prefix'}
+                        title={t('routersFilterFieldPrefix')}
                         placeholder={'Enter text'}
                         value={filter.prefix}
                         onChange={(e) => setFilter({...filter, prefix: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name'}
+                        title={t('routersFilterFieldName')}
                         placeholder={'Enter text'}
                         value={filter.name}
                         onChange={(e) => setFilter({...filter, name: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={t('routersFilterFieldTitle')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputBooleanNullable
-                        title={'VPN Server'}
+                        title={t('routersFilterVpnServer')}
                         value={filter.disabled}
                         invert={true}
                         setNull={() => setFilter({...filter, disabled: 0})}
@@ -976,15 +979,15 @@ const PageRouters: React.FC = () => {
                         setFalse={() => setFilter({...filter, disabled: 'false'})}
                     />
                     <FieldInputString
-                        title={'L2TP Key'}
+                        title={t('routersFilterL2tpKey')}
                         placeholder={'Enter text'}
                         value={filter.l2tpKey}
                         onChange={(e) => setFilter({...filter, l2tpKey: e.target.value})}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('routersFilterButtonClose')},
+                    {action: () => setQuery(), text: t('routersFilterButtonConfirm')},
                 ]}
             />}
         </>

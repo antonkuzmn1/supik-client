@@ -23,6 +23,7 @@ import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -56,19 +57,21 @@ interface TableHeaders {
 }
 
 const defTableHeaders: TableHeaders[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Router', field: 'routerName', width: '100px', type: 'String'},
-    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Name', field: 'name', width: '200px', type: 'String'},
-    {text: 'Password', field: 'password', width: '150px', type: 'String'},
-    {text: 'User', field: 'userName', width: '150px', type: 'String'},
-    {text: 'Remote Address', field: 'remoteAddress', width: '150px', type: 'String'},
+    {text: 'vpnsTableID', field: 'id', width: '50px', type: 'Integer'},
+    {text: 'vpnsTableRouter', field: 'routerName', width: '100px', type: 'String'},
+    {text: 'vpnsTableDisabled', field: 'disabled', width: '100px', type: 'Boolean'},
+    {text: 'vpnsTableName', field: 'name', width: '200px', type: 'String'},
+    {text: 'vpnsTablePassword', field: 'password', width: '150px', type: 'String'},
+    {text: 'vpnsTableUser', field: 'userName', width: '150px', type: 'String'},
+    {text: 'vpnsTableInternalAddress', field: 'remoteAddress', width: '150px', type: 'String'},
 ]
 
 const PageVpns: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [rows, setRows] = useState<VpnFields[]>([]);
 
@@ -457,7 +460,7 @@ const PageVpns: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('VPNs'));
+        dispatch(setAppTitle('vpnsTitle'));
         getAll();
         getRouters();
         getUsers();
@@ -524,7 +527,7 @@ const PageVpns: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -573,17 +576,17 @@ const PageVpns: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create VPN'}
+                title={t('vpnsCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Name"}
+                        title={t('vpnsCreateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('vpnsCreateFieldPassword')}
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -594,7 +597,7 @@ const PageVpns: React.FC = () => {
                     />
                     <div className='Field'>
                         <div className='title'>
-                            <p>{'Remote Addr'}</p>
+                            <p>{t('vpnsCreateFieldInternalAddress')}</p>
                         </div>
                         <div className='field'>
                             <input
@@ -615,13 +618,13 @@ const PageVpns: React.FC = () => {
                         </div>
                     </div>
                     <FieldInputString
-                        title={"Title"}
+                        title={t('vpnsCreateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputSelectOne
-                        title={'Router'}
+                        title={t('vpnsCreateFieldRouter')}
                         value={routerId}
                         nullable={true}
                         setValue={setRouterId}
@@ -633,15 +636,15 @@ const PageVpns: React.FC = () => {
                         })}
                     />
                     <FieldValueString
-                        title={"External Addr"}
+                        title={t('vpnsCreateFieldExternalAddress')}
                         value={routerRemoteAddr}
                     />
                     <FieldValueString
-                        title={"L2TP Key"}
+                        title={t('vpnsCreateFieldL2tpKey')}
                         value={routerL2tpKey}
                     />
                     <FieldInputSelectOne
-                        title={'User'}
+                        title={t('vpnsCreateFieldUser')}
                         value={userId}
                         setValue={setUserId}
                         nullable={true}
@@ -660,27 +663,27 @@ const PageVpns: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => autofill(), text: 'Autofill'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('vpnsCreateButtonCancel')},
+                    {action: () => autofill(), text: t('vpnsCreateButtonAutofill')},
+                    {action: () => create(), text: t('vpnsCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update VPN'}
+                title={t('vpnsUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('vpnsUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Name"}
+                        title={t('vpnsUpdateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('vpnsUpdateFieldPassword')}
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -691,7 +694,7 @@ const PageVpns: React.FC = () => {
                     />
                     <div className='Field'>
                         <div className='title'>
-                            <p>{'Remote Addr'}</p>
+                            <p>{t('vpnsUpdateFieldInternalAddress')}</p>
                         </div>
                         <div className='field'>
                             <input
@@ -712,13 +715,13 @@ const PageVpns: React.FC = () => {
                         </div>
                     </div>
                     <FieldInputString
-                        title={"Title"}
+                        title={t('vpnsUpdateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputSelectOne
-                        title={'Router'}
+                        title={t('vpnsUpdateFieldRouter')}
                         value={routerId}
                         setValue={setRouterId}
                         variants={routers.map((router) => {
@@ -729,15 +732,15 @@ const PageVpns: React.FC = () => {
                         })}
                     />
                     <FieldValueString
-                        title={"External Addr"}
+                        title={t('vpnsUpdateFieldExternalAddress')}
                         value={routerRemoteAddr}
                     />
                     <FieldValueString
-                        title={"L2TP Key"}
+                        title={t('vpnsUpdateFieldL2tpKey')}
                         value={routerL2tpKey}
                     />
                     <FieldInputSelectOne
-                        title={'User'}
+                        title={t('vpnsUpdateFieldUser')}
                         value={userId}
                         setValue={setUserId}
                         nullable={true}
@@ -749,85 +752,79 @@ const PageVpns: React.FC = () => {
                         })}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={t('vpnsUpdateFieldDisabled')}
                         value={disabled}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('vpnsUpdateButtonCancel')},
+                    {action: () => update(), text: t('vpnsUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete VPN'}
+                title={t('vpnsDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id}; RouterID: {routerId})?</p>
+                    <p>{t('vpnsDeleteText')} "{name}" (ID: {id}; RouterID: {routerId})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('vpnsDeleteButtonCancel')},
+                    {action: () => remove(), text: t('vpnsDeleteButtonDelete')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter VPNs'}
+                title={t('vpnsFilterTitle')}
                 close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('vpnsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('vpnsFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name'}
+                        title={t('vpnsFilterFieldName')}
                         placeholder={'Enter text'}
                         value={filter.name}
                         onChange={(e) => setFilter({...filter, name: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Password'}
+                        title={t('vpnsFilterFieldPassword')}
                         placeholder={'Enter text'}
                         value={filter.password}
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Service'}
-                        placeholder={'Enter text'}
-                        value={filter.service}
-                        onChange={(e) => setFilter({...filter, service: e.target.value})}
-                    />
-                    <FieldInputString
-                        title={'Remote addr'}
+                        title={t('vpnsFilterFieldInternalAddress')}
                         placeholder={'Enter text'}
                         value={filter.remoteAddress}
                         onChange={(e) => setFilter({...filter, remoteAddress: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={t('vpnsFilterFieldTitle')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Disabled'}
+                        title={t('vpnsFilterFieldDisabled')}
                         value={filter.disabled}
                         setNull={() => setFilter({...filter, disabled: 0})}
                         setTrue={() => setFilter({...filter, disabled: 'true'})}
                         setFalse={() => setFilter({...filter, disabled: 'false'})}
                     />
                     <FieldInputSelectMany
-                        title={'Routers'}
+                        title={t('vpnsFilterFieldRouters')}
                         value={filter.routerId || []}
                         setValue={(ids: number[]) => setFilter({...filter, routerId: ids})}
                         variants={routers.map((router: RouterFields) => {
@@ -838,7 +835,7 @@ const PageVpns: React.FC = () => {
                         })}
                     />
                     <FieldInputSelectMany
-                        title={'Users'}
+                        title={t('vpnsFilterFieldUsers')}
                         value={filter.userId || []}
                         setValue={(ids: number[]) => setFilter({...filter, userId: ids})}
                         variants={users.map((user: UserFields) => {
@@ -850,8 +847,8 @@ const PageVpns: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('vpnsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('vpnsFilterButtonConfirm')},
                 ]}
             />}
         </>

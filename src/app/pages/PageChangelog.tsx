@@ -14,7 +14,7 @@ const PageDepartments: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Changelog'));
+        dispatch(setAppTitle('changelogTitle'));
     }, [location.search]);
 
     useEffect(() => {

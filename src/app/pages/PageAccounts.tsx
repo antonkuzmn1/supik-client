@@ -17,6 +17,7 @@ import {AccountFields} from "./PageAccount.tsx";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -28,20 +29,22 @@ interface TableHeaders {
 }
 
 const defTableHeaders: TableHeaders[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Username', field: 'username', width: '150px', type: 'String'},
-    {text: 'Admin', field: 'admin', width: '100px', type: 'Boolean'},
-    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Full name', field: 'fullname', width: '300px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'accountsTableID', field: 'id', width: '50px', type: 'Integer'},
+    {text: 'accountsTableUsername', field: 'username', width: '150px', type: 'String'},
+    {text: 'accountsTableAdmin', field: 'admin', width: '100px', type: 'Boolean'},
+    {text: 'accountsTableDisabled', field: 'disabled', width: '100px', type: 'Boolean'},
+    {text: 'accountsTableFullname', field: 'fullname', width: '300px', type: 'String'},
+    {text: 'accountsTableTitle', field: 'title', width: '300px', type: 'String'},
+    {text: 'accountsTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'accountsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageAccounts: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [accounts, setAccounts] = useState<AccountFields[]>([]);
 
@@ -351,7 +354,7 @@ const PageAccounts: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Accounts'));
+        dispatch(setAppTitle('accountsTitle'));
         getAccounts();
     }, [location.search]);
 
@@ -401,7 +404,7 @@ const PageAccounts: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -450,131 +453,131 @@ const PageAccounts: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Account'}
+                title={t('accountsCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Username"}
+                        title={t('accountsCreateFieldUsername')}
                         placeholder={"Enter text"}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('accountsCreateFieldPassword')}
                         password={true}
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('accountsCreateFieldPassword')}
                         password={true}
                         placeholder={"Enter text"}
                         value={passwordRepeat}
                         onChange={(e) => setPasswordRepeat(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Full name"}
+                        title={t('accountsCreateFieldFullname')}
                         placeholder={"Enter text"}
                         value={fullname}
                         onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('accountsCreateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Admin"}
+                        title={t('accountsCreateFieldAdmin')}
                         value={admin}
                         setTrue={() => setAdmin(true)}
                         setFalse={() => setAdmin(false)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={t('accountsCreateFieldDisabled')}
                         value={disabled}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => createAccount(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('accountsCreateButtonCancel')},
+                    {action: () => createAccount(), text: t('accountsCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Account'}
+                title={t('accountsUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('accountsUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Username"}
+                        title={t('accountsUpdateFieldUsername')}
                         placeholder={"Enter text"}
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('accountsUpdateFieldPassword')}
                         password={true}
                         placeholder={"Enter text"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('accountsUpdateFieldPassword')}
                         password={true}
                         placeholder={"Enter text"}
                         value={passwordRepeat}
                         onChange={(e) => setPasswordRepeat(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Full name"}
+                        title={t('accountsUpdateFieldFullname')}
                         placeholder={"Enter text"}
                         value={fullname}
                         onChange={(e) => setFullname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('accountsUpdateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Admin"}
+                        title={t('accountsUpdateFieldAdmin')}
                         value={admin}
                         setTrue={() => setAdmin(true)}
                         setFalse={() => setAdmin(false)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={t('accountsUpdateFieldDisabled')}
                         value={disabled}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openGroupsDialog(id), text: 'Groups'},
-                    {action: () => updateAccount(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('accountsUpdateButtonCancel')},
+                    {action: () => openGroupsDialog(id), text: t('accountsUpdateButtonGroups')},
+                    {action: () => updateAccount(), text: t('accountsUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Account'}
+                title={t('accountsDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{fullname}" (ID: {id})?</p>
+                    <p>{t('accountsDeleteText')} "{fullname}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => deleteAccount(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('accountsDeleteButtonCancel')},
+                    {action: () => deleteAccount(), text: t('accountsDeleteButtonDelete')},
                 ]}
             />}
             {dialogGroupsActive && <Dialog
-                title={'Account-Group'}
+                title={t('accountsGroupsTitle')}
                 close={() => setDialogGroupsActive(false)}
                 children={<div className={'groups'}>
                     <div className={'left'}>
@@ -586,7 +589,7 @@ const PageAccounts: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => deleteAccountGroup(accountGroup.groupId)}
-                                    >Del
+                                    >{t('accountsGroupsDel')}
                                     </button>
                                 </div>
                             </div>
@@ -601,7 +604,7 @@ const PageAccounts: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => createAccountGroup(group.id)}
-                                    >Add
+                                    >{t('accountsGroupsAdd')}
                                     </button>
                                 </div>
                             </div>
@@ -609,54 +612,54 @@ const PageAccounts: React.FC = () => {
                     </div>
                 </div>}
                 buttons={[
-                    {action: () => setDialogGroupsActive(false), text: 'Close'},
+                    {action: () => setDialogGroupsActive(false), text: t('accountsGroupsButtonClose')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Accounts'}
-                close={() => setDialogDeleteActive(false)}
+                title={t('accountsFilterTitle')}
+                close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('accountsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('accountsFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Username'}
+                        title={t('accountsFilterFieldUsername')}
                         placeholder={'Enter text'}
                         value={filter.username}
                         onChange={(e) => setFilter({...filter, username: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Fullname'}
+                        title={t('accountsFilterFieldFullname')}
                         placeholder={'Enter text'}
                         value={filter.fullname}
                         onChange={(e) => setFilter({...filter, fullname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={t('accountsFilterFieldTitle')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Admin'}
+                        title={t('accountsFilterFieldAdmin')}
                         value={filter.admin}
                         setNull={() => setFilter({...filter, admin: 0})}
                         setTrue={() => setFilter({...filter, admin: 'true'})}
                         setFalse={() => setFilter({...filter, admin: 'false'})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Disabled'}
+                        title={t('accountsFilterFieldDisabled')}
                         value={filter.disabled}
                         setNull={() => setFilter({...filter, disabled: 0})}
                         setTrue={() => setFilter({...filter, disabled: 'true'})}
@@ -664,8 +667,8 @@ const PageAccounts: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('accountsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('accountsFilterButtonConfirm')},
                 ]}
             />}
         </>

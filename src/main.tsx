@@ -4,6 +4,7 @@ import {createRoot} from 'react-dom/client';
 import App from './app/App.tsx';
 import {store} from "./utils/store.ts";
 import {Provider} from "react-redux";
+import './utils/i18n.ts';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

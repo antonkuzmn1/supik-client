@@ -25,6 +25,7 @@ import JsPDF from 'jspdf';
 import robotoNormalFont from '../../fonts/Roboto/Roboto-Regular.ttf';
 import robotoBoldFont from '../../fonts/Roboto/Roboto-Bold.ttf';
 import {MailFields} from "./PageMails.tsx";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -52,24 +53,26 @@ export interface UserFields {
 }
 
 const defTableHeaders: { text: string, field: keyof UserFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'Disabled', field: 'disabled', width: '100px', type: 'Boolean'},
-    {text: 'Fullname', field: 'fullname', width: '300px', type: 'String'},
-    {text: 'Login', field: 'login', width: '150px', type: 'String'},
-    {text: 'Department', field: 'departmentName', width: '150px', type: 'String'},
-    {text: 'Remote Workplace', field: 'workplace', width: '200px', type: 'String'},
-    {text: 'Local Workplace', field: 'localWorkplace', width: '200px', type: 'String'},
-    {text: 'Phone', field: 'phone', width: '100px', type: 'String'},
-    {text: 'Cellular', field: 'cellular', width: '150px', type: 'String'},
-    {text: 'Post', field: 'title', width: '300px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'usersTableID', field: 'id', width: '50px', type: 'String'},
+    {text: 'usersTableDisabled', field: 'disabled', width: '100px', type: 'Boolean'},
+    {text: 'usersTableFullname', field: 'fullname', width: '300px', type: 'String'},
+    {text: 'usersTableLogin', field: 'login', width: '150px', type: 'String'},
+    {text: 'usersTableDepartment', field: 'departmentName', width: '150px', type: 'String'},
+    {text: 'usersTableRemoteWorkplace', field: 'workplace', width: '200px', type: 'String'},
+    {text: 'usersTableLocalWorkplace', field: 'localWorkplace', width: '200px', type: 'String'},
+    {text: 'usersTablePhone', field: 'phone', width: '100px', type: 'String'},
+    {text: 'usersTableCellular', field: 'cellular', width: '150px', type: 'String'},
+    {text: 'usersTableTitle', field: 'title', width: '300px', type: 'String'},
+    {text: 'usersTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'usersTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageUsers: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [rows, setRows] = useState<UserFields[]>([]);
 
@@ -405,7 +408,7 @@ const PageUsers: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Users'));
+        dispatch(setAppTitle('usersTitle'));
         getAll();
         getDepartments();
     }, [location.search]);
@@ -456,7 +459,7 @@ const PageUsers: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -505,41 +508,41 @@ const PageUsers: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create User'}
+                title={t('usersCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Surname"}
+                        title={t('usersCreateFieldSurname')}
                         placeholder={"Enter text"}
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name"}
+                        title={t('usersCreateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Patronymic"}
+                        title={t('usersCreateFieldPatronymic')}
                         placeholder={"Enter text"}
                         value={patronymic}
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Post"}
+                        title={t('usersCreateFieldPost')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Login"}
+                        title={t('usersCreateFieldLogin')}
                         placeholder={"Enter text"}
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('usersCreateFieldPassword')}
                         placeholder={"Enter text"}
                         password={true}
                         value={password}
@@ -550,7 +553,7 @@ const PageUsers: React.FC = () => {
                         length={10}
                     />
                     <FieldInputSelectOne
-                        title={'Department'}
+                        title={t('usersCreateFieldDepartment')}
                         value={departmentId}
                         setValue={setDepartmentId}
                         nullable={true}
@@ -562,81 +565,81 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={"Remote Workplace"}
+                        title={t('usersCreateFieldRemoteWorkplace')}
                         placeholder={"Enter text"}
                         value={workplace}
                         onChange={(e) => setWorkplace(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Local Workplace"}
+                        title={t('usersCreateFieldLocalWorkplace')}
                         placeholder={"Enter text"}
                         value={localWorkplace}
                         onChange={(e) => setLocalWorkplace(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Phone"}
+                        title={t('usersCreateFieldPhone')}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Cellular"}
+                        title={t('usersCreateFieldCellular')}
                         placeholder={"Enter text"}
                         value={cellular}
                         onChange={(e) => setCellular(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={t('usersCreateFieldDisabled')}
                         value={disabled}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('usersCreateButtonCancel')},
+                    {action: () => create(), text: t('usersCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update User'}
+                title={t('usersUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('usersUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Surname"}
+                        title={t('usersUpdateFieldSurname')}
                         placeholder={"Enter text"}
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name"}
+                        title={t('usersUpdateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Patronymic"}
+                        title={t('usersUpdateFieldPatronymic')}
                         placeholder={"Enter text"}
                         value={patronymic}
                         onChange={(e) => setPatronymic(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Post"}
+                        title={t('usersUpdateFieldPost')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Login"}
+                        title={t('usersUpdateFieldLogin')}
                         placeholder={"Enter text"}
                         value={login}
                         onChange={(e) => setLogin(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('usersUpdateFieldPassword')}
                         placeholder={"Enter text"}
                         password={true}
                         value={password}
@@ -647,7 +650,7 @@ const PageUsers: React.FC = () => {
                         length={10}
                     />
                     <FieldInputSelectOne
-                        title={'Department'}
+                        title={t('usersUpdateFieldDepartment')}
                         value={departmentId}
                         setValue={setDepartmentId}
                         nullable={true}
@@ -659,115 +662,115 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={"Remote Workplace"}
+                        title={t('usersUpdateFieldRemoteWorkplace')}
                         placeholder={"Enter text"}
                         value={workplace}
                         onChange={(e) => setWorkplace(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Local Workplace"}
+                        title={t('usersUpdateFieldLocalWorkplace')}
                         placeholder={"Enter text"}
                         value={localWorkplace}
                         onChange={(e) => setLocalWorkplace(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Phone"}
+                        title={t('usersUpdateFieldPhone')}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Cellular"}
+                        title={t('usersUpdateFieldCellular')}
                         placeholder={"Enter text"}
                         value={cellular}
                         onChange={(e) => setCellular(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Disabled"}
+                        title={t('usersUpdateFieldDisabled')}
                         value={disabled}
                         setTrue={() => setDisabled(true)}
                         setFalse={() => setDisabled(false)}
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => exportUserPDF(), text: 'Export PDF'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('usersUpdateButtonCancel')},
+                    {action: () => exportUserPDF(), text: t('usersUpdateButtonExportPDF')},
+                    {action: () => update(), text: t('usersUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete User'}
+                title={t('usersDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
+                    <p>{t('usersDeleteText')} "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('usersDeleteButtonCancel')},
+                    {action: () => remove(), text: t('usersDeleteButtonDelete')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Users'}
+                title={t('usersFilterTitle')}
                 close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('usersFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('usersFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name'}
+                        title={t('usersFilterFieldName')}
                         placeholder={'Enter text'}
                         value={filter.name}
                         onChange={(e) => setFilter({...filter, name: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Surname'}
+                        title={t('usersFilterFieldSurname')}
                         placeholder={'Enter text'}
                         value={filter.surname}
                         onChange={(e) => setFilter({...filter, surname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Patronymic'}
+                        title={t('usersFilterFieldPatronymic')}
                         placeholder={'Enter text'}
                         value={filter.patronymic}
                         onChange={(e) => setFilter({...filter, patronymic: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Fullname'}
+                        title={t('usersFilterFieldFullname')}
                         placeholder={'Enter text'}
                         value={filter.fullname}
                         onChange={(e) => setFilter({...filter, fullname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Post'}
+                        title={t('usersFilterFieldPost')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Login'}
+                        title={t('usersFilterFieldLogin')}
                         placeholder={'Enter text'}
                         value={filter.login}
                         onChange={(e) => setFilter({...filter, login: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Password'}
+                        title={t('usersFilterFieldPassword')}
                         placeholder={'Enter text'}
                         value={filter.password}
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
                     />
                     <FieldInputSelectMany
-                        title={'Departments'}
+                        title={t('usersFilterFieldDepartment')}
                         value={filter.departmentId || []}
                         setValue={(ids: number[]) => setFilter({...filter, departmentId: ids})}
                         variants={departments.map((department: DepartmentFields) => {
@@ -778,31 +781,31 @@ const PageUsers: React.FC = () => {
                         })}
                     />
                     <FieldInputString
-                        title={'Remote Workplace'}
+                        title={t('usersFilterFieldRemoteWorkplace')}
                         placeholder={'Enter text'}
                         value={filter.workplace}
                         onChange={(e) => setFilter({...filter, workplace: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Local Workplace'}
+                        title={t('usersFilterFieldLocalWorkplace')}
                         placeholder={'Enter text'}
                         value={filter.localWorkplace}
                         onChange={(e) => setFilter({...filter, localWorkplace: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Phone'}
+                        title={t('usersFilterFieldPhone')}
                         placeholder={'Enter text'}
                         value={filter.phone}
                         onChange={(e) => setFilter({...filter, phone: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Cellular'}
+                        title={t('usersFilterFieldCellular')}
                         placeholder={'Enter text'}
                         value={filter.cellular}
                         onChange={(e) => setFilter({...filter, cellular: e.target.value})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Disabled'}
+                        title={t('usersFilterFieldDisabled')}
                         value={filter.disabled}
                         setNull={() => setFilter({...filter, disabled: 0})}
                         setTrue={() => setFilter({...filter, disabled: 'true'})}
@@ -810,8 +813,8 @@ const PageUsers: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('usersFilterButtonClose')},
+                    {action: () => setQuery(), text: t('usersFilterButtonConfirm')},
                 ]}
             />}
         </>

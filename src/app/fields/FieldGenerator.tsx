@@ -1,5 +1,6 @@
 import './Field.scss';
 import React, {useState} from "react";
+import {useTranslation} from "react-i18next";
 
 export enum PasswordType {
     // noinspection SpellCheckingInspection
@@ -18,6 +19,8 @@ const FieldGenerator: React.FC<FieldGeneratorProps> = (props: FieldGeneratorProp
     // const [copyButtonText, setCopyButtonText] = useState<string>("Copy");
     const [type, setType] = useState<PasswordType>(props.type);
     const [length, setLength] = useState<number>(props.length);
+
+    const {t} = useTranslation();
 
     const handler = (e: any) => {
         setValue(e.target.value);
@@ -59,13 +62,13 @@ const FieldGenerator: React.FC<FieldGeneratorProps> = (props: FieldGeneratorProp
     return (
         <div className='Field'>
             <div className='title'>
-                <p>Generator</p>
+                <p>{t('fieldGeneratorTitle')}</p>
             </div>
             <div className='field'>
                 <input
                     className={'password-generator border-right'}
                     type={'text'}
-                    placeholder={'Generate'}
+                    placeholder={t('fieldGeneratorPlaceholder')}
                     value={value}
                     onChange={handler}
                 />
@@ -76,16 +79,16 @@ const FieldGenerator: React.FC<FieldGeneratorProps> = (props: FieldGeneratorProp
                 <button
                     className={'border-right'}
                     onClick={generate}
-                    children={'Generate'}
+                    children={t('fieldGeneratorGenerate')}
                 />
                 <select
                     value={type}
                     onChange={(e: any) => setType(e.target.value)}
                     style={{width: '100px'}}
                 >
-                    <option value={PasswordType.PIN}>PIN</option>
-                    <option value={PasswordType.Normal}>Normal</option>
-                    <option value={PasswordType.Strong}>Strong</option>
+                    <option value={PasswordType.PIN}>{t('fieldGeneratorPIN')}</option>
+                    <option value={PasswordType.Normal}>{t('fieldGeneratorNormal')}</option>
+                    <option value={PasswordType.Strong}>{t('fieldGeneratorStrong')}</option>
                 </select>
                 <input
                     value={length}

@@ -22,6 +22,7 @@ import {dateToString} from "../../utils/dateToString.ts";
 import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -45,24 +46,26 @@ export interface MailFields {
 }
 
 const defTableHeaders: { text: string, field: keyof MailFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'User', field: 'userName', width: '200px', type: 'String'},
-    {text: 'Nickname', field: 'nickname', width: '200px', type: 'String'},
-    {text: 'EMail', field: 'email', width: '250px', type: 'String'},
-    {text: 'First name', field: 'nameFirst', width: '100px', type: 'String'},
-    {text: 'Middle name', field: 'nameMiddle', width: '100px', type: 'String'},
-    {text: 'Last name', field: 'nameLast', width: '100px', type: 'String'},
-    {text: 'Position', field: 'position', width: '200px', type: 'String'},
-    {text: 'Admin', field: 'isAdmin', width: '100px', type: 'Boolean'},
-    {text: 'Enabled', field: 'isEnabled', width: '100px', type: 'Boolean'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'mailsTableID', field: 'id', width: '50px', type: 'String'},
+    {text: 'mailsTableUser', field: 'userName', width: '200px', type: 'String'},
+    {text: 'mailsTableNickname', field: 'nickname', width: '200px', type: 'String'},
+    {text: 'mailsTableEMail', field: 'email', width: '250px', type: 'String'},
+    {text: 'mailsTableFirstName', field: 'nameFirst', width: '100px', type: 'String'},
+    {text: 'mailsTableMiddleName', field: 'nameMiddle', width: '100px', type: 'String'},
+    {text: 'mailsTableLastName', field: 'nameLast', width: '100px', type: 'String'},
+    {text: 'mailsTablePosition', field: 'position', width: '200px', type: 'String'},
+    {text: 'mailsTableAdmin', field: 'isAdmin', width: '100px', type: 'Boolean'},
+    {text: 'mailsTableEnabled', field: 'isEnabled', width: '100px', type: 'Boolean'},
+    {text: 'mailsTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'mailsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageMails: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [rows, setRows] = useState<MailFields[]>([]);
 
@@ -405,7 +408,7 @@ const PageMails: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Mails'));
+        dispatch(setAppTitle('mailsTitle'));
         getAll();
         getUsers();
     }, [location.search]);
@@ -456,7 +459,7 @@ const PageMails: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -506,17 +509,17 @@ const PageMails: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Mail'}
+                title={t('mailsCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Nickname"}
+                        title={t('mailsCreateNickname')}
                         placeholder={"Enter text"}
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('mailsCreatePassword')}
                         placeholder={"Enter text"}
                         value={password}
                         password={true}
@@ -527,37 +530,37 @@ const PageMails: React.FC = () => {
                         length={10}
                     />
                     <FieldInputString
-                        title={"Name First"}
+                        title={t('mailsCreateFirstName')}
                         placeholder={"Enter text"}
                         value={nameFirst}
                         onChange={(e) => setNameFirst(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name Last"}
+                        title={t('mailsCreateLastName')}
                         placeholder={"Enter text"}
                         value={nameLast}
                         onChange={(e) => setNameLast(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name Middle"}
+                        title={t('mailsCreateMiddleName')}
                         placeholder={"Enter text"}
                         value={nameMiddle}
                         onChange={(e) => setNameMiddle(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Position"}
+                        title={t('mailsCreatePosition')}
                         placeholder={"Enter text"}
                         value={position}
                         onChange={(e) => setPosition(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Is Admin"}
+                        title={t('mailsCreateAdmin')}
                         value={isAdmin}
                         setTrue={() => setIsAdmin(true)}
                         setFalse={() => setIsAdmin(false)}
                     />
                     <FieldInputSelectOne
-                        title={'User'}
+                        title={t('mailsCreateUser')}
                         value={userId}
                         setValue={setUserId}
                         nullable={true}
@@ -570,28 +573,28 @@ const PageMails: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => autoFill(), text: 'Autofill'},
-                    {action: () => syncAccounts(), text: 'Sync'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('mailsCreateButtonCancel')},
+                    {action: () => autoFill(), text: t('mailsCreateButtonAutofill')},
+                    {action: () => syncAccounts(), text: t('mailsCreateButtonSynchronize')},
+                    {action: () => create(), text: t('mailsCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Mail'}
+                title={t('mailsUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('mailsUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Nickname"}
+                        title={t('mailsUpdateNickname')}
                         placeholder={"Enter text"}
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Password"}
+                        title={t('mailsUpdatePassword')}
                         placeholder={"Enter text"}
                         value={password}
                         password={true}
@@ -602,43 +605,43 @@ const PageMails: React.FC = () => {
                         length={10}
                     />
                     <FieldInputString
-                        title={"Name First"}
+                        title={t('mailsUpdateFirstName')}
                         placeholder={"Enter text"}
                         value={nameFirst}
                         onChange={(e) => setNameFirst(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name Last"}
+                        title={t('mailsUpdateLastName')}
                         placeholder={"Enter text"}
                         value={nameLast}
                         onChange={(e) => setNameLast(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Name Middle"}
+                        title={t('mailsUpdateMiddleName')}
                         placeholder={"Enter text"}
                         value={nameMiddle}
                         onChange={(e) => setNameMiddle(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Position"}
+                        title={t('mailsUpdatePosition')}
                         placeholder={"Enter text"}
                         value={position}
                         onChange={(e) => setPosition(e.target.value)}
                     />
                     <FieldInputBoolean
-                        title={"Is Admin"}
+                        title={t('mailsUpdateAdmin')}
                         value={isAdmin}
                         setTrue={() => setIsAdmin(true)}
                         setFalse={() => setIsAdmin(false)}
                     />
                     <FieldInputBoolean
-                        title={"Is Enabled"}
+                        title={t('mailsUpdateEnabled')}
                         value={isEnabled}
                         setTrue={() => setIsEnabled(true)}
                         setFalse={() => setIsEnabled(false)}
                     />
                     <FieldInputSelectOne
-                        title={'User'}
+                        title={t('mailsUpdateUser')}
                         value={userId}
                         setValue={setUserId}
                         nullable={true}
@@ -651,97 +654,97 @@ const PageMails: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('mailsUpdateButtonCancel')},
+                    {action: () => update(), text: t('mailsUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete User'}
+                title={t('mailsDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{nickname}" (ID: {id})?</p>
+                    <p>{t('mailsDeleteText')} "{nickname}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('mailsDeleteButtonCancel')},
+                    {action: () => remove(), text: t('mailsDeleteButtonDelete')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Users'}
+                title={t('mailsFilterTitle')}
                 close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('mailsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('mailsFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Nickname'}
+                        title={t('mailsFilterNickname')}
                         placeholder={'Enter text'}
                         value={filter.nickname}
                         onChange={(e) => setFilter({...filter, nickname: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Password'}
+                        title={t('mailsFilterPassword')}
                         placeholder={'Enter text'}
                         value={filter.password}
                         onChange={(e) => setFilter({...filter, password: e.target.value})}
                     />
                     <FieldInputString
-                        title={'EMail'}
+                        title={t('mailsFilterEMail')}
                         placeholder={'Enter text'}
                         value={filter.email}
                         onChange={(e) => setFilter({...filter, email: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name First'}
+                        title={t('mailsFilterFirstName')}
                         placeholder={'Enter text'}
                         value={filter.nameFirst}
                         onChange={(e) => setFilter({...filter, nameFirst: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name Last'}
+                        title={t('mailsFilterLastName')}
                         placeholder={'Enter text'}
                         value={filter.nameLast}
                         onChange={(e) => setFilter({...filter, nameLast: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name Middle'}
+                        title={t('mailsFilterMiddleName')}
                         placeholder={'Enter text'}
                         value={filter.nameMiddle}
                         onChange={(e) => setFilter({...filter, nameMiddle: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Position'}
+                        title={t('mailsFilterPosition')}
                         placeholder={'Enter text'}
                         value={filter.position}
                         onChange={(e) => setFilter({...filter, position: e.target.value})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Is Admin'}
+                        title={t('mailsFilterAdmin')}
                         value={filter.isAdmin}
                         setNull={() => setFilter({...filter, isAdmin: 0})}
                         setTrue={() => setFilter({...filter, isAdmin: 'true'})}
                         setFalse={() => setFilter({...filter, isAdmin: 'false'})}
                     />
                     <FieldInputBooleanNullable
-                        title={'Is Enabled'}
+                        title={t('mailsFilterEnabled')}
                         value={filter.isEnabled}
                         setNull={() => setFilter({...filter, isEnabled: 0})}
                         setTrue={() => setFilter({...filter, isEnabled: 'true'})}
                         setFalse={() => setFilter({...filter, isEnabled: 'false'})}
                     />
                     <FieldInputSelectMany
-                        title={'User'}
+                        title={t('mailsFilterUser')}
                         value={filter.userId || []}
                         setValue={(ids: number[]) => setFilter({...filter, userId: ids})}
                         variants={users.map((user: UserFields) => {
@@ -753,8 +756,8 @@ const PageMails: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('mailsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('mailsFilterButtonConfirm')},
                 ]}
             />}
         </>

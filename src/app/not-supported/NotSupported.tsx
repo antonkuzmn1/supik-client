@@ -1,10 +1,13 @@
 import './NotSupported.scss';
 import React from "react";
+import {useTranslation} from "react-i18next";
 
 const NotSupported: React.FC = () => {
+    const {t} = useTranslation();
+
     return (
         <div className='NotSupported'>
-            Resolution is not supported :(
+            {t('notSupportedMain')} :(
         </div>
     )
 }

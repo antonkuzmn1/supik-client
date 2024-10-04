@@ -11,6 +11,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -23,16 +24,18 @@ export interface LogFields {
 }
 
 const defTableHeaders: { text: string, field: keyof LogFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'Initiator', field: 'initiatorUsername', width: '150px', type: 'String'},
-    {text: 'Action', field: 'action', width: '250px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
+    {text: 'logsTableID', field: 'id', width: '50px', type: 'String'},
+    {text: 'logsTableInitiator', field: 'initiatorUsername', width: '150px', type: 'String'},
+    {text: 'logsTableAction', field: 'action', width: '250px', type: 'String'},
+    {text: 'logsTableCreated', field: 'created', width: '150px', type: 'Date'},
 ]
 
 const PageLogs: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [rows, setRows] = useState<LogFields[]>([]);
 
@@ -117,7 +120,7 @@ const PageLogs: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Logs'));
+        dispatch(setAppTitle('logsTitle'));
         getAll();
     }, [location.search]);
 
@@ -134,7 +137,7 @@ const PageLogs: React.FC = () => {
 
     return (
         <>
-            <p>Show more in console: [F12]</p>
+            <p>{t('logsTextHint')} [F12]</p>
             <div className={'table'}>
                 <table className={'header'}>
                     <thead>
@@ -164,7 +167,7 @@ const PageLogs: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>

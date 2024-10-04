@@ -17,6 +17,7 @@ import FieldInputDateRange from "../fields/FieldInputDateRange.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import FieldInputRadioNullable from "../fields/FieldInputRadioNullable.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -33,21 +34,23 @@ export interface GroupFields {
 }
 
 const defTableHeaders: { text: string, field: keyof GroupFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'Integer'},
-    {text: 'Name', field: 'name', width: '200px', type: 'String'},
-    {text: 'Title', field: 'title', width: '300px', type: 'String'},
-    {text: 'Routers', field: 'accessRouters', width: '100px', type: 'Integer'},
-    {text: 'Users', field: 'accessUsers', width: '100px', type: 'Integer'},
-    {text: 'Departments', field: 'accessDepartments', width: '100px', type: 'Integer'},
-    {text: 'Mails', field: 'accessMails', width: '100px', type: 'Integer'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'groupsTableID', field: 'id', width: '50px', type: 'Integer'},
+    {text: 'groupsTableName', field: 'name', width: '200px', type: 'String'},
+    {text: 'groupsTableTitle', field: 'title', width: '300px', type: 'String'},
+    {text: 'groupsTableRouters', field: 'accessRouters', width: '100px', type: 'Integer'},
+    {text: 'groupsTableUsers', field: 'accessUsers', width: '100px', type: 'Integer'},
+    {text: 'groupsTableDepartments', field: 'accessDepartments', width: '100px', type: 'Integer'},
+    {text: 'groupsTableMails', field: 'accessMails', width: '100px', type: 'Integer'},
+    {text: 'groupsTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'groupsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageGroups: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [groups, setGroups] = useState<GroupFields[]>([]);
 
@@ -366,7 +369,7 @@ const PageGroups: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Groups'));
+        dispatch(setAppTitle('groupsTitle'));
         getAll();
     }, [location.search]);
 
@@ -416,7 +419,7 @@ const PageGroups: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -465,23 +468,23 @@ const PageGroups: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create Group'}
+                title={t('groupsCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Name"}
+                        title={t('groupsCreateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('groupsCreateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputRadio
-                        title={'Access Routers'}
+                        title={t('groupsCreateFieldRouters')}
                         value={accessRouters}
                         setValue={setAccessRouters}
                         variants={[
@@ -491,7 +494,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Users'}
+                        title={t('groupsCreateFieldUsers')}
                         value={accessUsers}
                         setValue={setAccessUsers}
                         variants={[
@@ -501,7 +504,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Departments'}
+                        title={t('groupsCreateFieldDepartments')}
                         value={accessDepartments}
                         setValue={setAccessDepartments}
                         variants={[
@@ -511,7 +514,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Mails'}
+                        title={t('groupsCreateFieldMails')}
                         value={accessMails}
                         setValue={setAccessMails}
                         variants={[
@@ -522,32 +525,32 @@ const PageGroups: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('groupsCreateButtonCancel')},
+                    {action: () => create(), text: t('groupsCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update Group'}
+                title={t('groupsUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('groupsUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Name"}
+                        title={t('groupsUpdateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('groupsUpdateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputRadio
-                        title={'Access Routers'}
+                        title={t('groupsUpdateFieldRouters')}
                         value={accessRouters}
                         setValue={setAccessRouters}
                         variants={[
@@ -557,7 +560,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Users'}
+                        title={t('groupsUpdateFieldUsers')}
                         value={accessUsers}
                         setValue={setAccessUsers}
                         variants={[
@@ -567,7 +570,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Departments'}
+                        title={t('groupsUpdateFieldDepartments')}
                         value={accessDepartments}
                         setValue={setAccessDepartments}
                         variants={[
@@ -577,7 +580,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadio
-                        title={'Access Mails'}
+                        title={t('groupsUpdateFieldMails')}
                         value={accessMails}
                         setValue={setAccessMails}
                         variants={[
@@ -588,24 +591,24 @@ const PageGroups: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => openGroupsDialog(id), text: 'Accounts'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('groupsUpdateButtonCancel')},
+                    {action: () => openGroupsDialog(id), text: t('groupsUpdateButtonAccounts')},
+                    {action: () => update(), text: t('groupsUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete Group'}
+                title={t('groupsDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
+                    <p>{t('groupsDeleteText')} "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('groupsDeleteButtonCancel')},
+                    {action: () => remove(), text: t('groupsDeleteButtonDelete')},
                 ]}
             />}
             {dialogGroupsActive && <Dialog
-                title={'Account-Group'}
+                title={t('groupsAccountsTitle')}
                 close={() => setDialogGroupsActive(false)}
                 children={<div className={'groups'}>
                     <div className={'left'}>
@@ -617,7 +620,7 @@ const PageGroups: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => deleteAccountGroup(accountGroup.accountId)}
-                                    >Del
+                                    >{t('groupsAccountsDel')}
                                     </button>
                                 </div>
                             </div>
@@ -632,7 +635,7 @@ const PageGroups: React.FC = () => {
                                 <div className={'right'}>
                                     <button
                                         onClick={() => createAccountGroup(account.id)}
-                                    >Add
+                                    >{t('groupsAccountsAdd')}
                                     </button>
                                 </div>
                             </div>
@@ -640,51 +643,41 @@ const PageGroups: React.FC = () => {
                     </div>
                 </div>}
                 buttons={[
-                    {action: () => setDialogGroupsActive(false), text: 'Close'},
+                    {action: () => setDialogGroupsActive(false), text: t('groupsAccountsButtonClose')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Groups'}
+                title={t('groupsFilterTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('groupsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('groupsFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name'}
+                        title={t('groupsFilterFieldName')}
                         placeholder={'Enter text'}
                         value={filter.name}
                         onChange={(e) => setFilter({...filter, name: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={t('groupsFilterFieldTitle')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputRadioNullable
-                        title={'Access Users'}
-                        value={filter.accessUsers}
-                        variants={[
-                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessUsers: undefined})},
-                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessUsers: 'no'})},
-                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessUsers: 'viewer'})},
-                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessUsers: 'editor'})},
-                        ]}
-                    />
-                    <FieldInputRadioNullable
-                        title={'Access Routers'}
+                        title={t('groupsFilterFieldRouters')}
                         value={filter.accessRouters}
                         variants={[
                             {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessRouters: undefined})},
@@ -694,7 +687,17 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadioNullable
-                        title={'Access Departments'}
+                        title={t('groupsFilterFieldUsers')}
+                        value={filter.accessUsers}
+                        variants={[
+                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessUsers: undefined})},
+                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessUsers: 'no'})},
+                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessUsers: 'viewer'})},
+                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessUsers: 'editor'})},
+                        ]}
+                    />
+                    <FieldInputRadioNullable
+                        title={t('groupsFilterFieldDepartments')}
                         value={filter.accessDepartments}
                         variants={[
                             {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessDepartments: undefined})},
@@ -704,7 +707,7 @@ const PageGroups: React.FC = () => {
                         ]}
                     />
                     <FieldInputRadioNullable
-                        title={'Access Mails'}
+                        title={t('groupsFilterFieldMails')}
                         value={filter.accessMails}
                         variants={[
                             {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessMails: undefined})},
@@ -715,8 +718,8 @@ const PageGroups: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('groupsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('groupsFilterButtonConfirm')},
                 ]}
             />}
         </>

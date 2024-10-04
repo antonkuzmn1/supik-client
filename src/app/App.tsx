@@ -8,7 +8,7 @@ import IconRouters from "./icons/IconRouters.tsx";
 import IconVpns from "./icons/IconVpns.tsx";
 import IconUsers from "./icons/IconUsers.tsx";
 import IconMails from "./icons/IconMails.tsx";
-import IconItems from "./icons/IconItems.tsx";
+// import IconItems from "./icons/IconItems.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import PageAccount from "./pages/PageAccount.tsx";
 import PageAccounts from "./pages/PageAccounts.tsx";
@@ -17,7 +17,7 @@ import PageRouters from "./pages/PageRouters.tsx";
 import PageVpns from "./pages/PageVpns.tsx";
 import PageUsers from "./pages/PageUsers.tsx";
 import PageMails from "./pages/PageMails.tsx";
-import PageItems from "./pages/page-items/PageItems.tsx";
+// import PageItems from "./pages/page-items/PageItems.tsx";
 import useDevice from "../hooks/useDevice.ts";
 import {useAccount} from "../hooks/useAccount.ts";
 import Loading from "./loading/Loading.tsx";
@@ -45,16 +45,16 @@ export interface RoutePageInterface {
 
 export const routePages: RoutePageInterface[] = [
     {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "", admin: false},
-    {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "Accounts", admin: true},
-    {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "Groups", admin: true},
-    {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "Routers", admin: false},
-    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "VPNs", admin: false},
-    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "Users", admin: false},
-    {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "Departments", admin: false},
-    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "Mails",  admin: true},
-    {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "Items", admin: true},
-    {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "Logs", admin: true},
-    {path: '/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "Changelog", admin: true},
+    {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true},
+    {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "groupsTitle", admin: true},
+    {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "routersTitle", admin: false},
+    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "vpnsTitle", admin: false},
+    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "usersTitle", admin: false},
+    {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "departmentsTitle", admin: false},
+    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: true},
+    // {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "itemsTitle", admin: true},
+    {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "logsTitle", admin: true},
+    {path: '/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "changelogTitle", admin: true},
 ];
 
 const router = createBrowserRouter([

@@ -1,6 +1,7 @@
 import './Field.scss';
 import React, {useState} from "react";
 import classNames from "classnames";
+import {useTranslation} from "react-i18next";
 
 export interface FieldInputStringProps {
     title: string,
@@ -12,6 +13,8 @@ export interface FieldInputStringProps {
 
 const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStringProps) => {
     const [show, setShow] = useState<boolean>(false)
+
+    const {t} = useTranslation();
 
     return (
         <div className='Field'>
@@ -30,7 +33,7 @@ const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStri
                 {props.password && <button
                     className={classNames({'active': show})}
                     onClick={() => {setShow(!show)}}
-                    children={'Show'}
+                    children={t('fieldInputStringShow')}
                 />}
             </div>
         </div>

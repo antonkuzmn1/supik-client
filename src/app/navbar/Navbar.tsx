@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setAppTitle} from "../../slices/appSlice.ts";
 import {RootState} from "../../utils/store.ts";
 import {version} from "../../../package.json";
+import {useTranslation} from "react-i18next";
 
 export interface NavbarProps {
     routePages: RoutePageInterface[]
@@ -19,6 +20,8 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
     const pageTitle = useSelector((state: RootState) => state.app.title);
     const accountFullname = useSelector((state: RootState) => state.account.fullname);
     const accountAdmin = useSelector((state: RootState) => state.account.admin);
+
+    const {t} = useTranslation();
 
     const [dropdownIsActive, setDropdownIsActive] = useState(false);
     const [displayedTitle, setDisplayedTitle] = useState<string>('');
@@ -74,11 +77,11 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                 />
             </div>
             <div className='title'>
-                <p>{displayedTitle}</p>
+                <p>{t(displayedTitle)}</p>
             </div>
             <div className='version'>
                 {/*<p>Version: {import.meta.env.VITE_VERSION}</p>*/}
-                <p>Version: {version}</p>
+                <p>{t('navbarVersion')}: {version}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>
@@ -88,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
                             onClick={() => changePage(page)}
                         >
                             <div className={'icon'}>{page.icon}</div>
-                            <p className={'text'}>{page.title === "" ? accountFullname : page.title}</p>
+                            <p className={'text'}>{page.title === "" ? accountFullname : t(page.title)}</p>
                         </button>
                     ))}
                 </div>

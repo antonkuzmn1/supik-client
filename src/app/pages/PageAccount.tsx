@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import {setAppError, setAppLoading} from "../../slices/appSlice.ts";
 import FieldValueString from "../fields/FieldValueString.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 export interface AccountFields {
     id: string;
@@ -19,18 +20,20 @@ export interface AccountFields {
 }
 
 const defFields: { title: string, field: keyof AccountFields }[] = [
-    {title: 'ID', field: 'id'},
-    {title: 'Created at', field: 'created'},
-    {title: 'Updated at', field: 'updated'},
-    {title: 'Fullname', field: 'fullname'},
-    {title: 'Title', field: 'title'},
-    {title: 'Username', field: 'username'},
-    {title: 'Admin', field: 'admin'},
-    {title: 'Disabled', field: 'disabled'},
+    {title: 'accountTableID', field: 'id'},
+    {title: 'accountTableCreated', field: 'created'},
+    {title: 'accountTableUpdated', field: 'updated'},
+    {title: 'accountTableFullname', field: 'fullname'},
+    {title: 'accountTableTitle', field: 'title'},
+    {title: 'accountTableUsername', field: 'username'},
+    {title: 'accountTableAdmin', field: 'admin'},
+    {title: 'accountTableDisabled', field: 'disabled'},
 ]
 
 const PageAccount: React.FC = () => {
     const dispatch = useDispatch();
+
+    const {t} = useTranslation();
 
     const [account, setAccount] = useState<any>(null);
     const [fields, setFields] = useState<AccountFields | null>(null);
@@ -107,12 +110,12 @@ const PageAccount: React.FC = () => {
                 {defFields.map((defField, index) => (
                     <FieldValueString
                         key={index}
-                        title={defField.title}
+                        title={t(defField.title)}
                         value={fields[defField.field]}
                     />
                 ))}
                 <div className={'button'}>
-                    <button onClick={logout}>logout</button>
+                    <button onClick={logout}>{t('accountLogout')}</button>
                 </div>
             </>)}
         </div>

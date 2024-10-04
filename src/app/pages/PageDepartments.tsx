@@ -18,6 +18,7 @@ import {UserFields} from "./PageUsers.tsx";
 import FieldInputSelectOne from "../fields/FieldInputSelectOne.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
+import {useTranslation} from "react-i18next";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -34,18 +35,20 @@ export interface DepartmentFields {
 }
 
 const defTableHeaders: { text: string, field: keyof DepartmentFields, width: string, type: TypeField }[] = [
-    {text: 'ID', field: 'id', width: '50px', type: 'String'},
-    {text: 'Name', field: 'name', width: '200px', type: 'String'},
-    {text: 'Leader Name', field: 'leaderName', width: '300px', type: 'String'},
-    {text: 'Title', field: 'title', width: '200px', type: 'String'},
-    {text: 'Created At', field: 'created', width: '150px', type: 'Date'},
-    {text: 'Updated At', field: 'updated', width: '150px', type: 'Date'},
+    {text: 'departmentsTableID', field: 'id', width: '50px', type: 'String'},
+    {text: 'departmentsTableName', field: 'name', width: '200px', type: 'String'},
+    {text: 'departmentsTableLeaderName', field: 'leaderName', width: '300px', type: 'String'},
+    {text: 'departmentsTableTitle', field: 'title', width: '200px', type: 'String'},
+    {text: 'departmentsTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'departmentsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const PageDepartments: React.FC = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+
+    const {t} = useTranslation();
 
     const [rows, setRows] = useState<DepartmentFields[]>([]);
 
@@ -286,7 +289,7 @@ const PageDepartments: React.FC = () => {
     /// HOOKS
 
     useEffect(() => {
-        dispatch(setAppTitle('Departments'));
+        dispatch(setAppTitle('departmentsTitle'));
         getAll();
         getUsers();
     }, [location.search]);
@@ -337,7 +340,7 @@ const PageDepartments: React.FC = () => {
                                         children={<IconSortDesc/>}
                                     />
                                 </div>
-                                {defTableHeader.text}
+                                {t(defTableHeader.text)}
                             </th>
                         ))}
                     </tr>
@@ -386,23 +389,23 @@ const PageDepartments: React.FC = () => {
                 </table>
             </div>
             {dialogCreateActive && <Dialog
-                title={'Create User'}
+                title={t('departmentsCreateTitle')}
                 close={() => setDialogCreateActive(false)}
                 children={<>
                     <FieldInputString
-                        title={"Name"}
+                        title={t('departmentsCreateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('departmentsCreateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputSelectOne
-                        title={'Leader'}
+                        title={t('departmentsCreateFieldLeader')}
                         value={leaderId}
                         setValue={setLeaderId}
                         nullable={true}
@@ -415,32 +418,32 @@ const PageDepartments: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogCreateActive(false), text: 'Cancel'},
-                    {action: () => create(), text: 'Create'},
+                    {action: () => setDialogCreateActive(false), text: t('departmentsCreateButtonCancel')},
+                    {action: () => create(), text: t('departmentsCreateButtonCreate')},
                 ]}
             />}
             {dialogUpdateActive && <Dialog
-                title={'Update User'}
+                title={t('departmentsUpdateTitle')}
                 close={() => setDialogUpdateActive(false)}
                 children={<>
                     <FieldValueString
-                        title={"ID"}
+                        title={t('departmentsUpdateFieldID')}
                         value={id.toString()}
                     />
                     <FieldInputString
-                        title={"Name"}
+                        title={t('departmentsUpdateFieldName')}
                         placeholder={"Enter text"}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <FieldInputString
-                        title={"Title"}
+                        title={t('departmentsUpdateFieldTitle')}
                         placeholder={"Enter text"}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <FieldInputSelectOne
-                        title={'Leader'}
+                        title={t('departmentsUpdateFieldLeader')}
                         value={leaderId}
                         setValue={setLeaderId}
                         nullable={true}
@@ -453,53 +456,53 @@ const PageDepartments: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogUpdateActive(false), text: 'Cancel'},
-                    {action: () => update(), text: 'Update'},
+                    {action: () => setDialogUpdateActive(false), text: t('departmentsUpdateButtonCancel')},
+                    {action: () => update(), text: t('departmentsUpdateButtonUpdate')},
                 ]}
             />}
             {dialogDeleteActive && <Dialog
-                title={'Delete User'}
+                title={t('departmentsDeleteTitle')}
                 close={() => setDialogDeleteActive(false)}
                 children={<>
-                    <p>Are u sure want to delete "{name}" (ID: {id})?</p>
+                    <p>{t('departmentsDeleteText')} "{name}" (ID: {id})?</p>
                 </>}
                 buttons={[
-                    {action: () => setDialogDeleteActive(false), text: 'Cancel'},
-                    {action: () => remove(), text: 'Delete'},
+                    {action: () => setDialogDeleteActive(false), text: t('departmentsDeleteButtonCancel')},
+                    {action: () => remove(), text: t('departmentsDeleteButtonDelete')},
                 ]}
             />}
             {dialogFilterActive && <Dialog
-                title={'Filter Users'}
+                title={t('departmentsFilterTitle')}
                 close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('departmentsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, createdLte: e.target.value})}
                     />
                     <FieldInputDateRange
-                        title={'Updated'}
+                        title={t('departmentsFilterFieldUpdated')}
                         valueGte={filter.updatedGte}
                         valueLte={filter.updatedLte}
                         setGte={(e) => setFilter({...filter, updatedGte: e.target.value})}
                         setLte={(e) => setFilter({...filter, updatedLte: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Name'}
+                        title={t('departmentsFilterFieldName')}
                         placeholder={'Enter text'}
                         value={filter.name}
                         onChange={(e) => setFilter({...filter, name: e.target.value})}
                     />
                     <FieldInputString
-                        title={'Title'}
+                        title={t('departmentsFilterFieldTitle')}
                         placeholder={'Enter text'}
                         value={filter.title}
                         onChange={(e) => setFilter({...filter, title: e.target.value})}
                     />
                     <FieldInputSelectMany
-                        title={'Leaders'}
+                        title={t('departmentsFilterFieldLeaders')}
                         value={filter.leaderId || []}
                         setValue={(ids: number[]) => setFilter({...filter, leaderId: ids})}
                         variants={users.map((user: UserFields) => {
@@ -511,8 +514,8 @@ const PageDepartments: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('departmentsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('departmentsFilterButtonConfirm')},
                 ]}
             />}
         </>
