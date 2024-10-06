@@ -423,4 +423,7 @@ export const i18nTranslationEn = {
     "logsTextHint": "Show more in console",
 
     "changelogTitle": "Changelog",
+
+    "settingsTitle": "Settings",
+    "settingsVersion": "Version",
 }

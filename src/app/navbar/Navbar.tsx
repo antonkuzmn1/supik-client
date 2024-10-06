@@ -6,7 +6,6 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {setAppTitle} from "../../slices/appSlice.ts";
 import {RootState} from "../../utils/store.ts";
-import {version} from "../../../package.json";
 import {useTranslation} from "react-i18next";
 
 export interface NavbarProps {
@@ -59,9 +58,9 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
 
     useEffect(() => {
         if (accountAdmin) {
-            setFilteredRoutePages(props.routePages);
+            setFilteredRoutePages(props.routePages.filter(page => !page.settings));
         } else {
-            setFilteredRoutePages(props.routePages.filter(page => !page.admin));
+            setFilteredRoutePages(props.routePages.filter(page => !page.admin && !page.settings));
         }
     }, [props.routePages]);
 
@@ -78,10 +77,6 @@ const Navbar: React.FC<NavbarProps> = (props: NavbarProps) => {
             </div>
             <div className='title'>
                 <p>{t(displayedTitle)}</p>
-            </div>
-            <div className='version'>
-                {/*<p>Version: {import.meta.env.VITE_VERSION}</p>*/}
-                <p>{t('navbarVersion')}: {version}</p>
             </div>
             {dropdownIsActive &&
                 <div className='dropdown'>

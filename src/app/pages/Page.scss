@@ -173,4 +173,39 @@
     }
   }
 
+  .settings {
+    max-width: 300px;
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    text-align: center;
+    padding: 10px;
+    display: grid;
+    grid-gap: 10px;
+
+    .button {
+      display: flex;
+      border: 1px solid var(--border);
+      overflow: hidden;
+
+      button {
+        flex-grow: 1;
+        outline: none;
+        border: none;
+        margin: 0;
+        padding: 10px;
+        background: none;
+        cursor: pointer;
+        color: var(--text);
+
+        &:hover {
+          background-color: var(--border);
+        }
+
+        &:focus-visible {
+          background-color: var(--border);
+        }
+      }
+    }
+  }
+
 }

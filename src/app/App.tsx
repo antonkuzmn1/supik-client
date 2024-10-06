@@ -34,6 +34,8 @@ import PageDepartments from "./pages/PageDepartments.tsx";
 import IconDepartments from "./icons/IconDepartments.tsx";
 import PageChangelog from "./pages/PageChangelog.tsx";
 import IconChangelog from "./icons/IconChangelog.tsx";
+import PageSettings from "./pages/PageSettings.tsx";
+import IconSettings from "./icons/IconSettings.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -41,20 +43,22 @@ export interface RoutePageInterface {
     icon: ReactNode;
     title: string;
     admin: boolean;
+    settings: boolean;
 }
 
 export const routePages: RoutePageInterface[] = [
-    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "", admin: false},
-    {path: '/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true},
-    {path: '/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "groupsTitle", admin: true},
-    {path: '/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "routersTitle", admin: false},
-    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "vpnsTitle", admin: false},
-    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "usersTitle", admin: false},
-    {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "departmentsTitle", admin: false},
-    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: true},
-    // {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "itemsTitle", admin: true},
-    {path: '/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "logsTitle", admin: true},
-    {path: '/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "changelogTitle", admin: true},
+    {path: '/account', element: <Page element={<PageAccount/>}/>, icon: <IconAccount/>, title: "", admin: false, settings: false},
+    {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "vpnsTitle", admin: false, settings: false},
+    {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "usersTitle", admin: false, settings: false},
+    {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "departmentsTitle", admin: false, settings: false},
+    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: true, settings: false},
+    {path: '/settings', element: <Page element={<PageSettings/>}/>, icon: <IconSettings/>, title: "settingsTitle", admin: true, settings: false},
+
+    {path: '/settings/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true, settings: true},
+    {path: '/settings/groups', element: <Page element={<PageGroups/>}/>, icon: <IconGroups/>, title: "groupsTitle", admin: true, settings: true},
+    {path: '/settings/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "routersTitle", admin: false, settings: true},
+    {path: '/settings/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "logsTitle", admin: true, settings: true},
+    {path: '/settings/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "changelogTitle", admin: true, settings: true},
 ];
 
 const router = createBrowserRouter([

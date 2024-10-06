@@ -423,4 +423,7 @@ export const i18nTranslationRu = {
     "logsTextHint": "Показать больше в консоли",
 
     "changelogTitle": "Версии",
+
+    "settingsTitle": "Настройки",
+    "settingsVersion": "Версия",
 }
