@@ -9,7 +9,7 @@ export const changelogCards: ChangelogCardInterface[] = [
         version: '24.14',
         time: '00:45',
         changes: [
-            '[05:20] Добавлена страница с настройками',
+            '[00:45] Добавлена страница с настройками',
         ],
     },
     {
