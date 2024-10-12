@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.14.1',
+        time: '00:15',
+        changes: [
+            '[00:15] Исправлена ошибка добавления пароля к почтовому ящику "password.equals_previous"',
+        ],
+    },
+    {
         version: '24.14',
         time: '00:45',
         changes: [
