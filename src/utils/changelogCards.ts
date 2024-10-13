@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.14.2',
+        time: '00:10',
+        changes: [
+            '[00:10] Ограничены дубликаты логинов для пользователей',
+        ],
+    },
+    {
         version: '24.14.1',
         time: '00:15',
         changes: [
