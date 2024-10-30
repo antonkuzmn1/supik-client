@@ -578,12 +578,14 @@ const PageUsers: React.FC = () => {
                     />
                     <FieldInputString
                         title={t('usersCreateFieldPhone')}
+                        mask={'999'}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
                     <FieldInputString
                         title={t('usersCreateFieldCellular')}
+                        mask={'+7 999 999 99 99'}
                         placeholder={"Enter text"}
                         value={cellular}
                         onChange={(e) => setCellular(e.target.value)}
@@ -675,12 +677,14 @@ const PageUsers: React.FC = () => {
                     />
                     <FieldInputString
                         title={t('usersUpdateFieldPhone')}
+                        mask={'999'}
                         placeholder={"Enter text"}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                     />
                     <FieldInputString
                         title={t('usersUpdateFieldCellular')}
+                        mask={'+7 999 999 99 99'}
                         placeholder={"Enter text"}
                         value={cellular}
                         onChange={(e) => setCellular(e.target.value)}

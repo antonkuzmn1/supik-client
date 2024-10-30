@@ -2,6 +2,7 @@ import './Field.scss';
 import React, {useState} from "react";
 import classNames from "classnames";
 import {useTranslation} from "react-i18next";
+import InputMask from "react-input-mask";
 
 export interface FieldInputStringProps {
     title: string,
@@ -9,6 +10,7 @@ export interface FieldInputStringProps {
     password?: boolean,
     value: string,
     onChange: (e: any) => void,
+    mask?: string,
 }
 
 const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStringProps) => {
@@ -22,14 +24,23 @@ const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStri
                 <p>{props.title}</p>
             </div>
             <div className='field'>
-                <input
-                    type={props.password
-                        ? show ? 'text' : 'password'
-                        : 'text'}
-                    placeholder={props.placeholder}
-                    value={props.value || ''}
-                    onChange={props.onChange}
-                />
+                {props.mask ? (
+                    <InputMask
+                        mask={props.mask}
+                        value={props.value || ''}
+                        onChange={props.onChange}
+                        placeholder={props.placeholder}
+                    />
+                ) : (
+                    <input
+                        type={props.password
+                            ? show ? 'text' : 'password'
+                            : 'text'}
+                        placeholder={props.placeholder}
+                        value={props.value || ''}
+                        onChange={props.onChange}
+                    />
+                )}
                 {props.password && <button
                     className={classNames({'active': show})}
                     onClick={() => {setShow(!show)}}
