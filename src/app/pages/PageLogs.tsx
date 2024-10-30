@@ -40,6 +40,7 @@ const PageLogs: React.FC = () => {
     const [rows, setRows] = useState<LogFields[]>([]);
 
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
+    const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -72,6 +73,24 @@ const PageLogs: React.FC = () => {
 
     const openFilterDialog = () => {
         setDialogFilterActive(true)
+    }
+
+    const openEditDialog = (id: string) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/log", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            console.log(response.data);
+            setDialogUpdateActive(true);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
     }
 
     /// OTHER
@@ -180,7 +199,7 @@ const PageLogs: React.FC = () => {
                             <td className={'action'}>
                                 <div className={'action-buttons'}>
                                     <button
-                                        // onClick={() => openEditDialog(row.id)}
+                                        onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
                                     />
                                 </div>
@@ -212,11 +231,11 @@ const PageLogs: React.FC = () => {
                 </table>
             </div>
             {dialogFilterActive && <Dialog
-                title={'Filter Logs'}
+                title={t('logsFilterTitle')}
                 close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
-                        title={'Created'}
+                        title={t('logsFilterFieldCreated')}
                         valueGte={filter.createdGte}
                         valueLte={filter.createdLte}
                         setGte={(e) => setFilter({...filter, createdGte: e.target.value})}
@@ -224,8 +243,73 @@ const PageLogs: React.FC = () => {
                     />
                 </>}
                 buttons={[
-                    {action: () => setDialogFilterActive(false), text: 'Close'},
-                    {action: () => setQuery(), text: 'Confirm'},
+                    {action: () => setDialogFilterActive(false), text: t('logsFilterButtonClose')},
+                    {action: () => setQuery(), text: t('logsFilterButtonConfirm')},
+                ]}
+            />}
+            {dialogUpdateActive && <Dialog
+                title={t('logsUpdateTitle')}
+                close={() => setDialogUpdateActive(false)}
+                children={<>
+                    {/*<FieldValueString*/}
+                    {/*    title={t('groupsUpdateFieldID')}*/}
+                    {/*    value={id.toString()}*/}
+                    {/*/>*/}
+                    {/*<FieldInputString*/}
+                    {/*    title={t('groupsUpdateFieldName')}*/}
+                    {/*    placeholder={"Enter text"}*/}
+                    {/*    value={name}*/}
+                    {/*    onChange={(e) => setName(e.target.value)}*/}
+                    {/*/>*/}
+                    {/*<FieldInputString*/}
+                    {/*    title={t('groupsUpdateFieldTitle')}*/}
+                    {/*    placeholder={"Enter text"}*/}
+                    {/*    value={title}*/}
+                    {/*    onChange={(e) => setTitle(e.target.value)}*/}
+                    {/*/>*/}
+                    {/*<FieldInputRadio*/}
+                    {/*    title={t('groupsUpdateFieldRouters')}*/}
+                    {/*    value={accessRouters}*/}
+                    {/*    setValue={setAccessRouters}*/}
+                    {/*    variants={[*/}
+                    {/*        {value: 0, text: 'No'},*/}
+                    {/*        {value: 1, text: 'Viewer'},*/}
+                    {/*        {value: 2, text: 'Editor'},*/}
+                    {/*    ]}*/}
+                    {/*/>*/}
+                    {/*<FieldInputRadio*/}
+                    {/*    title={t('groupsUpdateFieldUsers')}*/}
+                    {/*    value={accessUsers}*/}
+                    {/*    setValue={setAccessUsers}*/}
+                    {/*    variants={[*/}
+                    {/*        {value: 0, text: 'No'},*/}
+                    {/*        {value: 1, text: 'Viewer'},*/}
+                    {/*        {value: 2, text: 'Editor'},*/}
+                    {/*    ]}*/}
+                    {/*/>*/}
+                    {/*<FieldInputRadio*/}
+                    {/*    title={t('groupsUpdateFieldDepartments')}*/}
+                    {/*    value={accessDepartments}*/}
+                    {/*    setValue={setAccessDepartments}*/}
+                    {/*    variants={[*/}
+                    {/*        {value: 0, text: 'No'},*/}
+                    {/*        {value: 1, text: 'Viewer'},*/}
+                    {/*        {value: 2, text: 'Editor'},*/}
+                    {/*    ]}*/}
+                    {/*/>*/}
+                    {/*<FieldInputRadio*/}
+                    {/*    title={t('groupsUpdateFieldMails')}*/}
+                    {/*    value={accessMails}*/}
+                    {/*    setValue={setAccessMails}*/}
+                    {/*    variants={[*/}
+                    {/*        {value: 0, text: 'No'},*/}
+                    {/*        {value: 1, text: 'Viewer'},*/}
+                    {/*        {value: 2, text: 'Editor'},*/}
+                    {/*    ]}*/}
+                    {/*/>*/}
+                </>}
+                buttons={[
+                    {action: () => setDialogUpdateActive(false), text: t('logsUpdateButtonCancel')},
                 ]}
             />}
         </>

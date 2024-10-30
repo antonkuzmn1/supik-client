@@ -421,6 +421,12 @@ export const i18nTranslationEn = {
     "logsTableAction": "Action",
     "logsTableCreated": "Created at",
     "logsTextHint": "Show more in console",
+    "logsFilterTitle": "Filter logs",
+    "logsFilterFieldCreated": "Created",
+    "logsFilterButtonClose": "Close",
+    "logsFilterButtonConfirm": "Confirm",
+    "logsUpdateTitle": "Details",
+    "logsUpdateButtonCancel": "Close",
 
     "changelogTitle": "Changelog",
 

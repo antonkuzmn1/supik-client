@@ -421,6 +421,12 @@ export const i18nTranslationRu = {
     "logsTableAction": "Действие",
     "logsTableCreated": "Создан",
     "logsTextHint": "Показать больше в консоли",
+    "logsFilterTitle": "Фильтр логов",
+    "logsFilterFieldCreated": "Создан",
+    "logsFilterButtonClose": "Закрыть",
+    "logsFilterButtonConfirm": "Подтвердить",
+    "logsUpdateTitle": "Детали",
+    "logsUpdateButtonCancel": "Закрыть",
 
     "changelogTitle": "Версии",
 
