@@ -31,6 +31,7 @@ export interface GroupFields {
     accessUsers: 0 | 1 | 2,
     accessDepartments: 0 | 1 | 2,
     accessMails: 0 | 1 | 2,
+    accessMailGroups: 0 | 1 | 2,
 }
 
 const defTableHeaders: { text: string, field: keyof GroupFields, width: string, type: TypeField }[] = [
@@ -41,6 +42,7 @@ const defTableHeaders: { text: string, field: keyof GroupFields, width: string, 
     {text: 'groupsTableUsers', field: 'accessUsers', width: '100px', type: 'Integer'},
     {text: 'groupsTableDepartments', field: 'accessDepartments', width: '100px', type: 'Integer'},
     {text: 'groupsTableMails', field: 'accessMails', width: '100px', type: 'Integer'},
+    {text: 'groupsTableMailGroups', field: 'accessMailGroups', width: '100px', type: 'Integer'},
     {text: 'groupsTableCreated', field: 'created', width: '150px', type: 'Date'},
     {text: 'groupsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -67,6 +69,7 @@ const PageGroups: React.FC = () => {
     const [accessUsers, setAccessUsers] = useState<number>(0);
     const [accessDepartments, setAccessDepartments] = useState<number>(0);
     const [accessMails, setAccessMails] = useState<number>(0);
+    const [accessMailGroups, setAccessMailGroups] = useState<number>(0);
 
     const [accountGroups, setAccountGroups] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
@@ -100,7 +103,9 @@ const PageGroups: React.FC = () => {
             accessDepartments > 2 ||
             accessDepartments < 0 ||
             accessMails > 2 ||
-            accessMails < 0
+            accessMails < 0 ||
+            accessMailGroups > 2 ||
+            accessMailGroups < 0
         ) {
             return;
         }
@@ -113,6 +118,7 @@ const PageGroups: React.FC = () => {
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
             accessMails: accessMails,
+            accessMailGroups: accessMailGroups,
         }).then((response) => {
             setDialogCreateActive(false);
             groups.unshift({
@@ -138,7 +144,9 @@ const PageGroups: React.FC = () => {
             accessDepartments > 2 ||
             accessDepartments < 0 ||
             accessMails > 2 ||
-            accessMails < 0
+            accessMails < 0 ||
+            accessMailGroups > 2 ||
+            accessMailGroups < 0
         ) {
             return;
         }
@@ -152,6 +160,7 @@ const PageGroups: React.FC = () => {
             accessUsers: accessUsers,
             accessDepartments: accessDepartments,
             accessMails: accessMails,
+            accessMailGroups: accessMailGroups,
         }).then((response) => {
             setDialogUpdateActive(false);
             const index = groups.findIndex((row: GroupFields) => {
@@ -245,6 +254,7 @@ const PageGroups: React.FC = () => {
         setAccessUsers(0);
         setAccessDepartments(0);
         setAccessMails(0);
+        setAccessMailGroups(0);
         setDialogCreateActive(true)
     }
 
@@ -260,6 +270,7 @@ const PageGroups: React.FC = () => {
             setAccessUsers(response.data.accessUsers);
             setAccessDepartments(response.data.accessDepartments);
             setAccessMails(response.data.accessMails);
+            setAccessMailGroups(response.data.accessMailGroups);
             setDialogUpdateActive(true);
         }).catch((error) => {
             if (error.response && error.response.data) {
@@ -523,6 +534,16 @@ const PageGroups: React.FC = () => {
                             {value: 2, text: 'Editor'},
                         ]}
                     />
+                    <FieldInputRadio
+                        title={t('groupsCreateFieldMailGroups')}
+                        value={accessMailGroups}
+                        setValue={setAccessMailGroups}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
+                    />
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: t('groupsCreateButtonCancel')},
@@ -589,6 +610,16 @@ const PageGroups: React.FC = () => {
                             {value: 2, text: 'Editor'},
                         ]}
                     />
+                    <FieldInputRadio
+                        title={t('groupsUpdateFieldMailGroups')}
+                        value={accessMailGroups}
+                        setValue={setAccessMailGroups}
+                        variants={[
+                            {value: 0, text: 'No'},
+                            {value: 1, text: 'Viewer'},
+                            {value: 2, text: 'Editor'},
+                        ]}
+                    />
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: t('groupsUpdateButtonCancel')},
@@ -648,7 +679,7 @@ const PageGroups: React.FC = () => {
             />}
             {dialogFilterActive && <Dialog
                 title={t('groupsFilterTitle')}
-                close={() => setDialogDeleteActive(false)}
+                close={() => setDialogFilterActive(false)}
                 children={<>
                     <FieldInputDateRange
                         title={t('groupsFilterFieldCreated')}
@@ -714,6 +745,16 @@ const PageGroups: React.FC = () => {
                             {value: 'no', text: 'No', set: () => setFilter({...filter, accessMails: 'no'})},
                             {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessMails: 'viewer'})},
                             {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessMails: 'editor'})},
+                        ]}
+                    />
+                    <FieldInputRadioNullable
+                        title={t('groupsFilterFieldMailGroups')}
+                        value={filter.accessMailGroups}
+                        variants={[
+                            {value: undefined, text: 'NULL', set: () => setFilter({...filter, accessMailGroups: undefined})},
+                            {value: 'no', text: 'No', set: () => setFilter({...filter, accessMailGroups: 'no'})},
+                            {value: 'viewer', text: 'Viewer', set: () => setFilter({...filter, accessMailGroups: 'viewer'})},
+                            {value: 'editor', text: 'Editor', set: () => setFilter({...filter, accessMailGroups: 'editor'})},
                         ]}
                     />
                 </>}

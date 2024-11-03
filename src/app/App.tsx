@@ -36,6 +36,8 @@ import PageChangelog from "./pages/PageChangelog.tsx";
 import IconChangelog from "./icons/IconChangelog.tsx";
 import PageSettings from "./pages/PageSettings.tsx";
 import IconSettings from "./icons/IconSettings.tsx";
+import PageMailGroups from "./pages/PageMailGroups.tsx";
+import IconMailGroups from "./icons/IconMailGroups.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -51,7 +53,8 @@ export const routePages: RoutePageInterface[] = [
     {path: '/vpns', element: <Page element={<PageVpns/>}/>, icon: <IconVpns/>, title: "vpnsTitle", admin: false, settings: false},
     {path: '/users', element: <Page element={<PageUsers/>}/>, icon: <IconUsers/>, title: "usersTitle", admin: false, settings: false},
     {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "departmentsTitle", admin: false, settings: false},
-    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: true, settings: false},
+    {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: false, settings: false},
+    {path: '/mail-groups', element: <Page element={<PageMailGroups/>}/>, icon: <IconMailGroups/>, title: "mailGroupsTitle",  admin: false, settings: false},
     {path: '/settings', element: <Page element={<PageSettings/>}/>, icon: <IconSettings/>, title: "settingsTitle", admin: true, settings: false},
 
     {path: '/settings/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true, settings: true},
