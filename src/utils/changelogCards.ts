@@ -7,9 +7,9 @@ export interface ChangelogCardInterface {
 export const changelogCards: ChangelogCardInterface[] = [
     {
         version: '24.15',
-        time: '00:00',
+        time: '10:50',
         changes: [
-            '[10:40] Добавлен раздел управления почтовыми группами',
+            '[10:50] Добавлен раздел управления почтовыми группами',
         ],
     },
     {
