@@ -30,8 +30,6 @@ export interface MailGroupFields {
 
     members: string,
     membersCount: number,
-
-    mailGroups: string
 }
 
 const defTableHeaders: { text: string, field: keyof MailGroupFields, width: string, type: TypeField }[] = [
@@ -39,7 +37,7 @@ const defTableHeaders: { text: string, field: keyof MailGroupFields, width: stri
     {text: 'mailGroupsTableName', field: 'name', width: '150px', type: 'String'},
     {text: 'mailGroupsTableDescription', field: 'description', width: '150px', type: 'String'},
     {text: 'mailGroupsTableLabel', field: 'label', width: '150px', type: 'String'},
-    // {text: 'mailGroupsTableMembersCount', field: 'membersCount', width: '100px', type: 'Integer'},
+    {text: 'mailGroupsTableMembersCount', field: 'membersCount', width: '100px', type: 'Integer'},
     {text: 'mailGroupsTableCreated', field: 'created', width: '150px', type: 'Date'},
     {text: 'mailGroupsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -58,7 +56,6 @@ const PageMails: React.FC = () => {
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
     const [dialogMembersActive, setDialogMembersActive] = useState<boolean>(false);
-    const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -68,9 +65,6 @@ const PageMails: React.FC = () => {
     const [members, setMembers] = useState<MailFields[]>([]);
     const [allMails, setAllMails] = useState<MailFields[]>([]);
     const [filteredMails, setFilteredMails] = useState<MailFields[]>([]);
-    const [groups, setGroups] = useState<MailGroupFields[]>([]);
-    const [allGroups, setAllGroups] = useState<MailGroupFields[]>([]);
-    const [filteredGroups, setFilteredGroups] = useState<MailGroupFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -221,51 +215,6 @@ const PageMails: React.FC = () => {
         });
     }
 
-    const addGroup = (groupId: string) => {
-        dispatch(setAppLoading(true));
-        axios.post(import.meta.env.VITE_BASE_URL + "/db/mail-group-mail-group", {
-            mailGroupId: Number(groupId),
-            mailGroupIdParent: Number(id),
-        }).then((response) => {
-            groups.unshift({
-                ...response.data.created.mailGroup,
-            });
-            setGroups([...groups]);
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        });
-    }
-
-    const deleteGroup = (groupId: string) => {
-        dispatch(setAppLoading(true));
-        axios.delete(import.meta.env.VITE_BASE_URL + "/db/mail-group-mail-group", {
-            data: {
-                mailGroupId: Number(groupId),
-                mailGroupIdParent: Number(id),
-            }
-        }).then((response) => {
-            const index = groups.findIndex((group: MailGroupFields) => {
-                return group.id === response.data.deleted.mailGroupId
-            });
-            groups.splice(index, 1);
-            setGroups([...groups]);
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        });
-    }
-
     /// DIALOG
 
     const openCreateDialog = () => {
@@ -334,36 +283,6 @@ const PageMails: React.FC = () => {
             axios.get(import.meta.env.VITE_BASE_URL + "/db/mail", {}).then((response) => {
                 setAllMails(response.data.mails);
                 setDialogMembersActive(true);
-            }).catch((error) => {
-                if (error.response && error.response.data) {
-                    dispatch(setAppError(error.response.data));
-                } else {
-                    dispatch(setAppError(error.message));
-                }
-            }).finally(() => {
-                dispatch(setAppLoading(false));
-            })
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-            dispatch(setAppLoading(false));
-        })
-    }
-
-    const openGroupsDialog = (id: number) => {
-        dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/db/mail-group", {
-            params: {id: Number(id)}
-        }).then((response) => {
-            console.log(response.data);
-            const mailGroups = response.data.mailGroup.mailGroups.map((mailGroup: any) => mailGroup.mailGroupParent)
-            setGroups(mailGroups);
-            axios.get(import.meta.env.VITE_BASE_URL + "/db/mail-group", {}).then((response) => {
-                setAllGroups(response.data.mailGroups);
-                setDialogGroupsActive(true);
             }).catch((error) => {
                 if (error.response && error.response.data) {
                     dispatch(setAppError(error.response.data));
@@ -452,15 +371,6 @@ const PageMails: React.FC = () => {
         })
         setFilteredMails(filteredMails);
     }, [allMails, members]);
-
-    useEffect(() => {
-        console.log(groups);
-        const groupIds: number[] = groups.map((group: any) => group.id);
-        const filteredGroups = allGroups.filter((group: any) => {
-            return !groupIds.includes(group.id);
-        })
-        setFilteredGroups(filteredGroups);
-    }, [allGroups, groups]);
 
     return (
         <>
@@ -600,7 +510,6 @@ const PageMails: React.FC = () => {
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: t('mailGroupsUpdateButtonCancel')},
                     {action: () => openMembersDialog(id), text: t('mailGroupsUpdateButtonMembers')},
-                    {action: () => openGroupsDialog(id), text: t('mailGroupsUpdateButtonGroups')},
                     {action: () => update(), text: t('mailGroupsUpdateButtonUpdate')},
                 ]}
             />}
@@ -694,45 +603,6 @@ const PageMails: React.FC = () => {
                 </div>}
                 buttons={[
                     {action: () => setDialogMembersActive(false), text: t('mailGroupsMembersButtonClose')},
-                ]}
-            />}
-            {dialogGroupsActive && <Dialog
-                title={t('mailGroupsGroupsTitle')}
-                close={() => setDialogGroupsActive(false)}
-                children={<div className={'groups'}>
-                    <div className={'left'}>
-                        {groups.map((group, index) => (
-                            <div className={'group'} key={index}>
-                                <div className={'left'}>
-                                    <p>{group.name}</p>
-                                </div>
-                                <div className={'right'}>
-                                    <button
-                                        onClick={() => deleteGroup(group.id)}
-                                    >{t('mailGroupsGroupsDelete')}
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className={'right'}>
-                        {filteredGroups.map((group, index) => (
-                            <div className={'group'} key={index}>
-                                <div className={'left'}>
-                                    <p>{group.name}</p>
-                                </div>
-                                <div className={'right'}>
-                                    <button
-                                        onClick={() => addGroup(group.id)}
-                                    >{t('mailGroupsGroupsAdd')}
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>}
-                buttons={[
-                    {action: () => setDialogGroupsActive(false), text: t('mailGroupsGroupsButtonClose')},
                 ]}
             />}
         </>

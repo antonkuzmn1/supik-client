@@ -455,10 +455,6 @@ export const i18nTranslationEn = {
     "mailGroupsMembersAdd": "Add",
     "mailGroupsMembersDelete": "Delete",
     "mailGroupsMembersButtonClose": "Close",
-    "mailGroupsGroupsTitle": "Groups",
-    "mailGroupsGroupsAdd": "Add",
-    "mailGroupsGroupsDelete": "Delete",
-    "mailGroupsGroupsButtonClose": "Close",
 
     "itemsTitle": "Items",
 
