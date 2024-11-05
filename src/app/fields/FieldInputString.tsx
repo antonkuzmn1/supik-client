@@ -11,6 +11,7 @@ export interface FieldInputStringProps {
     value: string,
     onChange: (e: any) => void,
     mask?: string,
+    other?: any,
 }
 
 const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStringProps) => {
@@ -30,6 +31,7 @@ const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStri
                         value={props.value || ''}
                         onChange={props.onChange}
                         placeholder={props.placeholder}
+                        {...props.other}
                     />
                 ) : (
                     <input
@@ -39,6 +41,7 @@ const FieldInputString: React.FC<FieldInputStringProps> = (props: FieldInputStri
                         placeholder={props.placeholder}
                         value={props.value || ''}
                         onChange={props.onChange}
+                        {...props.other}
                     />
                 )}
                 {props.password && <button

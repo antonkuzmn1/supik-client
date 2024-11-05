@@ -1,7 +1,7 @@
 {
   "name": "supik-client",
   "private": true,
-  "version": "24.15.0",
+  "version": "24.16.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,9 +14,11 @@
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.4",
     "classnames": "^2.5.1",
+    "file-saver": "^2.0.5",
     "i18next": "^23.15.1",
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.2",
+    "jszip": "^3.10.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^15.0.2",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/file-saver": "^2.0.7",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.5.1",
     "@types/react": "^18.3.3",

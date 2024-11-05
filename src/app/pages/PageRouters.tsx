@@ -36,6 +36,7 @@ export interface RouterFields {
     title: string,
     disabled: 0 | 1,
     l2tpKey: string,
+    certificate: any,
 }
 
 const defTableHeaders: { text: string, field: keyof RouterFields, width: string, type: TypeField }[] = [
