@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.16.2',
+        time: '01:10',
+        changes: [
+            '[01:10] Добавлена возможность добавлять почтовые группы в меню почтового ящика',
+        ],
+    },
+    {
         version: '24.16.1',
         time: '01:10',
         changes: [

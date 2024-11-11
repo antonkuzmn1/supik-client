@@ -23,6 +23,7 @@ import {getInitialsFromFullname} from "../../utils/getInitialsFromFullname.ts";
 import FieldInputBooleanNullable from "../fields/FieldInputBooleanNullable.tsx";
 import FieldInputSelectMany from "../fields/FieldInputSelectMany.tsx";
 import {useTranslation} from "react-i18next";
+import {MailGroupFields} from "./PageMailGroups.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -72,6 +73,7 @@ const PageMails: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
+    const [dialogGroupsActive, setDialogGroupsActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [nickname, setNickname] = useState<string>('');
@@ -85,6 +87,9 @@ const PageMails: React.FC = () => {
     const [userId, setUserId] = useState<number>(0);
 
     const [users, setUsers] = useState<UserFields[]>([]);
+    const [groups, setGroups] = useState<MailGroupFields[]>([]);
+    const [allMailGroups, setAllMailGroups] = useState<MailGroupFields[]>([]);
+    const [filteredMailGroups, setFilteredMailGroups] = useState<MailGroupFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -207,6 +212,52 @@ const PageMails: React.FC = () => {
         })
     }
 
+    const addGroup = (mailGroupId: string) => {
+        dispatch(setAppLoading(true));
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/mail-mail-group", {
+            mailId: Number(id),
+            mailGroupId: Number(mailGroupId),
+        }).then((response) => {
+            console.log(response);
+            groups.unshift({
+                ...response.data.created.mailGroup,
+            });
+            setGroups([...groups]);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        });
+    }
+
+    const deleteGroup = (mailGroupId: string) => {
+        dispatch(setAppLoading(true));
+        axios.delete(import.meta.env.VITE_BASE_URL + "/db/mail-mail-group", {
+            data: {
+                mailId: Number(id),
+                mailGroupId: Number(mailGroupId),
+            }
+        }).then((response) => {
+            const index = groups.findIndex((group: MailGroupFields) => {
+                return group.id === response.data.deleted.mailGroupId
+            });
+            groups.splice(index, 1);
+            setGroups([...groups]);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        });
+    }
+
     /// DIALOG
 
     const openCreateDialog = () => {
@@ -275,6 +326,35 @@ const PageMails: React.FC = () => {
 
     const openFilterDialog = () => {
         setDialogFilterActive(true)
+    }
+
+    const openGroupsDialog = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/mail", {
+            params: {id: Number(id)}
+        }).then((response) => {
+            const groups = response.data.mail.groups.map((group: any) => group.mailGroup)
+            setGroups(groups);
+            axios.get(import.meta.env.VITE_BASE_URL + "/db/mail-group", {}).then((response) => {
+                setAllMailGroups(response.data.mailGroups);
+                setDialogGroupsActive(true);
+            }).catch((error) => {
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
+            }).finally(() => {
+                dispatch(setAppLoading(false));
+            })
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+            dispatch(setAppLoading(false));
+        })
     }
 
     /// OTHER
@@ -422,6 +502,14 @@ const PageMails: React.FC = () => {
 
         setFilter(filterParams);
     }, [location.search, rows]);
+
+    useEffect(() => {
+        const groupIds: number[] = groups.map((group: any) => group.id);
+        const filteredMailGroups = allMailGroups.filter((mail: any) => {
+            return !groupIds.includes(mail.id);
+        })
+        setFilteredMailGroups(filteredMailGroups);
+    }, [allMailGroups, groups]);
 
     return (
         <>
@@ -654,6 +742,7 @@ const PageMails: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogUpdateActive(false), text: t('mailsUpdateButtonCancel')},
+                    {action: () => openGroupsDialog(id), text: t('mailsUpdateButtonGroups')},
                     {action: () => update(), text: t('mailsUpdateButtonUpdate')},
                 ]}
             />}
@@ -757,6 +846,45 @@ const PageMails: React.FC = () => {
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: t('mailsFilterButtonClose')},
                     {action: () => setQuery(), text: t('mailsFilterButtonConfirm')},
+                ]}
+            />}
+            {dialogGroupsActive && <Dialog
+                title={t('mailsGroupsTitle')}
+                close={() => setDialogGroupsActive(false)}
+                children={<div className={'groups'}>
+                    <div className={'left'}>
+                        {groups.map((group, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{group.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => deleteGroup(group.id)}
+                                    >{t('mailsGroupsDelete')}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className={'right'}>
+                        {filteredMailGroups.map((mailGroup, index) => (
+                            <div className={'group'} key={index}>
+                                <div className={'left'}>
+                                    <p>{mailGroup.name}</p>
+                                </div>
+                                <div className={'right'}>
+                                    <button
+                                        onClick={() => addGroup(mailGroup.id)}
+                                    >{t('mailsGroupsAdd')}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>}
+                buttons={[
+                    {action: () => setDialogGroupsActive(false), text: t('mailsGroupsButtonClose')},
                 ]}
             />}
         </>
