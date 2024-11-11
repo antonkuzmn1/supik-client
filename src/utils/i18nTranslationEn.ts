@@ -443,6 +443,7 @@ export const i18nTranslationEn = {
     "mailGroupsCreateDescription": "Description",
     "mailGroupsCreateLabel": "Label",
     "mailGroupsCreateButtonCancel": "Cancel",
+    "mailGroupsCreateButtonSync": "Synchronize",
     "mailGroupsCreateButtonCreate": "Create",
     "mailGroupsUpdateTitle": "Update mail group",
     "mailGroupsUpdateName": "Name",

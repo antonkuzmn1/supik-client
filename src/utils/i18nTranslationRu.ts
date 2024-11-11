@@ -443,6 +443,7 @@ export const i18nTranslationRu = {
     "mailGroupsCreateDescription": "Описание",
     "mailGroupsCreateLabel": "Адрес",
     "mailGroupsCreateButtonCancel": "Отмена",
+    "mailGroupsCreateButtonSync": "Синхронизировать",
     "mailGroupsCreateButtonCreate": "Создать",
     "mailGroupsUpdateTitle": "Изменить почтовую группу",
     "mailGroupsUpdateName": "Имя",
