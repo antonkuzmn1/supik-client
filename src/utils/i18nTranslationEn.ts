@@ -256,11 +256,6 @@ export const i18nTranslationEn = {
     "vpnsDeleteText": "Are u sure want to delete",
     "vpnsDeleteButtonCancel": "Cancel",
     "vpnsDeleteButtonDelete": "Delete",
-    "vpnsDownloadTitle": "Download VPN kit",
-    "vpnsDownloadFieldRdpAddress": "RDP Address",
-    "vpnsDownloadFieldRdpUsername": "RDP Username",
-    "vpnsDownloadButtonClose": "Close",
-    "vpnsDownloadButtonDownload": "Download",
 
     "usersTitle": "Users",
     "usersTableID": "ID",

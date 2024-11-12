@@ -25,13 +25,6 @@ import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
 import {useTranslation} from "react-i18next";
 import IconDownload from "../icons/IconDownload.tsx";
-import JSZip from "jszip";
-import {saveAs} from "file-saver";
-import {convertToFile} from "../../utils/convertToFile.ts";
-import JsPDF from 'jspdf';
-import robotoNormalFont from '../../fonts/Roboto/Roboto-Regular.ttf';
-import robotoBoldFont from '../../fonts/Roboto/Roboto-Bold.ttf';
-import vpnConnectionGuidePath from '../../assets/vpn_connection_guide.pdf';
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -87,7 +80,6 @@ const PageVpns: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
-    const [dialogDownloadActive, setDialogDownloadActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -111,9 +103,6 @@ const PageVpns: React.FC = () => {
     const [routerPrefix, setRouterPrefix] = useState<string>('');
 
     const [filter, setFilter] = useState<any>({});
-
-    const [rdpAddress, setRdpAddress] = useState<string>('');
-    const [rdpUsername, setRdpUsername] = useState<string>('');
 
     /// CRUD
 
@@ -312,38 +301,6 @@ const PageVpns: React.FC = () => {
         setDialogFilterActive(true)
     }
 
-    const openDownloadDialog = (id: number) => {
-        dispatch(setAppLoading(true));
-        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {
-            params: {
-                id: id,
-            },
-        }).then((response) => {
-            setId(response.data.id);
-            setName(response.data.name);
-            setPassword(response.data.password);
-            setProfile(response.data.profile);
-            setService(response.data.service);
-            setRemoteAddress(response.data.remoteAddress);
-            setTitle(response.data.title);
-            setVpnId(response.data.vpnId);
-            setRouterId(response.data.routerId);
-            setUserId(response.data.userId ? response.data.userId : 0);
-            setDisabled(response.data.disabled);
-            getRouters();
-            getUsers();
-            setDialogDownloadActive(true);
-        }).catch((error) => {
-            if (error.response && error.response.data) {
-                dispatch(setAppError(error.response.data));
-            } else {
-                dispatch(setAppError(error.message));
-            }
-        }).finally(() => {
-            dispatch(setAppLoading(false));
-        })
-    }
-
     /// OTHER
 
     const sortTable = (column: keyof VpnFields, asc: boolean) => {
@@ -501,113 +458,35 @@ const PageVpns: React.FC = () => {
         }).join('');
     }
 
-    const download = async () => {
+    const download = async (id: number) => {
         dispatch(setAppLoading(true));
-        try {
-            if (rdpAddress.length < 7) {
-                dispatch(setAppError('RDP Address required'));
-                return;
-            }
-
-            if (rdpUsername.length < 5) {
-                dispatch(setAppError('RDP Username required'));
-                return;
-            }
-
-            const routerResponse = await axios.get(import.meta.env.VITE_BASE_URL + "/db/router", {
-                params: { id: routerId },
-            });
-            const userResponse = await axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
-                params: { id: userId },
-            });
-
-            const zip = new JSZip();
-
-            const router = routerResponse.data.router;
-            const certificate = router.certificate;
-            const certificateFileName = 'certificate.sstp.crt';
-            const certificateFile = convertToFile(certificate, certificateFileName);
-            zip.file(certificateFileName, certificateFile);
-
-            const localAddressParts = router.localAddress.split('.');
-            const subnet = `${localAddressParts[0]}.${localAddressParts[1]}.${localAddressParts[2]}.0`;
-
-            const codeCmd = `@echo off
-setlocal
-set "certFile=%~dp0${certificateFileName}"
-            
-:: Check if script is running with elevated privileges
-reg query "HKU\\S-1-5-19\\Environment" >nul 2>&1
-if not %errorlevel% EQU 0 (
-    echo Running without elevated privileges. Restarting with elevated privileges.
-    powershell.exe -windowstyle hidden -command "Start-Process '%~dpnx0' -ArgumentList '%certFile%' -Verb RunAs"
-    exit /b
-)
-            
-:: Proceed with the commands if running with elevated privileges
-echo Running with elevated privileges. Proceeding with the commands.
-            
-:: add cert to root store
-certutil -addstore Root "%certFile%"
-::add route to network
-route -p add ${subnet} mask 255.255.255.0 int_adress`;
-            zip.file("add_cert_and_route.cmd", codeCmd);
-
-            const user = userResponse.data;
-            const doc = new JsPDF({
-                format: 'a4',
-                unit: 'px',
-            });
-            doc.addFont(robotoNormalFont, 'Roboto', 'normal');
-            doc.addFont(robotoBoldFont, 'Roboto', 'bold');
-            doc.setFont('Roboto');
-            doc.setFontSize(20);
-            doc.text('Карточка сотрудника', 10, 30);
-            doc.setFontSize(12);
-            const data = [
-                ['Фамилия', user.surname],
-                ['Имя', user.name],
-                ['Отчество', user.patronymic],
-                ['Должность', user.title],
-                ['Рабочее место', user.workplace],
-                ['Внутренний номер', user.phone],
-                ['Почтовый логин', user.mails[0]?.email || ''],
-                ['Почтовый пароль', user.mails[0]?.password || ''],
-                ['Системный логин', user.login],
-                ['Системный пароль', user.password],
-                ['Почтовый клиент', 'https://mail.yandex.ru'],
-                ['Корпоративный мессенджер', 'Spark'],
-                ['Руководство пользователя', 'http://info'],
-            ];
-            data.forEach((row, i) => {
-                doc.text(row[0], 10, 60 + 20 * i);
-                doc.text(row[1], 150, 60 + 20 * i);
-                doc.line(10, 64 + 20 * i, 400, 64 + 20 * i);
-            });
-            zip.file(`${user.surname} ${user.name} ${user.patronymic}.pdf`, doc.output('blob'));
-
-            const codeRdp = `screen mode id:i:2
-use multimon:i:1
-desktopwidth:i:1920
-desktopheight:i:1080
-session bpp:i:32
-full address:s:${rdpAddress}
-username:s:${rdpUsername}`;
-            zip.file("ts-aup.atech.loc.rdp", codeRdp);
-
-            const vpnResponse = await fetch(vpnConnectionGuidePath);
-            const vpnBlob = await vpnResponse.blob();
-            zip.file("vpn_connection_guide.pdf", vpnBlob);
-
-            const content = await zip.generateAsync({ type: "blob" });
-            saveAs(content, "archive.zip");
-        } catch (error: any) {
-            const errorMessage = error.response?.data || error.message;
-            dispatch(setAppError(errorMessage));
-        } finally {
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn/get-archive", {
+            responseType: 'blob',
+            params: {id},
+        }).then((response) => {
+            console.log(response);
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'archive.zip');
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }).catch((_error) => {
+            axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn/get-archive", {
+                params: {id},
+            }).catch((error) => {
+                if (error.response && error.response.data) {
+                    dispatch(setAppError(error.response.data));
+                } else {
+                    dispatch(setAppError(error.message));
+                }
+            })
+        }).finally(() => {
             dispatch(setAppLoading(false));
-        }
-    };
+        })
+    }
 
     /// HOOKS
 
@@ -651,7 +530,7 @@ username:s:${rdpUsername}`;
                     <thead>
                     <tr>
                         <th className={'action'}>
-                            <div className={'action-buttons'} style={{width:'120px'}}>
+                            <div className={'action-buttons'} style={{width: '120px'}}>
                                 <button
                                     onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
@@ -690,9 +569,9 @@ username:s:${rdpUsername}`;
                     {rows.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
-                                <div className={'action-buttons'} style={{width:'120px'}}>
+                                <div className={'action-buttons'} style={{width: '120px'}}>
                                     <button
-                                        onClick={() => openDownloadDialog(row.id)}
+                                        onClick={() => download(row.id)}
                                         children={<IconDownload/>}
                                     />
                                     <button
@@ -1005,28 +884,6 @@ username:s:${rdpUsername}`;
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: t('vpnsFilterButtonClose')},
                     {action: () => setQuery(), text: t('vpnsFilterButtonConfirm')},
-                ]}
-            />}
-            {dialogDownloadActive && <Dialog
-                title={t('vpnsDownloadTitle')}
-                close={() => setDialogDownloadActive(false)}
-                children={<>
-                    <FieldInputString
-                        title={t('vpnsDownloadFieldRdpAddress')}
-                        placeholder={"Enter text"}
-                        value={rdpAddress}
-                        onChange={(e) => setRdpAddress(e.target.value)}
-                    />
-                    <FieldInputString
-                        title={t('vpnsDownloadFieldRdpUsername')}
-                        placeholder={"Enter text"}
-                        value={rdpUsername}
-                        onChange={(e) => setRdpUsername(e.target.value)}
-                    />
-                </>}
-                buttons={[
-                    {action: () => setDialogDownloadActive(false), text: t('vpnsDownloadButtonClose')},
-                    {action: download, text: t('vpnsDownloadButtonDownload')},
                 ]}
             />}
         </>
