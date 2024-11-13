@@ -34,7 +34,7 @@ export interface MailGroupFields {
 
 const defTableHeaders: { text: string, field: keyof MailGroupFields, width: string, type: TypeField }[] = [
     {text: 'mailGroupsTableID', field: 'id', width: '50px', type: 'String'},
-    {text: 'mailGroupsTableName', field: 'name', width: '150px', type: 'String'},
+    {text: 'mailGroupsTableName', field: 'name', width: '200px', type: 'String'},
     {text: 'mailGroupsTableDescription', field: 'description', width: '150px', type: 'String'},
     {text: 'mailGroupsTableLabel', field: 'label', width: '150px', type: 'String'},
     {text: 'mailGroupsTableMembersCount', field: 'membersCount', width: '100px', type: 'Integer'},
