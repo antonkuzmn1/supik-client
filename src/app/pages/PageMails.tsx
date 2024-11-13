@@ -41,6 +41,7 @@ export interface MailFields {
     position: string,
     isAdmin: boolean,
     isEnabled: boolean,
+    description: string,
 
     userId: number,
     userName: string,
@@ -56,6 +57,7 @@ const defTableHeaders: { text: string, field: keyof MailFields, width: string, t
     {text: 'mailsTablePosition', field: 'position', width: '200px', type: 'String'},
     {text: 'mailsTableAdmin', field: 'isAdmin', width: '60px', type: 'Boolean'},
     {text: 'mailsTableEnabled', field: 'isEnabled', width: '60px', type: 'Boolean'},
+    {text: 'mailsTableDescription', field: 'description', width: '150px', type: 'String'},
     {text: 'mailsTableCreated', field: 'created', width: '150px', type: 'Date'},
     {text: 'mailsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
@@ -84,6 +86,7 @@ const PageMails: React.FC = () => {
     const [position, setPosition] = useState<string>('');
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isEnabled, setIsEnabled] = useState<boolean>(false);
+    const [description, setDescription] = useState<string>('');
     const [userId, setUserId] = useState<number>(0);
 
     const [users, setUsers] = useState<UserFields[]>([]);
@@ -128,6 +131,7 @@ const PageMails: React.FC = () => {
                 nameMiddle: nameMiddle.trim(),
                 position: position.trim(),
                 isAdmin: isAdmin,
+                description: description.trim(),
                 userId: userId,
             }
         }).then((response) => {
@@ -163,6 +167,7 @@ const PageMails: React.FC = () => {
                 position: position.trim(),
                 isAdmin: isAdmin,
                 isEnabled: isEnabled,
+                description: description.trim(),
                 userId: userId,
             }
         }).then((response) => {
@@ -270,6 +275,7 @@ const PageMails: React.FC = () => {
         setPosition('');
         setIsAdmin(false);
         setIsEnabled(false);
+        setDescription('');
         setUserId(0);
         setDialogCreateActive(true);
     }
@@ -290,6 +296,7 @@ const PageMails: React.FC = () => {
             setPosition(response.data.mail.position);
             setIsAdmin(response.data.mail.isAdmin);
             setIsEnabled(response.data.mail.isEnabled);
+            setDescription(response.data.mail.description);
             setUserId(response.data.mail.userId ? response.data.mail.userId : 0);
             setDialogUpdateActive(true);
         }).catch((error) => {
@@ -646,6 +653,12 @@ const PageMails: React.FC = () => {
                         setTrue={() => setIsAdmin(true)}
                         setFalse={() => setIsAdmin(false)}
                     />
+                    <FieldInputString
+                        title={t('mailsCreateDescription')}
+                        placeholder={"Enter text"}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
                     <FieldInputSelectOne
                         title={t('mailsCreateUser')}
                         value={userId}
@@ -726,6 +739,12 @@ const PageMails: React.FC = () => {
                         value={isEnabled}
                         setTrue={() => setIsEnabled(true)}
                         setFalse={() => setIsEnabled(false)}
+                    />
+                    <FieldInputString
+                        title={t('mailsUpdateDescription')}
+                        placeholder={"Enter text"}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
                     <FieldInputSelectOne
                         title={t('mailsUpdateUser')}
@@ -830,6 +849,12 @@ const PageMails: React.FC = () => {
                         setNull={() => setFilter({...filter, isEnabled: 0})}
                         setTrue={() => setFilter({...filter, isEnabled: 'true'})}
                         setFalse={() => setFilter({...filter, isEnabled: 'false'})}
+                    />
+                    <FieldInputString
+                        title={t('mailsFilterDescription')}
+                        placeholder={"Enter text"}
+                        value={filter.description}
+                        onChange={(e) => setFilter({...filter, description: e.target.value})}
                     />
                     <FieldInputSelectMany
                         title={t('mailsFilterUser')}

@@ -6,6 +6,15 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.16.4',
+        time: '00:35',
+        changes: [
+            '[00:20] Добавлено поле "Description" в модель почтового ящика',
+            '[00:15] Исправлена ошибка "Login already exists" при изменении пользователя',
+            '[00:00] Расширено поле "Имя" в разделе почтовых групп',
+        ],
+    },
+    {
         version: '24.16.3',
         time: '01:30',
         changes: [
