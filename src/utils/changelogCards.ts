@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.17',
+        time: '02:00',
+        changes: [
+            '[02:00] В разделе VPN добавлены кнопки для отправки архива в почтовый ящик',
+        ],
+    },
+    {
         version: '24.16.4',
         time: '00:35',
         changes: [

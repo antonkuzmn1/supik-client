@@ -7,7 +7,7 @@ import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
-import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppMessage, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import {RouterFields} from "./PageRouters.tsx";
 import Dialog from "../dialogs/Dialog.tsx";
@@ -25,6 +25,7 @@ import FieldGenerator, {PasswordType} from "../fields/FieldGenerator.tsx";
 import {dateToString} from "../../utils/dateToString.ts";
 import {useTranslation} from "react-i18next";
 import IconDownload from "../icons/IconDownload.tsx";
+import IconSendMail from "../icons/IconSendMail.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -80,6 +81,7 @@ const PageVpns: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
+    const [dialogSendMailActive, setDialogSendMailActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -101,6 +103,7 @@ const PageVpns: React.FC = () => {
     const [routerRemoteAddr, setRouterRemoteAddr] = useState<string>('');
     const [routerL2tpKey, setRouterL2tpKey] = useState<string>('');
     const [routerPrefix, setRouterPrefix] = useState<string>('');
+    const [targetMail, setTargetMail] = useState<string>('');
 
     const [filter, setFilter] = useState<any>({});
 
@@ -301,6 +304,28 @@ const PageVpns: React.FC = () => {
         setDialogFilterActive(true)
     }
 
+    const openDialogSendMail = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/vpn", {
+            params: {
+                id: id,
+            },
+        }).then((response) => {
+            setId(response.data.id);
+            setName(response.data.name);
+            setTargetMail(response.data.user?.mails[0]?.email);
+            setDialogSendMailActive(true);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof VpnFields, asc: boolean) => {
@@ -488,6 +513,24 @@ const PageVpns: React.FC = () => {
         })
     }
 
+    const sendMail = () => {
+        dispatch(setAppLoading(true));
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/vpn/send-mail", {
+            id, targetMail: targetMail.trim(),
+        }).then((response) => {
+            dispatch(setAppMessage(response.data));
+            setDialogSendMailActive(false);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        });
+    }
+
     /// HOOKS
 
     useEffect(() => {
@@ -530,7 +573,7 @@ const PageVpns: React.FC = () => {
                     <thead>
                     <tr>
                         <th className={'action'}>
-                            <div className={'action-buttons'} style={{width: '120px'}}>
+                            <div className={'action-buttons'} style={{width: '160px'}}>
                                 <button
                                     onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
@@ -569,10 +612,14 @@ const PageVpns: React.FC = () => {
                     {rows.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
-                                <div className={'action-buttons'} style={{width: '120px'}}>
+                                <div className={'action-buttons'} style={{width: '160px'}}>
                                     <button
                                         onClick={() => download(row.id)}
                                         children={<IconDownload/>}
+                                    />
+                                    <button
+                                        onClick={() => openDialogSendMail(row.id)}
+                                        children={<IconSendMail/>}
                                     />
                                     <button
                                         onClick={() => openEditDialog(row.id)}
@@ -884,6 +931,30 @@ const PageVpns: React.FC = () => {
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: t('vpnsFilterButtonClose')},
                     {action: () => setQuery(), text: t('vpnsFilterButtonConfirm')},
+                ]}
+            />}
+            {dialogSendMailActive && <Dialog
+                title={t('vpnsSendMailTitle')}
+                close={() => setDialogSendMailActive(false)}
+                children={<>
+                    <FieldValueString
+                        title={t('vpnsSendMailFieldID')}
+                        value={id.toString()}
+                    />
+                    <FieldValueString
+                        title={t('vpnsSendMailFieldName')}
+                        value={name.toString()}
+                    />
+                    <FieldInputString
+                        title={t('vpnsSendMailFieldTargetMail')}
+                        placeholder={"Enter text"}
+                        value={targetMail}
+                        onChange={(e) => setTargetMail(e.target.value)}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogSendMailActive(false), text: t('vpnsSendMailButtonCancel')},
+                    {action: () => sendMail(), text: t('vpnsSendMailButtonUpdate')},
                 ]}
             />}
         </>

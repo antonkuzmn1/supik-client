@@ -256,6 +256,12 @@ export const i18nTranslationRu = {
     "vpnsDeleteText": "Вы уверены что хотите удалить",
     "vpnsDeleteButtonCancel": "Отмена",
     "vpnsDeleteButtonDelete": "Удалить",
+    "vpnsSendMailTitle": "Отправить набор VPN",
+    "vpnsSendMailFieldID": "ID",
+    "vpnsSendMailFieldName": "Имя",
+    "vpnsSendMailFieldTargetMail": "Целевой адрес",
+    "vpnsSendMailButtonCancel": "Отмена",
+    "vpnsSendMailButtonUpdate": "Отправить",
 
     "usersTitle": "Пользователи",
     "usersTableID": "ID",
