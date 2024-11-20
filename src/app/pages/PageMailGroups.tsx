@@ -80,7 +80,7 @@ const PageMails: React.FC = () => {
                     ...row,
                     membersCount: row.members.length,
                 }
-            }));
+            }).sort((a: any, b: any) => a.name.localeCompare(b.name)));
         }).catch((error) => {
             if (error.response && error.response.data) {
                 dispatch(setAppError(error.response.data));
@@ -386,6 +386,7 @@ const PageMails: React.FC = () => {
         const filteredMails = allMails.filter((mail: any) => {
             return !memberIds.includes(mail.id);
         })
+        filteredMails.sort((a, b) => a.email.localeCompare(b.email));
         setFilteredMails(filteredMails);
     }, [allMails, members]);
 

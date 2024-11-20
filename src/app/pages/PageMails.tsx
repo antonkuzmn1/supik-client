@@ -515,6 +515,7 @@ const PageMails: React.FC = () => {
         const filteredMailGroups = allMailGroups.filter((mail: any) => {
             return !groupIds.includes(mail.id);
         })
+        filteredMailGroups.sort((a, b) => a.name.localeCompare(b.name));
         setFilteredMailGroups(filteredMailGroups);
     }, [allMailGroups, groups]);
 
