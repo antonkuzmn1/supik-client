@@ -493,6 +493,27 @@ export const i18nTranslationRu = {
 
     "changelogTitle": "Версии",
 
+    "configTitle": "Конфигурация",
+    "configHeaderCommon": "Общее",
+    "configFieldTokenLifetime": "Время жизни токена",
+    "configHeaderMailYandex": "Яндекс",
+    "configFieldMailYandexToken": "Токен",
+    "configFieldMailYandexOrgId": "ID организации",
+    "configFieldMailYandexDomain": "Домен",
+    "configHeaderMailYandexTransporter": "Траспортер",
+    "configFieldMailYandexTransporterHost": "Хост",
+    "configFieldMailYandexTransporterPort": "Порт",
+    "configFieldMailYandexTransporterSecure": "Шифрование",
+    "configFieldMailYandexTransporterAuthUser": "Логин",
+    "configFieldMailYandexTransporterAuthPass": "Пароль",
+    "configHeaderRouter": "Маршрутизатор",
+    "configFieldRouterDefaultPort": "Порт",
+    "configFieldRouterDefaultTimeout": "Время ожидания",
+    "configHeaderDomain": "Домен",
+    "configFieldDomainDnsServerAddress": "DNS адрес",
+    "configFieldDomainLocalDomain": "Локальный домен",
+    "configButtonConfirm": "Подтвердить",
+
     "settingsTitle": "Настройки",
     "settingsVersion": "Версия",
 }

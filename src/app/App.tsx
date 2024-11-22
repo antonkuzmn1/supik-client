@@ -38,6 +38,8 @@ import PageSettings from "./pages/PageSettings.tsx";
 import IconSettings from "./icons/IconSettings.tsx";
 import PageMailGroups from "./pages/PageMailGroups.tsx";
 import IconMailGroups from "./icons/IconMailGroups.tsx";
+import PageConfig from "./pages/PageConfig.tsx";
+import IconConfig from "./icons/IconConfig.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -62,6 +64,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/settings/routers', element: <Page element={<PageRouters/>}/>, icon: <IconRouters/>, title: "routersTitle", admin: false, settings: true},
     {path: '/settings/logs', element: <Page element={<PageLogs/>}/>, icon: <IconLogs/>, title: "logsTitle", admin: true, settings: true},
     {path: '/settings/changelog', element: <Page element={<PageChangelog/>}/>, icon: <IconChangelog/>, title: "changelogTitle", admin: true, settings: true},
+    {path: '/settings/config', element: <Page element={<PageConfig/>}/>, icon: <IconConfig/>, title: "configTitle", admin: true, settings: true},
 ];
 
 const router = createBrowserRouter([

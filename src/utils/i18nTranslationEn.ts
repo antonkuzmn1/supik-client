@@ -489,6 +489,27 @@ export const i18nTranslationEn = {
 
     "changelogTitle": "Changelog",
 
+    "configTitle": "Config",
+    "configHeaderCommon": "Common",
+    "configFieldTokenLifetime": "Token lifetime",
+    "configHeaderMailYandex": "Yandex",
+    "configFieldMailYandexToken": "Token",
+    "configFieldMailYandexOrgId": "Organisation ID",
+    "configFieldMailYandexDomain": "Domain",
+    "configHeaderMailYandexTransporter": "Transporter",
+    "configFieldMailYandexTransporterHost": "Host",
+    "configFieldMailYandexTransporterPort": "Port",
+    "configFieldMailYandexTransporterSecure": "Secure",
+    "configFieldMailYandexTransporterAuthUser": "Username",
+    "configFieldMailYandexTransporterAuthPass": "Password",
+    "configHeaderRouter": "Router",
+    "configFieldRouterDefaultPort": "Default Port",
+    "configFieldRouterDefaultTimeout": "Default Timeout",
+    "configHeaderDomain": "Domain",
+    "configFieldDomainDnsServerAddress": "DNS Address",
+    "configFieldDomainLocalDomain": "Local Domain",
+    "configButtonConfirm": "Confirm",
+
     "settingsTitle": "Settings",
     "settingsVersion": "Version",
 }
