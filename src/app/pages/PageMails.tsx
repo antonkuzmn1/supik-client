@@ -625,16 +625,16 @@ const PageMails: React.FC = () => {
                         length={10}
                     />
                     <FieldInputString
-                        title={t('mailsCreateFirstName')}
-                        placeholder={"Enter text"}
-                        value={nameFirst}
-                        onChange={(e) => setNameFirst(e.target.value)}
-                    />
-                    <FieldInputString
                         title={t('mailsCreateLastName')}
                         placeholder={"Enter text"}
                         value={nameLast}
                         onChange={(e) => setNameLast(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={t('mailsCreateFirstName')}
+                        placeholder={"Enter text"}
+                        value={nameFirst}
+                        onChange={(e) => setNameFirst(e.target.value)}
                     />
                     <FieldInputString
                         title={t('mailsCreateMiddleName')}
@@ -706,16 +706,16 @@ const PageMails: React.FC = () => {
                         length={10}
                     />
                     <FieldInputString
-                        title={t('mailsUpdateFirstName')}
-                        placeholder={"Enter text"}
-                        value={nameFirst}
-                        onChange={(e) => setNameFirst(e.target.value)}
-                    />
-                    <FieldInputString
                         title={t('mailsUpdateLastName')}
                         placeholder={"Enter text"}
                         value={nameLast}
                         onChange={(e) => setNameLast(e.target.value)}
+                    />
+                    <FieldInputString
+                        title={t('mailsUpdateFirstName')}
+                        placeholder={"Enter text"}
+                        value={nameFirst}
+                        onChange={(e) => setNameFirst(e.target.value)}
                     />
                     <FieldInputString
                         title={t('mailsUpdateMiddleName')}
@@ -814,16 +814,16 @@ const PageMails: React.FC = () => {
                         onChange={(e) => setFilter({...filter, email: e.target.value})}
                     />
                     <FieldInputString
-                        title={t('mailsFilterFirstName')}
-                        placeholder={'Enter text'}
-                        value={filter.nameFirst}
-                        onChange={(e) => setFilter({...filter, nameFirst: e.target.value})}
-                    />
-                    <FieldInputString
                         title={t('mailsFilterLastName')}
                         placeholder={'Enter text'}
                         value={filter.nameLast}
                         onChange={(e) => setFilter({...filter, nameLast: e.target.value})}
+                    />
+                    <FieldInputString
+                        title={t('mailsFilterFirstName')}
+                        placeholder={'Enter text'}
+                        value={filter.nameFirst}
+                        onChange={(e) => setFilter({...filter, nameFirst: e.target.value})}
                     />
                     <FieldInputString
                         title={t('mailsFilterMiddleName')}
