@@ -93,6 +93,7 @@ const PageMails: React.FC = () => {
     const [groups, setGroups] = useState<MailGroupFields[]>([]);
     const [allMailGroups, setAllMailGroups] = useState<MailGroupFields[]>([]);
     const [filteredMailGroups, setFilteredMailGroups] = useState<MailGroupFields[]>([]);
+    const [sortedGroups, setSortedGroups] = useState<MailGroupFields[]>([]);
 
     const [filter, setFilter] = useState<any>({});
 
@@ -515,8 +516,11 @@ const PageMails: React.FC = () => {
         const filteredMailGroups = allMailGroups.filter((mail: any) => {
             return !groupIds.includes(mail.id);
         })
+        const sortedGroups = groups
         filteredMailGroups.sort((a, b) => a.name.localeCompare(b.name));
+        sortedGroups.sort((a, b) => a.name.localeCompare(b.name));
         setFilteredMailGroups(filteredMailGroups);
+        setSortedGroups(sortedGroups);
     }, [allMailGroups, groups]);
 
     return (
@@ -879,7 +883,7 @@ const PageMails: React.FC = () => {
                 close={() => setDialogGroupsActive(false)}
                 children={<div className={'groups'}>
                     <div className={'left'}>
-                        {groups.map((group, index) => (
+                        {sortedGroups.map((group, index) => (
                             <div className={'group'} key={index}>
                                 <div className={'left'}>
                                     <p>{group.name}</p>
