@@ -330,6 +330,12 @@ export const i18nTranslationEn = {
     "usersDeleteText": "Are u sure want to delete",
     "usersDeleteButtonCancel": "Cancel",
     "usersDeleteButtonDelete": "Delete",
+    "usersSendMailTitle": "Send VPN kit via email",
+    "usersSendMailFieldID": "ID",
+    "usersSendMailFieldName": "Name",
+    "usersSendMailFieldTargetMail": "Target mail",
+    "usersSendMailButtonCancel": "Cancel",
+    "usersSendMailButtonUpdate": "Send",
 
     "departmentsTitle": "Departments",
     "departmentsTableID": "ID",

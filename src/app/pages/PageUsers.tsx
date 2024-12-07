@@ -7,7 +7,7 @@ import IconSortDesc from "../icons/IconSortDesc.tsx";
 import IconTableEdit from "../icons/IconTableEdit.tsx";
 import IconTableDelete from "../icons/IconTableDelete.tsx";
 import {useDispatch} from "react-redux";
-import {setAppError, setAppLoading, setAppTitle} from "../../slices/appSlice.ts";
+import {setAppError, setAppLoading, setAppMessage, setAppTitle} from "../../slices/appSlice.ts";
 import axios from "axios";
 import Dialog from "../dialogs/Dialog.tsx";
 import FieldInputString from "../fields/FieldInputString.tsx";
@@ -26,6 +26,7 @@ import robotoNormalFont from '../../fonts/Roboto/Roboto-Regular.ttf';
 import robotoBoldFont from '../../fonts/Roboto/Roboto-Bold.ttf';
 import {MailFields} from "./PageMails.tsx";
 import {useTranslation} from "react-i18next";
+import IconSendMail from "../icons/IconSendMail.tsx";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -80,6 +81,7 @@ const PageUsers: React.FC = () => {
     const [dialogUpdateActive, setDialogUpdateActive] = useState<boolean>(false);
     const [dialogDeleteActive, setDialogDeleteActive] = useState<boolean>(false);
     const [dialogFilterActive, setDialogFilterActive] = useState<boolean>(false);
+    const [dialogSendMailActive, setDialogSendMailActive] = useState<boolean>(false);
 
     const [id, setId] = useState<number>(0);
     const [name, setName] = useState<string>('');
@@ -97,6 +99,7 @@ const PageUsers: React.FC = () => {
 
     const [departments, setDepartments] = useState<DepartmentFields[]>([]);
     const [mails, setMails] = useState<MailFields[]>([]);
+    const [targetMail, setTargetMail] = useState<string>('');
 
     const [filter, setFilter] = useState<any>({});
 
@@ -297,6 +300,28 @@ const PageUsers: React.FC = () => {
         setDialogFilterActive(true)
     }
 
+    const openDialogSendMail = (id: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/user", {
+            params: {
+                id: id,
+            },
+        }).then((response) => {
+            setId(response.data.id);
+            setName(response.data.name);
+            setTargetMail(response.data.mails[0]?.email);
+            setDialogSendMailActive(true);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
+    }
+
     /// OTHER
 
     const sortTable = (column: keyof UserFields, asc: boolean) => {
@@ -405,6 +430,24 @@ const PageUsers: React.FC = () => {
         doc.save(`${surname} ${name} ${patronymic}.pdf`);
     };
 
+    const sendMail = () => {
+        dispatch(setAppLoading(true));
+        axios.post(import.meta.env.VITE_BASE_URL + "/db/user/send-mail", {
+            id, targetMail: targetMail.trim(),
+        }).then((response) => {
+            dispatch(setAppMessage(response.data));
+            setDialogSendMailActive(false);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        });
+    }
+
     /// HOOKS
 
     useEffect(() => {
@@ -431,7 +474,7 @@ const PageUsers: React.FC = () => {
                     <thead>
                     <tr>
                         <th className={'action'}>
-                            <div className={'action-buttons'}>
+                            <div className={'action-buttons'} style={{width: '120px'}}>
                                 <button
                                     onClick={openFilterDialog}
                                     children={<IconTableFilter/>}
@@ -470,7 +513,11 @@ const PageUsers: React.FC = () => {
                     {rows.map((row, index) => (
                         <tr key={index}>
                             <td className={'action'}>
-                                <div className={'action-buttons'}>
+                                <div className={'action-buttons'} style={{width: '120px'}}>
+                                    <button
+                                        onClick={() => openDialogSendMail(Number(row.id))}
+                                        children={<IconSendMail/>}
+                                    />
                                     <button
                                         onClick={() => openEditDialog(row.id)}
                                         children={<IconTableEdit/>}
@@ -819,6 +866,30 @@ const PageUsers: React.FC = () => {
                 buttons={[
                     {action: () => setDialogFilterActive(false), text: t('usersFilterButtonClose')},
                     {action: () => setQuery(), text: t('usersFilterButtonConfirm')},
+                ]}
+            />}
+            {dialogSendMailActive && <Dialog
+                title={t('usersSendMailTitle')}
+                close={() => setDialogSendMailActive(false)}
+                children={<>
+                    <FieldValueString
+                        title={t('usersSendMailFieldID')}
+                        value={id.toString()}
+                    />
+                    <FieldValueString
+                        title={t('usersSendMailFieldName')}
+                        value={name.toString()}
+                    />
+                    <FieldInputString
+                        title={t('usersSendMailFieldTargetMail')}
+                        placeholder={"Enter text"}
+                        value={targetMail}
+                        onChange={(e) => setTargetMail(e.target.value)}
+                    />
+                </>}
+                buttons={[
+                    {action: () => setDialogSendMailActive(false), text: t('usersSendMailButtonCancel')},
+                    {action: () => sendMail(), text: t('usersSendMailButtonUpdate')},
                 ]}
             />}
         </>
