@@ -10,3 +10,11 @@ export const dateToString = (inputDate: Date) => {
     });
     return `${time} - ${date}`;
 }
+
+export const dateToStringOnlyDate = (inputDate: Date) => {
+    return inputDate.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}

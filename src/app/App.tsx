@@ -8,7 +8,6 @@ import IconRouters from "./icons/IconRouters.tsx";
 import IconVpns from "./icons/IconVpns.tsx";
 import IconUsers from "./icons/IconUsers.tsx";
 import IconMails from "./icons/IconMails.tsx";
-// import IconItems from "./icons/IconItems.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import PageAccount from "./pages/PageAccount.tsx";
 import PageAccounts from "./pages/PageAccounts.tsx";
@@ -17,7 +16,6 @@ import PageRouters from "./pages/PageRouters.tsx";
 import PageVpns from "./pages/PageVpns.tsx";
 import PageUsers from "./pages/PageUsers.tsx";
 import PageMails from "./pages/PageMails.tsx";
-// import PageItems from "./pages/page-items/PageItems.tsx";
 import useDevice from "../hooks/useDevice.ts";
 import {useAccount} from "../hooks/useAccount.ts";
 import Loading from "./loading/Loading.tsx";
@@ -40,6 +38,8 @@ import PageMailGroups from "./pages/PageMailGroups.tsx";
 import IconMailGroups from "./icons/IconMailGroups.tsx";
 import PageConfig from "./pages/PageConfig.tsx";
 import IconConfig from "./icons/IconConfig.tsx";
+import IconItems from "./icons/IconItems.tsx";
+import PageItems from "./pages/PageItems.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -57,6 +57,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/departments', element: <Page element={<PageDepartments/>}/>, icon: <IconDepartments/>, title: "departmentsTitle", admin: false, settings: false},
     {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: false, settings: false},
     {path: '/mail-groups', element: <Page element={<PageMailGroups/>}/>, icon: <IconMailGroups/>, title: "mailGroupsTitle",  admin: false, settings: false},
+    {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "itemsTitle",  admin: false, settings: false},
     {path: '/settings', element: <Page element={<PageSettings/>}/>, icon: <IconSettings/>, title: "settingsTitle", admin: true, settings: false},
 
     {path: '/settings/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true, settings: true},
