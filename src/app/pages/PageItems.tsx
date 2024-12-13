@@ -76,20 +76,12 @@ const defTableHeaders: TableHeaders[] = [
     {text: 'itemsTableID', field: 'id', width: '50px', type: 'Integer'},
     {text: 'itemsTableType', field: 'type', width: '100px', type: 'String'},
     {text: 'itemsTableArticle', field: 'article', width: '100px', type: 'String'},
-    {text: 'itemsTableVendor', field: 'vendor', width: '100px', type: 'String'},
-    {text: 'itemsTableDevice', field: 'device', width: '100px', type: 'String'},
-    {text: 'itemsTableSerialNumber', field: 'serialNumber', width: '100px', type: 'String'},
-    {text: 'itemsTablePartNumber', field: 'partNumber', width: '100px', type: 'String'},
-    {text: 'itemsTableSupplier', field: 'supplier', width: '100px', type: 'String'},
-    {text: 'itemsTableDeliveryDate', field: 'deliveryDate', width: '100px', type: 'Date'},
-    {text: 'itemsTableWarrantyMonths', field: 'warrantyMonths', width: '100px', type: 'Integer'},
+    {text: 'itemsTableDevice', field: 'device', width: '150px', type: 'String'},
     {text: 'itemsTableCost', field: 'cost', width: '100px', type: 'Integer'},
-    {text: 'itemsTableState', field: 'state', width: '100px', type: 'String'},
-    {text: 'itemsTableSpecs', field: 'specs', width: '100px', type: 'String'},
-    {text: 'itemsTableNote', field: 'note', width: '100px', type: 'String'},
-    {text: 'itemsTableUserName', field: 'userName', width: '100px', type: 'String'},
-    {text: 'itemsTableCreated', field: 'created', width: '100px', type: 'Date'},
-    {text: 'itemsTableUpdated', field: 'updated', width: '100px', type: 'Date'},
+    {text: 'itemsTableState', field: 'state', width: '150px', type: 'String'},
+    {text: 'itemsTableUserName', field: 'userName', width: '200px', type: 'String'},
+    {text: 'itemsTableCreated', field: 'created', width: '150px', type: 'Date'},
+    {text: 'itemsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
 const types = [
@@ -119,8 +111,9 @@ const states = [
 
 const documentTypes = [
     '',
+    'Покупка',
     'Передача',
-    'Сервисный центр'
+    'Сервисный центр',
 ];
 
 const PageItems: React.FC = () => {
