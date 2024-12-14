@@ -1078,27 +1078,29 @@ const PageItems: React.FC = () => {
                 children={<>
                     {documents.map((document, index) => (
                         <div className='Field' key={index}>
-                            <div className='title' style={{maxWidth: 75, minWidth: 75}}>
-                                <p>{dateToStringOnlyDate(new Date(document.date))}</p>
-                            </div>
-                            <div className='title' style={{maxWidth: 240, minWidth: 240}}>
-                                <p>{document.name}</p>
-                            </div>
-                            <div className='title' style={{maxWidth: 150, minWidth: 150}}>
-                                <p>{document.type}</p>
-                            </div>
-                            <div className='title' style={{maxWidth: 150, minWidth: 150}}>
-                                <p>{document.note}</p>
-                            </div>
                             <div className='field'>
                                 <button
+                                    style={{maxWidth: 40, minWidth: 40}}
                                     onClick={() => downloadItemDocumentFile(document)}
                                     children={<IconDownload/>}
                                 />
                                 <button
+                                    style={{maxWidth: 40, minWidth: 40}}
                                     onClick={() => openDocumentsDeleteDialog(document)}
                                     children={<IconDelete/>}
                                 />
+                            </div>
+                            <div className='field'>
+                                <p>{dateToStringOnlyDate(new Date(document.date))}</p>
+                            </div>
+                            <div className='field'>
+                                <p>{document.name}</p>
+                            </div>
+                            <div className='field'>
+                                <p>{document.type}</p>
+                            </div>
+                            <div className='field'>
+                                <p>{document.note}</p>
                             </div>
                         </div>
                     ))}

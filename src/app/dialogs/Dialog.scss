@@ -159,6 +159,8 @@
       align-items: center;
       gap: 10px;
       border-top: 1px solid var(--border);
+      overflow-x: auto;
+      overflow-y: hidden;
 
       button {
         flex-grow: 1;
