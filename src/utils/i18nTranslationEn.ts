@@ -512,6 +512,7 @@ export const i18nTranslationEn = {
     "itemsCreateFieldNote": "Note",
     "itemsCreateFieldUser": "User",
     "itemsCreateButtonCancel": "Cancel",
+    "itemsCreateButtonAutofill": "Autofill",
     "itemsCreateButtonCreate": "Create",
     "itemsDeleteTitle": "Delete item",
     "itemsDeleteText": "Are u sure want to delete",

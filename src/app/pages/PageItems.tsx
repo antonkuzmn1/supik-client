@@ -86,6 +86,7 @@ const defTableHeaders: TableHeaders[] = [
 
 const types = [
     '',
+    'ПК',
     'Ноутбук',
     'Монитор',
     'HDD SATA',
@@ -596,6 +597,50 @@ const PageItems: React.FC = () => {
         URL.revokeObjectURL(url);
     }
 
+    const autofill = () => {
+        const index = indexToString(types.findIndex(el => el === type));
+        const articles = rows.filter(row => row.type === type).map(row => Number(row.article.substring(3, 9)));
+        let articleNumber = 0;
+        for (let i = 0; i < 999999; i++) {
+            if (!articles.includes(i)) {
+                articleNumber = i;
+                break;
+            }
+        }
+        const article = articleToString(articleNumber)
+        setArticle(index + article);
+    }
+
+    const indexToString = (index: number): string => {
+        if (index < 0 || index > 999) {
+            return '000';
+        } else if (index >= 0 && index < 10) {
+            return `00${index}`;
+        } else if (index >= 10 && index < 100) {
+            return `0${index}`;
+        } else {
+            return `${index}`;
+        }
+    }
+
+    const articleToString = (article: number): string => {
+        if (article < 0 || article > 999) {
+            return '000000';
+        } else if (article >= 0 && article < 10) {
+            return `00000${article}`;
+        } else if (article >= 10 && article < 100) {
+            return `0000${article}`;
+        } else if (article >= 100 && article < 1000) {
+            return `000${article}`;
+        } else if (article >= 1000 && article < 10000) {
+            return `00${article}`;
+        } else if (article >= 10000 && article < 100000) {
+            return `0${article}`;
+        } else {
+            return `${article}`;
+        }
+    }
+
     /// HOOKS
 
     useEffect(() => {
@@ -809,6 +854,7 @@ const PageItems: React.FC = () => {
                 </>}
                 buttons={[
                     {action: () => setDialogCreateActive(false), text: t('itemsCreateButtonCancel')},
+                    {action: () => autofill(), text: t('itemsCreateButtonAutofill')},
                     {action: () => create(), text: t('itemsCreateButtonCreate')},
                 ]}
             />}
