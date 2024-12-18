@@ -601,7 +601,7 @@ const PageItems: React.FC = () => {
         const index = indexToString(types.findIndex(el => el === type));
         const articles = rows.filter(row => row.type === type).map(row => Number(row.article.substring(3, 9)));
         let articleNumber = 0;
-        for (let i = 0; i < 999999; i++) {
+        for (let i = 1; i < 999999; i++) {
             if (!articles.includes(i)) {
                 articleNumber = i;
                 break;
