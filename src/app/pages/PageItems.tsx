@@ -25,6 +25,8 @@ import FieldInputSelectOneString from "../fields/FieldInputSelectOneString.tsx";
 import FieldInputDate from "../fields/FieldInputDate.tsx";
 import IconDownload from "../icons/IconDownload.tsx";
 import IconDelete from "../icons/IconDelete.tsx";
+import {documentTypes, ItemDocument} from "./PageItemDocuments.tsx";
+import {formatFileSize} from "../../utils/formatFileSize.ts";
 
 type TypeField = 'String' | 'Integer' | 'Boolean' | 'Date';
 
@@ -51,19 +53,6 @@ export interface ItemFields {
     userName: string;
 }
 
-export interface ItemDocument {
-    id: number;
-    created: string;
-    updated: string;
-
-    name: string;
-    type: string;
-    note: string;
-    date: string;
-
-    itemId: number;
-}
-
 interface TableHeaders {
     text: string,
     field: keyof ItemFields,
@@ -83,7 +72,7 @@ const defTableHeaders: TableHeaders[] = [
     {text: 'itemsTableUpdated', field: 'updated', width: '150px', type: 'Date'},
 ]
 
-const types = [
+export const types = [
     '',
     'ПК',
     'Ноутбук',
@@ -102,18 +91,11 @@ const types = [
     'Веб-камера',
 ];
 
-const states = [
+export const states = [
     '',
     'В эксплуатации',
     'В сервисном центре',
     'Списано',
-];
-
-const documentTypes = [
-    '',
-    'Покупка',
-    'Передача',
-    'Сервисный центр',
 ];
 
 const PageItems: React.FC = () => {
@@ -334,7 +316,6 @@ const PageItems: React.FC = () => {
             }).then((_response) => {
                 setDialogDocumentsCreateActive(false);
                 getItemDocuments();
-                console.log(_response);
             }).catch((error) => {
                 if (error.response && error.response.data) {
                     dispatch(setAppError(error.response.data));
@@ -563,18 +544,6 @@ const PageItems: React.FC = () => {
             setCreateDocumentName(file.name);
         }
     }
-
-    const formatFileSize = (sizeInBytes: number): string => {
-        if (sizeInBytes < 1024) {
-            return `${sizeInBytes} B`;
-        } else if (sizeInBytes < 1024 * 1024) {
-            return `${(sizeInBytes / 1024).toFixed(2)} KB`;
-        } else if (sizeInBytes < 1024 * 1024 * 1024) {
-            return `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
-        } else {
-            return `${(sizeInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-        }
-    };
 
     const downloadItemDocumentFile = (itemDocumentId: number) => {
         dispatch(setAppLoading(true));

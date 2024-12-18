@@ -40,6 +40,8 @@ import PageConfig from "./pages/PageConfig.tsx";
 import IconConfig from "./icons/IconConfig.tsx";
 import IconItems from "./icons/IconItems.tsx";
 import PageItems from "./pages/PageItems.tsx";
+import IconItemDocuments from "./icons/IconItemDocuments.tsx";
+import PageItemDocuments from "./pages/PageItemDocuments.tsx";
 
 export interface RoutePageInterface {
     path: string;
@@ -58,6 +60,7 @@ export const routePages: RoutePageInterface[] = [
     {path: '/mails', element: <Page element={<PageMails/>}/>, icon: <IconMails/>, title: "mailsTitle",  admin: false, settings: false},
     {path: '/mail-groups', element: <Page element={<PageMailGroups/>}/>, icon: <IconMailGroups/>, title: "mailGroupsTitle",  admin: false, settings: false},
     {path: '/items', element: <Page element={<PageItems/>}/>, icon: <IconItems/>, title: "itemsTitle",  admin: false, settings: false},
+    {path: '/item-documents', element: <Page element={<PageItemDocuments/>}/>, icon: <IconItemDocuments/>, title: "itemDocumentsTitle",  admin: false, settings: false},
     {path: '/settings', element: <Page element={<PageSettings/>}/>, icon: <IconSettings/>, title: "settingsTitle", admin: true, settings: false},
 
     {path: '/settings/accounts', element: <Page element={<PageAccounts/>}/>, icon: <IconAccounts/>, title: "accountsTitle", admin: true, settings: true},

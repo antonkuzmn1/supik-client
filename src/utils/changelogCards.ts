@@ -6,6 +6,13 @@ export interface ChangelogCardInterface {
 
 export const changelogCards: ChangelogCardInterface[] = [
     {
+        version: '24.22',
+        time: '02:15',
+        changes: [
+            '[02:15] Добавлена страница документов предметов',
+        ],
+    },
+    {
         version: '24.21.2',
         time: '01:05',
         changes: [
