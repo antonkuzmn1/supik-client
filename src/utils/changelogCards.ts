@@ -7,11 +7,12 @@ export interface ChangelogCardInterface {
 export const changelogCards: ChangelogCardInterface[] = [
     {
         version: '24.21.2',
-        time: '00:05',
+        time: '01:05',
         changes: [
             '[00:00] Артикул теперь формируется с 1 вместо 0',
             '[00:05] Артикул теперь не может быть пустым',
             '[00:00] Запрещено редактирование артикула',
+            '[01:00] Оптимизировано скачивание документов',
         ],
     },
     {

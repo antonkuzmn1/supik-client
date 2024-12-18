@@ -56,7 +56,6 @@ export interface ItemDocument {
     created: string;
     updated: string;
 
-    blob: { type: string; data: number[] };
     name: string;
     type: string;
     note: string;
@@ -577,24 +576,40 @@ const PageItems: React.FC = () => {
         }
     };
 
-    const downloadItemDocumentFile = (itemDocument: ItemDocument) => {
-        if (!itemDocument || !itemDocument.blob || !itemDocument.blob.data) {
-            dispatch(setAppError('Incorrect document'));
-            return;
-        }
+    const downloadItemDocumentFile = (itemDocumentId: number) => {
+        dispatch(setAppLoading(true));
+        axios.get(import.meta.env.VITE_BASE_URL + "/db/item-document/get-blob", {
+            params: {id: itemDocumentId},
+        }).then((response) => {
+            const itemDocument = response.data.itemDocument
 
-        const { blob, name } = itemDocument;
-        const fileBlob = new Blob([Uint8Array.from(blob.data)], { type: blob.type });
-        const url = URL.createObjectURL(fileBlob);
+            if (!itemDocument || !itemDocument.blob || !itemDocument.blob.data) {
+                dispatch(setAppError('Incorrect document'));
+                dispatch(setAppLoading(false));
+                return;
+            }
 
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name || 'document';
-        document.body.appendChild(a);
-        a.click();
+            const {blob, name} = itemDocument;
+            const fileBlob = new Blob([Uint8Array.from(blob.data)], {type: blob.type});
+            const url = URL.createObjectURL(fileBlob);
 
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name || 'document';
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }).catch((error) => {
+            if (error.response && error.response.data) {
+                dispatch(setAppError(error.response.data));
+            } else {
+                dispatch(setAppError(error.message));
+            }
+        }).finally(() => {
+            dispatch(setAppLoading(false));
+        })
     }
 
     const autofill = () => {
@@ -1117,7 +1132,7 @@ const PageItems: React.FC = () => {
                             <div className='field'>
                                 <button
                                     style={{maxWidth: 40, minWidth: 40}}
-                                    onClick={() => downloadItemDocumentFile(document)}
+                                    onClick={() => downloadItemDocumentFile(document.id)}
                                     children={<IconDownload/>}
                                 />
                                 <button
