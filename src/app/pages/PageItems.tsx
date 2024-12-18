@@ -866,23 +866,13 @@ const PageItems: React.FC = () => {
                         title={t('itemsUpdateFieldID')}
                         value={id.toString()}
                     />
-                    <FieldInputSelectOneString
+                    <FieldValueString
                         title={t('itemsUpdateFieldType')}
                         value={type}
-                        setValue={setType}
-                        variants={types.map((type) => {
-                            return {
-                                value: type,
-                                text: '',
-                            }
-                        })}
                     />
-                    <FieldInputString
+                    <FieldValueString
                         title={t('itemsUpdateFieldArticle')}
-                        placeholder={"Enter text"}
                         value={article}
-                        mask={'999999999'}
-                        onChange={(e) => setArticle(e.target.value)}
                     />
                     <FieldInputString
                         title={t('itemsUpdateFieldVendor')}
